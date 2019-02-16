@@ -57,7 +57,7 @@ $ pip install -r requirements.txt
 - numpy中心ですが、numpyの基本知識は自分で調べて下さい。
 
 
-### [理論編](https://github.com/yoyoyo-yo/Gasyori100knock/tree/master/Question_01_10)
+### [理論編]()
 
 |番号|問題||番号|問題|
 |:---:|:---:|:---:|:---:|:---:|
@@ -71,7 +71,7 @@ $ pip install -r requirements.txt
 | 2 | [ミニバッチの作成](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q2-2-%E3%83%9F%E3%83%8B%E3%83%90%E3%83%83%E3%83%81%E4%BD%9C%E6%88%90) |
 | 3 | [イテレーション・エポック](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q2-3-%E3%82%A4%E3%83%86%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%82%A8%E3%83%9D%E3%83%83%E3%82%AF) |
 
-### [フレームワークの使い方編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_neuralnet)
+### [CNN・フレームワークの使い方編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_neuralnet)
 
 |番号|問題|
 |:---:|:---:|
@@ -81,8 +81,15 @@ $ pip install -r requirements.txt
 | 4 | [Keras使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_neuralnet/README_keras.md) |
 | 5 | [Chainer使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_neuralnet/README_chainer.md) |
 
-### [画像処理編](https://github.com/yoyoyo-yo/Gasyori100knock/tree/master/Question_31_40)
+### [有名モデル実装編]()
 
+| 番号 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1 | LeNet |
+
+### [画像処理編]()
+
+### [言語処理編]()
 
 
 
