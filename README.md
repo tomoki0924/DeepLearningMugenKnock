@@ -81,11 +81,11 @@ $ pip install -r requirements.txt
 | 4 | [Keras使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_neuralnet/README_keras.md) |
 | 5 | [Chainer使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_neuralnet/README_chainer.md) |
 
-### [有名モデル実装編]()
+### [有名モデル実装編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model)
 
 | 番号 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| 1 | LeNet |
+| 1 | [LeNet](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q1-lenet) | [◯](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_pytorch.py) | [◯](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow.py) | [◯](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py) | [◯](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py) | 
 
 ### [画像処理編]()
 
