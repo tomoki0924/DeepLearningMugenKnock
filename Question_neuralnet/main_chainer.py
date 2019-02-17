@@ -67,11 +67,12 @@ class Mynet(chainer.Chain):
 
 
 # get train data
-def data_load(path):
+def data_load(dir_path):
     xs = np.ndarray((0, img_height, img_width, 3), dtype=np.float32)
     ts = np.ndarray((0), dtype=np.int32)
+    paths = []
     
-    for dir_path in glob(path + '/*'):
+    for dir_path in glob(dir_path + '/*'):
         for path in glob(dir_path + '/*'):
             x = cv2.imread(path)
             x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
@@ -85,9 +86,11 @@ def data_load(path):
                 t = np.array((1))
             ts = np.r_[ts, t]
 
+            paths.append(path)
+
     xs = xs.transpose(0,3,1,2)
 
-    return xs, ts
+    return xs, ts, paths
 
 
 # train
@@ -103,7 +106,7 @@ def train():
     opt.setup(model)
     opt.add_hook(chainer.optimizer.WeightDecay(0.0005))
 
-    xs, ts = data_load()
+    xs, ts, _ = data_load('../Dataset/train/images/')
 
     # training
     mb = 8
@@ -162,9 +165,12 @@ def test():
     ## Load pretrained parameters
     chainer.serializers.load_npz('cnn.npz', model)
 
-    xs, ts = data_load('../Dataset/test/images/*')
+    xs, ts, paths = data_load('../Dataset/test/images/')
 
-    for x, t in zip(xs, ts):
+    for i in range(len(paths)):
+        x = xs[i]
+        t = ts[i]
+        path = paths[i]
         x = np.expand_dims(x, axis=0)
         
         if GPU >= 0:
@@ -176,7 +182,7 @@ def test():
         if GPU >= 0:
             pred = chainer.cuda.to_cpu(pred)
                 
-        pred = pred[0]
+        pred = pred[0].data
                 
         print("in {}, predicted probabilities >> {}".format(path, pred))
     

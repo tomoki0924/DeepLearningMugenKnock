@@ -131,9 +131,10 @@ opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
 ```bash
 # get train data
-def data_load(path):
-    xs = np.ndarray((0, img_height, img_width, 3))
-    ts = np.ndarray((0))
+def data_load(path, hf=False, vf=False):
+    xs = np.ndarray((0, img_height, img_width, 3), dtype=np.float32)
+    ts = np.ndarray((0), dtype=np.int)
+    paths = []
 
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
@@ -144,16 +145,36 @@ def data_load(path):
 
             t = np.zeros((1))
             if 'akahara' in path:
-                t = np.array((0))
+                t = np.array((0), dtype=np.int)
             elif 'madara' in path:
-                t = np.array((1))
+                t = np.array((1), dtype=np.int)
             ts = np.r_[ts, t]
-    
+
+            paths.append(path)
+
+            if hf:
+                _x = x[:, ::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
+            if vf:
+                _x = x[::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
+            if hf and vf:
+                _x = x[::-1, ::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
     xs = xs.transpose(0,3,1,2)
 
-    return xs, ts
+    return xs, ts, paths
 
-xs, ts = data_load('../Dataset/train/images/')
+xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True)
 ```
 
 ## 6. 学習
@@ -267,13 +288,17 @@ model.load_state_dict(torch.load('cnn.pt'))
 あとはテストデータセットを読み込む。
 
 ```python
-xs, ts = data_load('../Dataset/test/images/')
+xs, ts, paths = data_load('../Dataset/test/images/')
 ```
 
 あとはテスト画像を一枚ずつモデルにフィードフォワードして予測ラベルを求めていく。ただしネットワークへの入力は4次元でなければいけない。そこで、np.expand_dimsを使ってxを3次元から４次元にする必要がある。
 
 ```python
-for x, t in zip(xs, ts):
+for i in range(len(paths)):
+    x = xs[i]
+    t = ts[i]
+    path = paths[i]
+
     x = np.expand_dims(x, axis=0)
     x = torch.tensor(x, dtype=torch.float).to(device)
 

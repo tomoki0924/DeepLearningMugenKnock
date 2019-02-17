@@ -54,11 +54,12 @@ def Mynet():
     model = Model(inputs=inputs, outputs=x, name='model')
     return model
 
-def data_load(path):
+def data_load(dir_path):
     xs = np.ndarray((0, img_height, img_width, 3))
     ts = np.ndarray((0, num_classes))
+    paths = []
     
-    for dir_path in glob(path + '/*'):
+    for dir_path in glob(dir_path + '/*'):
         for path in glob(dir_path + '/*'):
             x = cv2.imread(path)
             x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
@@ -72,7 +73,9 @@ def data_load(path):
                 t[1] = 1
             ts = np.r_[ts, t[None, ...]]
 
-    return xs, ts
+            paths.append(path)
+
+    return xs, ts, paths
 
 # train
 def train():
@@ -86,7 +89,7 @@ def train():
         optimizer=keras.optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True),
         metrics=['accuracy'])
 
-    xs, ts = data_load()
+    xs, ts, paths = data_load('../Dataset/train/images')
 
     # training
     mb = 8
@@ -118,9 +121,13 @@ def test():
     model = Mynet()
     model.load_weights('model.h5')
 
-    xs, ts = data_load("../Dataset/test/images/")
+    xs, ts, paths = data_load("../Dataset/test/images/")
 
-    for x, t in zip(xs, ts):
+    for i in range(len(paths)):
+        x = xs[i]
+        t = ts[i]
+        path = paths[i]
+        
         x = np.expand_dims(x, axis=0)
         
         pred = model.predict_on_batch(x)[0]

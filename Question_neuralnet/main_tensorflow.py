@@ -57,11 +57,12 @@ def Mynet(x, keep_prob):
     return x
 
 # get train data
-def data_load(path):
+def data_load(dir_path):
     xs = np.ndarray((0, img_height, img_width, 3))
     ts = np.ndarray((0, num_classes))
+    paths = []
     
-    for dir_path in glob(path + '/*'):
+    for dir_path in glob(dir_path + '/*'):
         for path in glob(dir_path + '/*'):
             x = cv2.imread(path)
             x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
@@ -75,7 +76,9 @@ def data_load(path):
                 t[1] = 1
             ts = np.r_[ts, t[None, ...]]
 
-    return xs, ts
+            paths += [path]
+
+    return xs, ts, paths
 
 
 # train
@@ -97,7 +100,7 @@ def train():
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
     
 
-    xs, ts = data_load('../Dataset/train/images/')
+    xs, ts, paths = data_load('../Dataset/train/images/')
 
     # training
     mb = 8
@@ -142,7 +145,7 @@ def test():
     logits = Mynet(X, keep_prob)
     out = tf.nn.softmax(logits)
 
-    xs, ts = data_load("../Dataset/test/images/")
+    xs, ts, paths = data_load("../Dataset/test/images/")
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
@@ -152,7 +155,11 @@ def test():
         #saver = tf.train.import_meta_graph("./cnn.ckpt.meta")
         saver.restore(sess, "./cnn.ckpt")
 
-        for x, t in zip(xs, ts):
+        for i in range(len(paths)):
+            x = xs[i]
+            t = ts[i]
+            path = paths[i]
+            
             x = np.expand_dims(x, axis=0)
 
             pred = out.eval(feed_dict={X: x, keep_prob: 1.0})[0]

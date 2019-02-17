@@ -138,12 +138,14 @@ opt.add_hook(chainer.optimizer.WeightDecay(0.0005))
 ## 4. データセット用意
 
 あとは学習させるだけなのでデータセットを用意する。一応再掲。詳しくはディープラーニング準備編を要参照。
+chainerでは入力画像は*float32*、教師ラベルは*int*でなければエラーを吐くので注意！！
 
 ```bash
 # get train data
-def data_load(path):
-    xs = np.ndarray((0, img_height, img_width, 3))
-    ts = np.ndarray((0))
+def data_load(path, hf=False, vf=False):
+    xs = np.ndarray((0, img_height, img_width, 3), dtype=np.float32)
+    ts = np.ndarray((0), dtype=np.int)
+    paths = []
 
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
@@ -154,16 +156,36 @@ def data_load(path):
 
             t = np.zeros((1))
             if 'akahara' in path:
-                t = np.array((0))
+                t = np.array((0), dtype=np.int)
             elif 'madara' in path:
-                t = np.array((1))
+                t = np.array((1), dtype=np.int)
             ts = np.r_[ts, t]
-    
+
+            paths.append(path)
+
+            if hf:
+                _x = x[:, ::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
+            if vf:
+                _x = x[::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
+            if hf and vf:
+                _x = x[::-1, ::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
     xs = xs.transpose(0,3,1,2)
 
-    return xs, ts
+    return xs, ts, paths
 
-xs, ts = data_load('../Dataset/train/images/')
+xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True)
 ```
 
 ## 5. 学習
@@ -306,13 +328,17 @@ chainer.serializers.load_npz('cnn.npz', model)
 あとはテストデータセットを読み込む。
 
 ```python
-xs, ts = data_load('../Dataset/test/images/')
+xs, ts, paths = data_load('../Dataset/test/images/')
 ```
 
 あとはテスト画像を一枚ずつモデルにフィードフォワードして予測ラベルを求めていく。ここではモデルの出力に*F.softmax()* を使って確率に直す。
 
 ```python
-for x, t in zip(xs, ts):
+for i in range(len(paths)):
+    x = xs[i]
+    t = ts[i]
+    path = paths[i]
+    
     x = np.expand_dims(x, axis=0)
 
     if GPU >= 0:
@@ -324,7 +350,7 @@ for x, t in zip(xs, ts):
     if GPU >= 0:
         pred = chainer.cuda.to_cpu(pred)
 
-    pred = pred[0]
+    pred = pred[0].data
 
     print("in {}, predicted probabilities >> {}".format(path, pred))
 ```

@@ -150,9 +150,10 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 ```bash
 # get train data
-def data_load(path):
-    xs = np.ndarray((0, img_height, img_width, 3))
-    ts = np.ndarray((0))
+def data_load(path, hf=False, vf=False):
+    xs = np.ndarray((0, img_height, img_width, 3), dtype=np.float32)
+    ts = np.ndarray((0, num_classes))
+    paths = []
 
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
@@ -161,16 +162,37 @@ def data_load(path):
             x /= 255.
             xs = np.r_[xs, x[None, ...]]
 
-            t = np.zeros((1))
+            t = np.zeros((num_classes))
             if 'akahara' in path:
-                t = np.array((0))
+                t[0] = 1
             elif 'madara' in path:
-                t = np.array((1))
+                t[1] = 1
+            t = t[None, ...]
             ts = np.r_[ts, t]
 
-    return xs, ts
+            paths.append(path)
 
-xs, ts = data_load('../Dataset/train/images/')
+            if hf:
+                _x = x[:, ::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
+            if vf:
+                _x = x[::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
+            if hf and vf:
+                _x = x[::-1, ::-1]
+                xs = np.r_[xs, _x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+                
+    return xs, ts, paths
+
+xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True) 
 ```
 
 ## 6. 学習
@@ -256,7 +278,7 @@ out = tf.nn.softmax(logits)
 あとはテストデータセットを読み込む。
 
 ```python
-xs, ts = data_load('../Dataset/test/images/')
+xs, ts, paths = data_load('../Dataset/test/images/')
 ```
 
 あとはテスト画像を一枚ずつモデルにフィードフォワードして予測ラベルを求めていく。これもsession内で行わなければいけない。学習済みモデルの読み込みもsession内でやる必要がある。それはsaver.restor()を使う。
@@ -269,7 +291,11 @@ with tf.Session(config=config) as sess:
     saver = tf.train.Saver()
     saver.restore(sess, "./cnn.ckpt")
 
-    for x, t in zip(xs, ts):
+    for i in range(len(paths)):
+        x = xs[i]
+        t = ts[i]
+        path = paths[i]
+    
         x = np.expand_dims(x, axis=0)
 
         pred = out.eval(feed_dict={X: x, keep_prob: 1.0})[0]
