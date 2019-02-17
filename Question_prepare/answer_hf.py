@@ -30,8 +30,7 @@ def data_load(path, hf=False):
             paths.append(path)
 
             if hf:
-                _x = x[:, ::-1]
-                xs = np.r_[xs, x[None, ...]]
+                xs = np.r_[xs, x[:, ::-1][None, ...]]
                 ts = np.r_[ts, t]
                 paths.append(path)
 
