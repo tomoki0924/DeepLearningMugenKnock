@@ -8,7 +8,7 @@ num_classes = 2
 img_height, img_width = 64, 64
 
 # get train data
-def data_load(path):
+def data_load(path, hf=False):
     xs = np.ndarray((0, img_height, img_width, 3))
     ts = np.ndarray((0))
     paths = []
@@ -29,12 +29,18 @@ def data_load(path):
 
             paths.append(path)
 
+            if hf:
+                _x = x[:, ::-1]
+                xs = np.r_[xs, x[None, ...]]
+                ts = np.r_[ts, t]
+                paths.append(path)
+
     xs = xs.transpose(0,3,1,2)
 
     return xs, ts, paths
 
 
-xs, ts, paths = data_load("../Dataset/train/images/")
+xs, ts, paths = data_load("../Dataset/train/images/", hf=True)
 
 mb = 3
 mbi = 0

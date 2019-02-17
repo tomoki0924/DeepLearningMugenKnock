@@ -1,6 +1,6 @@
 # Q. 2ディープラーニング準備編
 
-## Q.2-1. 学習データセット読み込み 
+## Q.1. 学習データセット読み込み 
 
 まずはディープラーニングを学習させるためのデータセットの準備をする。
 
@@ -37,7 +37,8 @@ akaharaはクラス0、madaraはクラス1に属する。
 3. xsにxを追加する。 xs = np.vstack((xs, x))
 4. 教師ラベルtを何らかの方法で取得する。
 5. tsにtを追加する。 ts = np.vstack((ts, t))
-6. 2-5をディレクトリの画像全部に対して行う。
+6. pathsに画像のパスを追加appendする
+7. 2-6をディレクトリの画像全部に対して行う。
 
 以下のコードを埋めて完成させよ。
 
@@ -52,17 +53,19 @@ img_height, img_width = 64, 64
 def data_laod(path):
     xs = np.ndarray((0, img_height, img_width, 3))
     ts = np.ndarray((0))
+    paths = []
+    
     # answer your code
     ...
     #
-    return xs, ts
+    return xs, ts, paths
     
-xs, ts = data_load('../Dataset/train/images/')
+xs, ts, paths = data_load('../Dataset/train/images/')
 ```
 
-答え >> [answer_data_load.py](https://github.com/yoyoyo-yo/Gasyori100knock/blob/master/Question_01_10/answer_1.py)
+答え >> [answer_data_load.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answer_data_load.py)
 
-## Q.2-2. ミニバッチ作成
+## Q.2. ミニバッチ作成
 
 学習データが完成したら、次はミニバッチを作成しなければいけない。
 
@@ -108,10 +111,10 @@ $ python answer_minibatch.py
 [11  0  9]
 ```
 
-答え >> [answer_minibatch.py](https://github.com/yoyoyo-yo/Gasyori100knock/blob/master/Question_01_10/answer_1.py)
+答え >> [answer_minibatch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answer_minibatch.py)
 
 
-## Q.2-3. イテレーションとエポック
+## Q.3. イテレーションとエポック
 
 ディープラーニングの学習はミニバッチを何回使うかの学習回数が重要となる。
 これはイテレーションiterationとかstepだとかepochとかって呼ばれる。
@@ -146,4 +149,24 @@ Q.2-2では10回ミニバッチを回したが、これは10iterationしたこ�
 [11  4 14]
 ```
 
-答え >> [answer_epoch.py](https://github.com/yoyoyo-yo/Gasyori100knock/blob/master/Question_01_10/answer_1.py)
+答え >> [answer_epoch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answer_epoch.py)
+
+
+## Q.4. データ拡張・左右反転
+
+ディープラーニングは学習データがめちゃくちゃ多くないといけない。小さいモデルなら少ないデータでも大丈夫だけど、大きいモデルの方が最終的には精度は高い。しかし大きいモデルは大量のデータがないと学習が進まないというジレンマがある。これを解決するために学習データを水増しする手法はよく取られる。
+
+ここではデータ拡張の一つとして左右を反転させる。
+これはデータを読み込んだ後に、画像の左右を反転させたものも一つの学習データとして加えるものである。
+
+*data_load()*の引数に*hf* という引数(デフォルはFalse)を加えて左右反転も加えられるようにせよ。
+
+答え >> [answer_hf.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answer_hf.py)
+
+## Q.5. データ拡張・上下反転
+
+ここではデータ拡張として上下を反転させたものを加えよ。
+
+*data_load()*の引数に*vf* という引数(デフォルはFalse)を加えて左右反転も加えられるようにせよ。
+
+答え >> [answer_vf.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answer_vf.py)

@@ -11,6 +11,7 @@ img_height, img_width = 64, 64
 def data_load(path):
     xs = np.ndarray((0, img_height, img_width, 3))
     ts = np.ndarray((0))
+    paths = []
     
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
@@ -26,12 +27,14 @@ def data_load(path):
                 t = np.array((1))
             ts = np.r_[ts, t]
 
+            paths.append(path)
+
     xs = xs.transpose(0,3,1,2)
 
-    return xs, ts
+    return xs, ts, paths
 
 
-xs, ts = data_load('../Dataset/train/images/')
+xs, ts, paths = data_load('../Dataset/train/images/')
 
 mb = 3
 mbi = 0
