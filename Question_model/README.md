@@ -24,10 +24,10 @@
 http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf
 
 答え
-- Pytorch [answers/lenet_pytorch.py]()
-- Tensorflow [answers/lenet_tensorflow.py]()
-- Keras [answers/lenet_keras.py]()
-- chainer [answers/lenet_chainer.py]()
+- Pytorch [answers/lenet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_pytorch.py)
+- Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
+- Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
+- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
 
 # Q. AlexNet
 
@@ -59,8 +59,8 @@ LRNは効果が薄いことから最近ではほとんど使われない。こ�
 https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
 
 答え
-- Pytorch [answers/alexnet_pytorch.py]()
-- Tensorflow [answers/alexnet_tensorflow.py]()
-- Keras [answers/alexnet_keras.py]()
-- chainer [answers/alexnet_chainer.py]()
+- Pytorch [answers/alexnet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/alexnet_pytorch.py)
+- Tensorflow [answers/alexnet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/alexnet_tensorflow_layers.py)
+- Keras [answers/alexnet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/alexnet_keras.py)
+- chainer [answers/alexnet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/alexnet_chainer.py)
 
