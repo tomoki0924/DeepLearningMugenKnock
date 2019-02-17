@@ -92,4 +92,9 @@ Alexnetの最初のconvlutionを7x7のカーネルにして、ストライドを
 | MultiLayerPerceptron | 4096 | - | - | - | - | ReLU + Dropout |
 | MultiLayerPerceptron | 2 (クラス) | - | - | - | - | Softmax|
 
+答え
+- Pytorch [answers/alexnet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/zfnet_pytorch.py)
+- Tensorflow [answers/alexnet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/zfnet_tensorflow_layers.py)
+- Keras [answers/alexnet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/zfnet_keras.py)
+- chainer [answers/alexnet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/zfnet_chainer.py)
 
