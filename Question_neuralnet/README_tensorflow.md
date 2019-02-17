@@ -44,6 +44,27 @@ img_height, img_width = 64, 64
 
 ## 2. モデル定義
 
+### tensorflow内のライブラリを使う方法
+
+*tensorflow.layers* の中にlayerがすでに用意されている。
+これを使うと、こんな風に書ける。trainフラグは学習時とテスト時でdropoutの挙動が変わるから。学習時はTrueにして読み込む。
+
+```python
+def Mynet(x, train=False):
+    x = tf.layers.conv2d(inputs=x, filters=32, kernel_size=[3, 3], padding='same', activation=tf.nn.relu, name='conv1')
+    x = tf.layers.max_pooling2d(inputs=x, pool_size=[2, 2], strides=2)
+    x = tf.layers.conv2d(inputs=x, filters=32, kernel_size=[3, 3], padding='same', activation=tf.nn.relu, name='conv2')
+    x = tf.layers.max_pooling2d(inputs=x, pool_size=[2, 2], strides=2)   
+
+    mb, h, w, c = x.get_shape().as_list()
+    x = tf.reshape(x, [-1, h*w*c])
+    x = tf.layers.dense(inputs=x, units=128, activation=tf.nn.relu, name='fc1')
+    x = tf.layers.dropout(inputs=x, rate=0.25, training=train)
+    x = tf.layers.dense(inputs=x, units=num_classes, name="fc_cls")
+    return x
+```
+
+### 自分でlayerも定義する方法
 tensorflowでは関数としてモデルを定義できる。slimというtensorflow内のライブラリもあるが、ここではあえて自分の手でlayerを作っていく。
 
 Convolitional layerの定義。tensorflowではtf.Variableというものを用いて自分で学習パラメータを設定する。バイアスのパラメータも同様。
@@ -125,6 +146,10 @@ keep_prob = tf.placeholder(tf.float32)
 まずは定義したモデルのインスタンスを作成。
 
 ```python
+# tensorflow.layersを使う時
+logits = Mynet(X, train=True)
+
+# 自分でlayerを定義した時
 logits = Mynet(X, keep_prob)
 ```
 そして肝心のoptimizerの設定。ここで学習率だとかモーメンタムだとか重要なハイパーパラメータを設定する。
@@ -271,7 +296,8 @@ X = tf.placeholder(tf.float32, [None, img_height, img_width, 3])
 Y = tf.placeholder(tf.float32, [None, num_classes])
 keep_prob = tf.placeholder(tf.float32)
 
-logits = Mynet(X, keep_prob)
+logits = Mynet(X, train=False)
+#logits = Mynet(X, keep_prob)
 out = tf.nn.softmax(logits)
 ````
 
@@ -308,16 +334,20 @@ with tf.Session(config=config) as sess:
 
 ## 9. まとめたコード
 
-以上をまとめたコードは *main_tensorflow.py*　です。使いやすさのために少し整形してます。
+以上をまとめたコードは *main_tensorflow_@@@.py*　です。使いやすさのために少し整形してます。
+
+tensorflow.layersを使うときは*main_tensorflow_layers.py* 、自分でlayerを定義するときは*main_tensorflow_raw.py*
 
 学習は
 
 ```bash
-$ python main_tensorflow.py --train
+$ python main_tensorflow_layers.py --train
+$ python main_tensorflow_raw.py --train
 ```
 
 テストは
 
 ```bash
-$ python main_tensorflow.py --test
+$ python main_tensorflow_layers.py --test
+$ python main_tensorflow_raw.py --test
 ```
