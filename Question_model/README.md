@@ -134,22 +134,22 @@ VGG16とはOxfort大学の研究グループが提案したモデルであり、
 | Input | 224 x 224 x 3 (入力サイズ) |
 | Convolution | 3 x 3 | 64 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 64 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | Convolution | 3 x 3 | 128 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 128 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | Convolution | 3 x 3 | 256 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 256 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 256 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | MultiLayerPerceptron | 4096 | - | - | - | - | ReLU + Dropout |
 | MultiLayerPerceptron | 4096 | - | - | - | - | ReLU + Dropout |
 | MultiLayerPerceptron | 2 (クラス) | - | - | - | - | Softmax|
@@ -169,25 +169,25 @@ VGG19はVGG16にConvolutionが3つ増えたバージョン。こっちよりもV
 | Input | 224 x 224 x 3 (入力サイズ) |
 | Convolution | 3 x 3 | 64 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 64 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | Convolution | 3 x 3 | 128 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 128 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | Convolution | 3 x 3 | 256 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 256 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 256 | 1 | 1 | ReLU |
 | **Convolution** | 3 x 3 | 256 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | **Convolution** | 3 x 3 | 512 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | Convolution | 3 x 3 | 512 | 1 | 1 | ReLU |
 | **Convolution** | 3 x 3 | 512 | 1 | 1 | ReLU |
-| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| MaxPooling | 2 x 2 | 2 | 0 | - | - |
 | MultiLayerPerceptron | 4096 | - | - | - | - | ReLU + Dropout |
 | MultiLayerPerceptron | 4096 | - | - | - | - | ReLU + Dropout |
 | MultiLayerPerceptron | 2 (クラス) | - | - | - | - | Softmax|
@@ -222,7 +222,7 @@ for layer in self.conv3:
 x = F.max_pool2d(x, 2, stride=2, padding=0)
 ```
 
-[answers/easy_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_pytorch.py)
+サンプル >> [answers/easy_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_pytorch.py)
 
 ### Tensorflow
 
@@ -234,7 +234,7 @@ for i in range(3):
 x = tf.layers.max_pooling2d(inputs=x, pool_size=[2, 2], strides=2)
 ```
 
-[answers/easy_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_tensorflow_layers.py)
+サンプル >> [answers/easy_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_tensorflow_layers.py)
 
 ### Keras
 
@@ -246,7 +246,7 @@ for i in range(3):
 x = MaxPooling2D((2, 2), strides=2,  padding='same')(x)
 ```
 
-[answers/easy_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_keras.py)
+サンプル >> [answers/easy_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_keras.py)
 
 ### Chainer
 
@@ -267,7 +267,7 @@ for layer in self.conv3:
 x = F.max_pooling_2d(x, ksize=2, stride=2)
 ```
 
-[answers/easy_chaienr.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_chainer.py)
+サンプル >> [answers/easy_chaienr.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_chainer.py)
 
 ## Q. GoogLeNet
 
