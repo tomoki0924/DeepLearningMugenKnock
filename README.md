@@ -112,3 +112,14 @@ $ pip install -r requirements.txt
 
 adaptivebinalizatino, poison image blending
 
+## Citation
+
+```bash
+@article{yoyoyo-yoDeepLearningMugenKnock,
+    Author = {yoyoyo-yo},
+    Title = {DeepLearningMugenKnock},
+    Journal = {https://github.com/yoyoyo-yo/DeepLearningMugenKnock},
+    Year = {2019}
+}
+```
+
