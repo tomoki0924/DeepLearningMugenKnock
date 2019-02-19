@@ -125,6 +125,34 @@ pytorchでは*torch.nn.AdaptiveAvgPooling2d()*(この後view()を使ってreshap
 
 ## Q. Network in network
 
+論文 >> https://arxiv.org/abs/1312.4400
+
+Network in network(NIN)は1x1のconvoutionを導入したネットワークである。
+
+| Layer | カーネルサイズ | フィルタ数 | ストライド| パディング | 活性化関数 | 
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| Input | 128 x 128 x 3 (入力サイズ) |
+| Convolution | 5 x 5 | 192 | 1 | 2 | ReLU |
+| Convolution | 1 x 1 | 160 | 1 | 0 | ReLU |
+| Convolution | 1 x 1 | 96 | 1 | 0 | ReLU |
+| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| Dropout |
+Convolution | 5 x 5 | 192 | 1 | 2 | ReLU |
+| Convolution | 1 x 1 | 192 | 1 | 0 | ReLU |
+| Convolution | 1 x 1 | 192 | 1 | 0 | ReLU |
+| MaxPooling | 3 x 3 | 2 | 0 | - | - |
+| Dropout |
+Convolution | 3 x 3 | 192 | 1 | 1 | ReLU |
+| Convolution | 1 x 1 | 192 | 1 | 0 | ReLU |
+| Convolution | 1 x 1 | 2(クラス数) | 1 | 0 | ReLU |
+| GAP | | | | | Softmax |
+
+答え
+- Pytorch [answers/nin_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/nin_pytorch.py)
+- Tensorflow [answers/nin_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/nin_tensorflow_layers.py)
+- Keras [answers/nin_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/vgg16_keras.py)
+- chainer [answers/nin_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/nin_chainer.py)
+
 ## Q. VGG16
 
 VGG16とはOxfort大学の研究グループが提案したモデルであり、けっこう色んな手法のベースに使われているモデルである。VGG16では3x3のカーネルを持ったConvoutionを重ねることでモデルが取得する特徴の非線形性を増大させている。16というのはconvolutionとMLPを合わせて16という意味らしい。
@@ -208,17 +236,18 @@ convolutionのブロック毎にfor分を回せばおｋです。ただしlayer�
 initではこんな感じ。
 
 ```python
-self.conv3 = []
+conv3 = []
 for i in range(3):
     f = 128 if i == 0 else 256
-    self.conv3.append(torch.nn.Conv2d(f, 256, kernel_size=3, padding=1, stride=1))
+    conv3.append(torch.nn.Conv2d(f, 256, kernel_size=3, padding=1, stride=1))
+    conv3.append(torch.nn.ReLU())
+self.conv3 = torch.nn.Sequential(*conv3)
 ```
 
 callではこんな感じ。
 
 ```python
-for layer in self.conv3:
-    x = F.relu(layer(x))
+x = self.conv3(x)
 x = F.max_pool2d(x, 2, stride=2, padding=0)
 ```
 

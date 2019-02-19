@@ -14,35 +14,44 @@ class Mynet(torch.nn.Module):
     def __init__(self):
         super(Mynet, self).__init__()
 
-
-        self.conv1 = []
+        conv1 = []
         for i in range(2):
             f = 3 if i == 0 else 64
-            self.conv1.append(torch.nn.Conv2d(f, 64, kernel_size=3, padding=1, stride=1))
-            self.conv1.append(torch.nn.BatchNorm2d(64))
+            conv1.append(torch.nn.Conv2d(f, 64, kernel_size=3, padding=1, stride=1))
+            conv1.append(torch.nn.ReLU())
+            conv1.append(torch.nn.BatchNorm2d(64))
+        self.conv1 = torch.nn.Sequential(*conv1)
         
-        self.conv2 = []
+        conv2 = []
         for i in range(2):
             f = 64 if i == 0 else 128
-            self.conv2.append(torch.nn.Conv2d(f, 128, kernel_size=3, padding=1, stride=1))
-            self.conv2.append(torch.nn.BatchNorm2d(128))
+            conv2.append(torch.nn.Conv2d(f, 128, kernel_size=3, padding=1, stride=1))
+            conv2.append(torch.nn.ReLU())
+            conv2.append(torch.nn.BatchNorm2d(128))
+        self.conv2 = torch.nn.Sequential(*conv2)
 
-        self.conv3 = []
+        conv3 = []
         for i in range(3):
             f = 128 if i == 0 else 256
-            self.conv3.append(torch.nn.Conv2d(f, 256, kernel_size=3, padding=1, stride=1))
-            self.conv3.append(torch.nn.BatchNorm2d(256))
+            conv3.append(torch.nn.Conv2d(f, 256, kernel_size=3, padding=1, stride=1))
+            conv3.append(torch.nn.ReLU())
+            conv3.append(torch.nn.BatchNorm2d(256))
+        self.conv3 = torch.nn.Sequential(*conv3)
         
-        self.conv4 = []
+        conv4 = []
         for i in range(3):
             f = 256 if i == 0 else 512
-            self.conv4.append(torch.nn.Conv2d(f, 512, kernel_size=3, padding=1, stride=1))
-            self.conv4.append(torch.nn.BatchNorm2d(512))
+            conv4.append(torch.nn.Conv2d(f, 512, kernel_size=3, padding=1, stride=1))
+            conv4.append(torch.nn.ReLU())
+            conv4.append(torch.nn.BatchNorm2d(512))
+        self.conv4 = torch.nn.Sequential(*conv4)
             
-        self.conv5 = []
+        conv5 = []
         for i in range(3):
-            self.conv5.append(torch.nn.Conv2d(512, 512, kernel_size=3, padding=1, stride=1))
-            self.conv5.append(torch.nn.BatchNorm2d(512))
+            conv5.append(torch.nn.Conv2d(512, 512, kernel_size=3, padding=1, stride=1))
+            conv5.append(torch.nn.ReLU())
+            conv5.append(torch.nn.BatchNorm2d(512))
+        self.conv5 = torch.nn.Sequential(*conv5)
         
         
         self.fc1 = torch.nn.Linear(25088, 4096)
@@ -51,28 +60,23 @@ class Mynet(torch.nn.Module):
         
     def forward(self, x):
         # block conv1
-        for layer in self.conv1:
-            x = F.relu(layer(x))
+        x = self.conv1(x)
         x = F.max_pool2d(x, 2, stride=2, padding=0)
 
         # block conv2
-        for layer in self.conv2:
-            x = F.relu(layer(x))
+        x = self.conv2(x)
         x = F.max_pool2d(x, 2, stride=2, padding=0)
 
         # block conv3
-        for layer in self.conv3:
-            x = F.relu(layer(x))
+        x = self.conv3(x)
         x = F.max_pool2d(x, 2, stride=2, padding=0)
 
         # block conv4
-        for layer in self.conv4:
-            x = F.relu(layer(x))
+        x = self.conv4(x)
         x = F.max_pool2d(x, 2, stride=2, padding=0)
 
         # block conv5
-        for layer in self.conv5:
-            x = F.relu(layer(x))
+        x = self.conv5(x)
         x = F.max_pool2d(x, 2, stride=2, padding=0)
         
         x = x.view(x.shape[0], -1)

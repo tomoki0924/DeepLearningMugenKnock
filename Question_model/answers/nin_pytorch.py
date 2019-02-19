@@ -6,78 +6,40 @@ import numpy as np
 from glob import glob
 
 num_classes = 2
-img_height, img_width = 224, 224
+img_height, img_width = 128, 128
 GPU = False
 torch.manual_seed(0)
 
 class Mynet(torch.nn.Module):
     def __init__(self):
         super(Mynet, self).__init__()
-        conv1 = []
-        for i in range(2):
-            f = 3 if i == 0 else 64
-            conv1.append(torch.nn.Conv2d(f, 64, kernel_size=3, padding=1, stride=1))
-            conv1.append(torch.nn.ReLU())
-        self.conv1 = torch.nn.Sequential(*conv1)
-        
-        conv2 = []
-        for i in range(2):
-            f = 64 if i == 0 else 128
-            conv2.append(torch.nn.Conv2d(f, 128, kernel_size=3, padding=1, stride=1))
-            conv2.append(torch.nn.ReLU())
-        self.conv2 = torch.nn.Sequential(*conv2)
-
-        conv3 = []
-        for i in range(3):
-            f = 128 if i == 0 else 256
-            conv3.append(torch.nn.Conv2d(f, 256, kernel_size=3, padding=1, stride=1))
-            conv3.append(torch.nn.ReLU())
-        self.conv3 = torch.nn.Sequential(*conv3)
-        
-        conv4 = []
-        for i in range(3):
-            f = 256 if i == 0 else 512
-            conv4.append(torch.nn.Conv2d(f, 512, kernel_size=3, padding=1, stride=1))
-            conv4.append(torch.nn.ReLU())
-        self.conv4 = torch.nn.Sequential(*conv4)
-            
-        conv5 = []
-        for i in range(3):
-            conv5.append(torch.nn.Conv2d(512, 512, kernel_size=3, padding=1, stride=1))
-            conv5.append(torch.nn.ReLU())
-        self.conv5 = torch.nn.Sequential(*conv5)
-        
-        self.fc1 = torch.nn.Linear(25088, 4096)
-        self.fc2 = torch.nn.Linear(4096, 4096)
-        self.fc_out = torch.nn.Linear(4096, num_classes)
+        self.conv1 = torch.nn.Conv2d(3, 192, kernel_size=5, padding=2, stride=1)
+        self.cccp1 = torch.nn.Conv2d(192, 160, kernel_size=1, padding=0, stride=1)
+        self.cccp2 = torch.nn.Conv2d(160, 96, kernel_size=1, padding=0, stride=1)
+        self.conv2 = torch.nn.Conv2d(96, 192, kernel_size=5, padding=2, stride=1)
+        self.cccp3 = torch.nn.Conv2d(192, 192, kernel_size=1, padding=0, stride=1)
+        self.cccp4 = torch.nn.Conv2d(192, 192, kernel_size=1, padding=0, stride=1)
+        self.conv3 = torch.nn.Conv2d(192, 192, kernel_size=5, padding=2, stride=1)
+        self.cccp5 = torch.nn.Conv2d(192, 160, kernel_size=1, padding=0, stride=1)
+        self.out = torch.nn.Conv2d(160, num_classes, kernel_size=1, padding=0, stride=1)
+        self.gap = torch.nn.AdaptiveAvgPool2d((1,1))
         
     def forward(self, x):
-        # block conv1
-        x = self.conv1(x)
-        x = F.max_pool2d(x, 2, stride=2, padding=0)
-
-        # block conv2
-        x = self.conv2(x)
-        x = F.max_pool2d(x, 2, stride=2, padding=0)
-
-        # block conv3
-        x = self.conv3(x)
-        x = F.max_pool2d(x, 2, stride=2, padding=0)
-
-        # block conv4
-        x = self.conv4(x)
-        x = F.max_pool2d(x, 2, stride=2, padding=0)
-
-        # block conv5
-        x = self.conv5(x)
-        x = F.max_pool2d(x, 2, stride=2, padding=0)
-        
-        x = x.view(x.shape[0], -1)
-        x = F.relu(self.fc1(x))
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.cccp1(x))
+        x = F.relu(self.cccp2(x))
+        x = F.max_pool2d(x, 3, stride=2, padding=0)
         x = torch.nn.Dropout()(x)
-        x = F.relu(self.fc2(x))
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.cccp3(x))
+        x = F.relu(self.cccp4(x))
+        x = F.max_pool2d(x, 3, stride=2, padding=0)
         x = torch.nn.Dropout()(x)
-        x = self.fc_out(x)
+        x = F.relu(self.conv3(x))
+        x = F.relu(self.cccp5(x))
+        x = self.out(x)
+        x = self.gap(x)
+        x = x.view((x.shape[0], -1))
         return x
 
 
