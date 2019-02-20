@@ -10,7 +10,7 @@ img_height, img_width = 64, 64
 # get train data
 def data_load(path):
     xs = np.ndarray((0, img_height, img_width, 3))
-    ts = np.ndarray((0))
+    ts = np.ndarray([0])
     paths = []
     
     for dir_path in glob(path + '/*'):
