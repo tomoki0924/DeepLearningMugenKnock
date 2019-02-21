@@ -52,9 +52,11 @@ from glob import glob
 num_classes = 2
 img_height, img_width = 64, 64
 
+CLS = ['akahara', 'madara']
+
 def data_load(path):
-    xs = np.ndarray((0, img_height, img_width, 3))
-    ts = np.ndarray((0))
+    xs = []
+    ts = []
     paths = []
 
     # answer your code

@@ -61,7 +61,7 @@ $ pip install -r requirements.txt
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | 入力 | [mb,c,h,w] | [mb, h, w, c] | [mb, h, w, c] | [mc, c, h, w] | [mb, c, h, w] |
 | 教師ラベル | index [mb] | onehot [mb, cls] | onehot [mb, cls] | index [mb] | index [mb] |
-| 速度 | まあまあ早い | 早い | 早い | 普通 | 普通 |
+| 速度 | まあまあ早い | 早い | 早い | 普通 | まあまあ早い？ |
 
 
 ## 問題
