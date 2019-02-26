@@ -89,9 +89,9 @@ loss = torch.nn.BCELoss()(y, t)
 
 だいたい500エポックくらい回したpytorchでの結果がこれである。
 
-| answers/bin_loss_answer.png |
-|:---:|
-| ![](answers/bin_loss_answer.png) |
+| madara_0010.jpg (answers/bin_loss_answer1.png) | akahara_0010.jpg (answers/bin_loss_answer2.png) |
+|:---:|:---:|
+| ![](answers/bin_loss_answer1.png) | ![](answers/bin_loss_answer2.png) |
 
 
 答え
