@@ -1,4 +1,19 @@
-# Q. 有名モデル実装編
+# Q. SemanticSegmentation編
+
+ここではSemanticSegmentationの実装を行っていく。
+
+## SemanticSegmentationとは?
+
+これは画像に対してピクセル毎になんのクラスに属するかを予測するタスクである。
+
+たとえばこんな感じです。赤が 「アカハライモリ」 、緑が「マダライモリ」、黒が「背景」
+
+
+| 入力1(akahara_0005.jpg) | 出力1(akahara_0005.png) | 入力2(madara_0007.jpg) | 出力2(madara_0007.png) |
+|:---:|:---:|:---:|:---:|
+| ![](assets/akahara_0005.jpg) | ![](assets/akahara_0005.png) |  ![](assets/madara_0007.jpg) |  ![](assets/madara_0007.png) |
+
+
 
 ここではCNNの有名モデルを自分の手で実装していく。フレームワークは自由だが、**とりあえずPyTorch, Tensorflow, Keras, Chainer全部で実装せよ。**
 ネットワークを作ったら、学習率やイテレーションを変えて、テストデータセット *../Dataset/test/images* でテストせよ。
