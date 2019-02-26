@@ -22,7 +22,7 @@ SemanticSegmentataionのイメージが掴めたでしょう。
 **ちなみにSemaSegのGround-truthは *../Dataset/train/seg_images* にある。
 アカハライモリは RGB=(127,0,0)、マダライモリはRGB=(0,127,0)、背景はRGB=(0,0,0)で設定している。**
 
-## BinalizationによるSemaSeg　Step.1. データセット読み込み
+## Binalization Step.1. データセット読み込み
 
 まずは簡単にSigmoidを使って、イモリか背景かを分類するSemanticSegmentationのモデルを作っていく。
 
@@ -50,7 +50,7 @@ pngを読みだら、イモリの位置になっている部分が1、それ以�
 - Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
 - chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
 
-## BinalizationによるSemaSeg　Step.2. 学習におけるLoss
+## Binalization Step.2. 学習におけるLoss
 
 あとは学習するだけである。
 
@@ -78,7 +78,7 @@ loss = torch.nn.BCELoss()(y, t)
 - Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
 - chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
 
-## BinalizationによるSemaSeg　Step.3. テスト時の予測結果の表示
+## Binalization Step.3. テスト時の予測結果の表示
 
 学習ができたら、テストあるのみ。ということで、テストデータセット *../Dataset/test/images* に対してのネットワークの出力を図示せよ。
 
