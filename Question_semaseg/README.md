@@ -83,11 +83,9 @@ loss = torch.nn.BCELoss()(y, t)
 学習ができたら、テストあるのみ。ということで、テストデータセット *../Dataset/test/images* に対してのネットワークの出力を図示せよ。
 
 図示はシンプルに出力した結果と閾値0.5で２値化したものを表示せよ。
-
 ２値化とは、あらかじめ決定した閾値以上の値を1、それ以外を0にする画像処理手法である。
 
-
-だいたい500エポックくらい回したpytorchでの結果がこれである。
+だいたい500エポックくらい回したpytorchでの結果がこれである。画像処理ではマスク画像作成などでこのようなBinalizationが行われるので、最後に２値化することは多々ある。
 
 | madara_0010.jpg (answers/bin_loss_answer1.png) | akahara_0010.jpg (answers/bin_loss_answer2.png) |
 |:---:|:---:|
@@ -95,7 +93,7 @@ loss = torch.nn.BCELoss()(y, t)
 
 
 答え
-- Pytorch [answers/bin_test_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_loss_pytorch.py)
+- Pytorch [answers/bin_test_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_test_pytorch.py)
 - Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
 - Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
 - chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
