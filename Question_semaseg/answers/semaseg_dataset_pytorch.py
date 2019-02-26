@@ -11,6 +11,10 @@ out_height, out_width = 64, 64#388, 388
 GPU = False
 torch.manual_seed(0)
     
+
+CLS = {'akahara': [0,0,128],
+       'madara': [0,128,0]}
+    
 # get train data
 def data_load(path, hf=False, vf=False):
     xs = []
@@ -29,14 +33,17 @@ def data_load(path, hf=False, vf=False):
             gt = cv2.imread(gt_path)
             gt = cv2.resize(gt, (out_width, out_height), interpolation=cv2.INTER_NEAREST)
 
-            t = np.zeros((out_height, out_width, 1), dtype=np.int)
+            t = np.zeros((out_height, out_width), dtype=np.int)
 
-            ind = (gt[...,0] > 0) + (gt[..., 1] > 0) + (gt[...,2] > 0)
-            t[ind] = 1
-
+            for i, (_, vs) in enumerate(CLS.items()):
+                ind = (gt[...,0] == vs[0]) * (gt[...,1] == vs[1]) * (gt[...,2] == vs[2])
+                t[ind] = i + 1
             #print(gt_path)
             #import matplotlib.pyplot as plt
-            #plt.imshow(t, cmap='gray')
+            #plt.subplot(1,2,1)
+            #plt.imshow(x)
+            #plt.subplot(1,2,2)
+            #plt.imshow(t, vmin=0, vmax=2)
             #plt.show()
 
             ts.append(t)
@@ -65,9 +72,6 @@ def data_load(path, hf=False, vf=False):
 
     return xs, ts, paths
 
-
-
-    
 
 def arg_parse():
     parser = argparse.ArgumentParser(description='CNN implemented with Keras')

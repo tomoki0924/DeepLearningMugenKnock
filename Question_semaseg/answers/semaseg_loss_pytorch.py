@@ -4,14 +4,12 @@ import argparse
 import cv2
 import numpy as np
 from glob import glob
-import matplotlib.pyplot as plt
 
 num_classes = 2
 img_height, img_width = 64, 64#572, 572
 out_height, out_width = 64, 64#388, 388
 GPU = False
 torch.manual_seed(0)
-
     
 class Mynet(torch.nn.Module):
     def __init__(self):
@@ -25,15 +23,16 @@ class Mynet(torch.nn.Module):
             enc1.append(torch.nn.ReLU())
         self.enc1 = torch.nn.Sequential(*enc1)
 
-        self.out = torch.nn.Conv2d(32, 1, kernel_size=1, padding=0, stride=1)
+        self.out = torch.nn.Conv2d(32, num_classes+1, kernel_size=1, padding=0, stride=1)
+        
         
     def forward(self, x):
         # block conv1
         x = self.enc1(x)
         x = self.out(x)
+        
         return x
 
-    
 CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
     
@@ -48,21 +47,24 @@ def data_load(path, hf=False, vf=False):
             x = cv2.imread(path)
             x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
             x /= 255.
-            x = x[...,::-1]
+            x = x[..., ::-1]
             xs.append(x)
 
             gt_path = path.replace("images", "seg_images").replace(".jpg", ".png")
             gt = cv2.imread(gt_path)
             gt = cv2.resize(gt, (out_width, out_height), interpolation=cv2.INTER_NEAREST)
 
-            t = np.zeros((out_height, out_width, 1), dtype=np.int)
+            t = np.zeros((out_height, out_width), dtype=np.int)
 
-            ind = (gt[...,0] > 0) + (gt[..., 1] > 0) + (gt[...,2] > 0)
-            t[ind] = 1
-
+            for i, (_, vs) in enumerate(CLS.items()):
+                ind = (gt[...,0] == vs[0]) * (gt[...,1] == vs[1]) * (gt[...,2] == vs[2])
+                t[ind] = i + 1
             #print(gt_path)
             #import matplotlib.pyplot as plt
-            #plt.imshow(t, cmap='gray')
+            #plt.subplot(1,2,1)
+            #plt.imshow(x)
+            #plt.subplot(1,2,2)
+            #plt.imshow(t, vmin=0, vmax=2)
             #plt.show()
 
             ts.append(t)
@@ -122,20 +124,22 @@ def train():
             mbi += mb
 
         x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
-        t = torch.tensor(ts[mb_ind], dtype=torch.float).to(device)
+        t = torch.tensor(ts[mb_ind], dtype=torch.long).to(device)
 
         opt.zero_grad()
         y = model(x)
 
         y = y.permute(0,2,3,1).contiguous()
+        y = y.view(-1, num_classes+1)
+        t = t.view(-1)
         
-        y = torch.sigmoid(y)
-        loss = torch.nn.BCELoss()(y, t)
+        y = F.log_softmax(y, dim=1)
+        loss = torch.nn.CrossEntropyLoss()(y, t)
         loss.backward()
         opt.step()
     
-        #pred = y.argmax(dim=1, keepdim=True)
-        acc = y.eq(t.view_as(y)).sum().item() / mb
+        pred = y.argmax(dim=1, keepdim=True)
+        acc = pred.eq(t.view_as(pred)).sum().item() / mb
         
         print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
 

@@ -47,6 +47,7 @@ def data_load(path, hf=False, vf=False):
             x = cv2.imread(path)
             x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
             x /= 255.
+            x = x[..., ::-1]
             xs.append(x)
 
             gt_path = path.replace("images", "seg_images").replace(".jpg", ".png")
@@ -168,7 +169,7 @@ def test():
         bin_pred[bin_pred < th] = 0
    
         plt.subplot(1,3,1)
-        plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0)[..., ::-1])
+        plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0))
         plt.title("input")
         plt.subplot(1,3,2)
         plt.imshow(pred, cmap='gray')

@@ -50,7 +50,7 @@ pngを読みだら、イモリの位置になっている部分が1、それ以�
 - Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
 - chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
 
-## Binalization Step.2. 学習におけるLoss
+## Binalization Step.2. 学習時のLoss計算
 
 あとは学習するだけである。
 
@@ -67,10 +67,8 @@ loss = torch.nn.BCELoss()(y, t)
 ```
 
 まずはシンプルな構造として、入力画像に対して、
-1. Convolution(kernel_size=3, kernel_number=32, padding=1, stride=1)
-2. BatchNormalization()
-3. ReLU
-を6回適用して最後に *Convolution(kernel_size=1, kernel_number=1, padding=0, stride=1)* を適用するネットワークを作成し、SigmoidによるBinalizationを実現せよ。入力画像サイズは64で固定する。（大きくしても良いがGPUを使わないと計算時間がキツキツになってしまうので注意）
+*Convolution(kernel_size=3, kernel_number=32, padding=1, stride=1) + BatchNormalization() +  ReLU*
+を6回適用して最後に *Convolution(kernel_size=1, kernel_number=1, padding=0, stride=1)* を適用するネットワークを作成し、SigmoidによるBinalizationを実現せよ。入力画像サイズは64とする。（大きくしても良いがGPUを使わないと計算時間がキツキツになってしまうので注意）
 
 答え
 - Pytorch [answers/bin_loss_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_loss_pytorch.py)
@@ -85,7 +83,7 @@ loss = torch.nn.BCELoss()(y, t)
 図示はシンプルに出力した結果と閾値0.5で２値化したものを表示せよ。
 ２値化とは、あらかじめ決定した閾値以上の値を1、それ以外を0にする画像処理手法である。
 
-だいたい500エポックくらい回したpytorchでの結果がこれである。画像処理ではマスク画像作成などでこのようなBinalizationが行われるので、最後に２値化することは多々ある。
+だいたい500イテレーションくらい回したpytorchでの結果がこれである。画像処理ではマスク画像作成などでこのようなBinalizationが行われるので、最後に２値化することは多々ある。
 
 | madara_0010.jpg (answers/bin_loss_answer1.png) | akahara_0010.jpg (answers/bin_loss_answer2.png) |
 |:---:|:---:|
@@ -98,3 +96,69 @@ loss = torch.nn.BCELoss()(y, t)
 - Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
 - chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
 
+## Semantic Segmentation Step.1. データセット読み込み
+
+ここからはBinalizationでなくクラス分類も含めたSemantic Segmentationを行っていく。
+
+まずはデータセットの読み込みから。それぞれのフレームワークでやり方が少しことなるので注意。
+
+### PyTorch
+
+出力サイズと同じサイズのゼロ行列を容易し、各ピクセル毎にクラスのインデックスを割り当てていく。
+
+```python
+t = np.zeros((out_height, out_width), dtype=torch.int)
+```
+
+アカハライモリとマダライモリでこういう感じになり、紫がインデックス0で背景、緑がインデックス1でアカハライモリ、黄色がインデックス2でマダライモリとなる。
+
+| assets/semaseg_gt_akahara_0008.png | assets/semaseg_gt_madara_0005.png |
+|:---:|:---:|
+| ![](assets/semaseg_gt_akahara_0008.png) | ![](assets/semaseg_gt_madara_0005.png) |
+
+答え
+- Pytorch [answers/semaseg_dataset_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_dataset_pytorch.py)
+- Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
+- Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
+- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
+
+## Semantic Segmentation Step.2. 学習時のLoss計算
+
+データセットを容易すればあとは学習させるだけ！ということで学習に移るけど、SemaSegの場合はBinalizationと違って、Softmaxを使う必要がある。しかし、シンプルにSoftmaxを使ってはだめで、画像に対するSoftmaxのテクニックが必要となる。
+
+方法としては、**モデルの出力は[ミニバッチ、高さ、幅、クラス数]のshapeを持っているが、これを[ミニバッチx高さx幅、クラス数]にreshapeして、softmaxとcross entropyを適用する**。これにより画像に対するsoftmaxの学習が実現できる。これは
+
+pytorchやchainerは[ミニバッチ、チャネル、高さ、幅]のshapeだが、これをpytorchなら*permute()* を使って[ミニバッチ、高さ、幅、チャネル]の順に入れ替える必要があるので注意。
+
+それぞれのアルゴリズム実装は次のようになる。ネットワーク構成はBinalization時と同じとする。
+
+### Pytorch
+1. 教師データを[ミニバッチ、高さ、幅、クラス数]の順にする。
+2. 教師データを[ミニバッチx高さx幅、クラス数]にreshapeする。
+3. ネットワークの出力を[ミニバッチx高さx幅]にreshapeする。
+4. あとは物体認識と同じくsoftmax cross entropyを計算する。
+
+だいたい500イテレーションくらい学習したpytorchでの結果がこれである。画像処理ではマスク画像作成などでこのようなBinalizationが行われるので、最後に２値化することは多々ある。
+
+
+答え
+- Pytorch [answers/semaseg_loss_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_loss_pytorch.py)
+- Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
+- Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
+- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
+
+## Semantic Segmentation Step.2. テスト時の予測結果の表示
+
+あとはテストデータで予測結果を見るだけ。出力はミニバッチ部分を取ると[高さ、幅、クラス数]となるので、numpyのargmaxをうまいこと使うと、ピクセル毎の確率が最大のクラスのインデックスを取ることができる。
+
+それを用いて、アカハライモリのクラスはRGB=(127,0,0)、マダライモリはRGB=(0,127,0)、背景はRGB=(0,0,0)になるようなセグメンテーション画像を表示せよ。
+
+| madara_0010.jpg (answers/semaseg_loss_answer1.png) | akahara_0009.jpg (answers/semaseg_loss_answer2.png) |
+|:---:|:---:|
+| ![](answers/semaseg_loss_answer1.png) | ![](answers/semaseg_loss_answer2.png) |
+
+答え
+- Pytorch [answers/semaseg_test_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_loss_pytorch.py)
+- Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
+- Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
+- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
