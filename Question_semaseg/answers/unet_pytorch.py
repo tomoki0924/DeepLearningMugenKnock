@@ -158,8 +158,8 @@ CLS = {'akahara': [0,0,128],
     
 # get train data
 def data_load(path, hf=False, vf=False):
-    xs = np.ndarray((0, img_height, img_width, 3), dtype=np.float32)
-    ts = np.ndarray((0, out_height, out_width), dtype=np.int)
+    xs = []
+    ts = []
     paths = []
     
     for dir_path in glob(path + '/*'):
@@ -167,7 +167,8 @@ def data_load(path, hf=False, vf=False):
             x = cv2.imread(path)
             x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
             x /= 255.
-            xs = np.r_[xs, x[None, ...]]
+            x = x[..., ::-1]
+            xs.append(x)
 
             gt_path = path.replace("images", "seg_images").replace(".jpg", ".png")
             gt = cv2.imread(gt_path)
@@ -183,27 +184,30 @@ def data_load(path, hf=False, vf=False):
             #plt.imshow(t)
             #plt.show()
 
-            ts = np.r_[ts, t[None, ...]]
+            ts.append(t)
             
             paths.append(path)
 
             if hf:
-                xs = np.r_[xs, x[:, ::-1][None, ...]]
-                ts = np.r_[ts, t[:, ::-1][None, ...]]
+                xs.append(x[:, ::-1])
+                ts.append(t[:, ::-1])
                 paths.append(path)
 
             if vf:
-                xs = np.r_[xs, x[::-1][None, ...]]
-                ts = np.r_[ts, t[::-1][None, ...]]
+                xs.append(x[::-1])
+                ts.append(t[::-1])
                 paths.append(path)
 
             if hf and vf:
-                xs = np.r_[xs, x[::-1, ::-1][None, ...]]
-                ts = np.r_[ts, t[::-1, ::-1][None, ...]]
+                xs.append(x[::-1, ::-1])
+                ts.append(t[::-1, ::-1])
                 paths.append(path)
 
-    xs = xs.transpose(0,3,1,2)
+    xs = np.array(xs)
+    ts = np.array(ts)
 
+    xs = xs.transpose(0,3,1,2)
+    
     return xs, ts, paths
 
 

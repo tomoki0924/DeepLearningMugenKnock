@@ -58,7 +58,7 @@ def data_load(path, hf=False, vf=False):
 
             for i, (_, vs) in enumerate(CLS.items()):
                 ind = (gt[...,0] == vs[0]) * (gt[...,1] == vs[1]) * (gt[...,2] == vs[2])
-                t[ind] = i + 1
+                t[ind] = i+1
             #print(gt_path)
             #import matplotlib.pyplot as plt
             #plt.subplot(1,2,1)
