@@ -17,17 +17,17 @@ class Mynet(chainer.Chain):
         self.train = train
         super(Mynet, self).__init__()
         with self.init_scope():
-            self.conv1 = []
+            self.conv1 = chainer.Sequential()
             for i in range(6):
                 self.conv1.append(L.Convolution2D(None, 32, ksize=3, pad=1, stride=1, nobias=True))                
                 self.conv1.append(L.BatchNormalization(32))
+                self.conv1.append(F.relu)
                 
             self.out = L.Convolution2D(None, 1, ksize=1, pad=0, stride=1, nobias=False)
         
     def forward(self, x):
         # block conv1
-        for layer in self.conv1:
-            x = F.relu(layer(x))
+        x = self.conv1(x)
         x = self.out(x)
         return x
 
@@ -53,10 +53,11 @@ def data_load(path, hf=False, vf=False):
             gt = cv2.imread(gt_path)
             gt = cv2.resize(gt, (out_width, out_height), interpolation=cv2.INTER_NEAREST)
 
-            t = np.zeros((out_height, out_width, 1), dtype=np.float)
+            t = np.zeros((out_height, out_width, 1), dtype=np.int)
 
-            ind = (gt[...,0] > 0) + (gt[..., 1] > 0) + (gt[...,2] > 0)
-            t[ind] = 1
+            for i , (label, vs) in enumerate(CLS.items()):
+                ind = (gt[...,0] == vs[0]) * (gt[...,1] == vs[1]) * (gt[...,2] == vs[2])
+                t[ind] = 1
 
             #print(gt_path)
             #import matplotlib.pyplot as plt

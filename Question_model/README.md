@@ -1,4 +1,4 @@
-# Q. 有名モデル実装編
+# Q. 画像認識モデル編
 
 ここではCNNの有名モデルを自分の手で実装していく。フレームワークは自由だが、**とりあえずPyTorch, Tensorflow, Keras, Chainer全部で実装せよ。**
 ネットワークを作ったら、学習率やイテレーションを変えて、テストデータセット *../Dataset/test/images* でテストせよ。
@@ -280,19 +280,19 @@ x = MaxPooling2D((2, 2), strides=2,  padding='same')(x)
 ### Chainer
 
 convolutionのブロック毎にfor分を回せばおｋです。ただしlayerのnameには注意。
-initではこんな感じ。
+initではこんな感じ。*chainer.Sequential* を使う。
 
 ```python
-self.conv3 = []
+self.conv3 = chainer.Sequential()
 for i in range(3):
-    self.conv3.append(L.Convolution2D(None, 256, ksize=3, pad=1, stride=1, nobias=False))
+self.conv3.append(L.Convolution2D(None, 256, ksize=3, pad=1, stride=1, nobias=False))
+self.conv3.append(F.relu)
 ```
 
 callではこんな感じ。
 
 ```python
-for layer in self.conv3:
-    x = F.relu(layer(x))
+x = self.conv3(x)
 x = F.max_pooling_2d(x, ksize=2, stride=2)
 ```
 

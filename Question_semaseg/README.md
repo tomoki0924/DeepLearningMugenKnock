@@ -48,7 +48,7 @@ pngを読みだら、イモリの位置になっている部分が1、それ以�
 - Pytorch [answers/bin_dataset_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_dataset_pytorch.py)
 - Tensorflow [answers/bin_dataset_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_dataset_tensorflow_slim.py)
 - Keras [answers/bin_dataset_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_dataset_keras.py)
-- chainer [answers/lenet_chainer.py]()
+- chainer [answers/bin_dataset_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_dataset_chainer.py)
 
 ## Binalization Step.2. 学習時のLoss計算
 
@@ -67,14 +67,14 @@ loss = torch.nn.BCELoss()(y, t)
 ```
 
 まずはシンプルな構造として、入力画像に対して、
-*Convolution(kernel_size=3, kernel_number=32, padding=1, stride=1) + BatchNormalization() +  ReLU*
+*Convolution(kernel_size=3, kernel_number=32, padding=1, stride=1) + ReLU + BatchNormalization()*
 を6回適用して最後に *Convolution(kernel_size=1, kernel_number=1, padding=0, stride=1)* を適用するネットワークを作成し、SigmoidによるBinalizationを実現せよ。入力画像サイズは64とする。（大きくしても良いがGPUを使わないと計算時間がキツキツになってしまうので注意）
 
 答え
 - Pytorch [answers/bin_loss_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_loss_pytorch.py)
 - Tensorflow [answers/bin_loss_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_loss_tensorflow_slim.py)
 - Keras [answers/bin_loss_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_loss_keras.py)
-- chainer [answers/lenet_chainer.py]()
+- chainer [answers/bin_loss_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_loss_chainer.py)
 
 ## Binalization Step.3. テスト時の予測結果の表示
 
@@ -94,7 +94,7 @@ loss = torch.nn.BCELoss()(y, t)
 - Pytorch [answers/bin_test_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_test_pytorch.py)
 - Tensorflow [answers/bin_test_tensorflow_silm.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_test_tensorflow_slim.py)
 - Keras [answers/bin_test_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_test_keras.py)
-- chainer [answers/lenet_chainer.py]()
+- chainer [answers/bin_test_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_test_chainer.py)
 
 ## Semantic Segmentation Step.1. データセット読み込み
 
@@ -120,7 +120,7 @@ t = np.zeros((out_height, out_width), dtype=torch.int)
 - Pytorch [answers/semaseg_dataset_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_dataset_pytorch.py)
 - Tensorflow [answers/semaseg_dataset_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_dataset_tensorflow_slim.py)
 - Keras [answers/semaseg_dataset_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_dataset_keras.py)
-- chainer [answers/lenet_chainer.py]()
+- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_dataset_chainer.py)
 
 ## Semantic Segmentation Step.2. 学習時のLoss計算
 
@@ -145,7 +145,7 @@ pytorchやchainerは[ミニバッチ、チャネル、高さ、幅]のshapeだ�
 - Pytorch [answers/semaseg_loss_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_loss_pytorch.py)
 - Tensorflow [answers/semaseg_loss_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_loss_tensorflow_slim.py)
 - Keras [answers/semaseg_loss_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_loss_keras.py)
-- chainer [answers/lenet_chainer.py]()
+- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_loss_chainer.py)
 
 ## Semantic Segmentation Step.3. テスト時の予測結果の表示
 
@@ -163,4 +163,4 @@ pytorchやchainerは[ミニバッチ、チャネル、高さ、幅]のshapeだ�
 - Pytorch [answers/semaseg_test_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_loss_pytorch.py)
 - Tensorflow [answers/semaseg_test_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_test_tensorflow_slim.py)
 - Keras [answers/semaseg_test_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_test_keras.py)
-- chainer [answers/lenet_chainer.py]()
+- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_test_chainer.py)

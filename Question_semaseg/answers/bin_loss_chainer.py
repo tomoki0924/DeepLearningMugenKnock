@@ -19,11 +19,11 @@ class Mynet(chainer.Chain):
         with self.init_scope():
             self.conv1 = chainer.Sequential()
             for i in range(6):
-                self.conv1.append(L.Convolution2D(None, 32, ksize=3, pad=1, stride=1, nobias=True))
-                self.conv1.append(F.relu)
+                self.conv1.append(L.Convolution2D(None, 32, ksize=3, pad=1, stride=1, nobias=True))                
                 self.conv1.append(L.BatchNormalization(32))
+                self.conv1.append(F.relu)
                 
-            self.out = L.Convolution2D(None, num_classes+1, ksize=1, pad=0, stride=1, nobias=False)
+            self.out = L.Convolution2D(None, 1, ksize=1, pad=0, stride=1, nobias=False)
         
     def forward(self, x):
         # block conv1
@@ -53,11 +53,11 @@ def data_load(path, hf=False, vf=False):
             gt = cv2.imread(gt_path)
             gt = cv2.resize(gt, (out_width, out_height), interpolation=cv2.INTER_NEAREST)
 
-            t = np.zeros((out_height, out_width), dtype=np.int)
+            t = np.zeros((out_height, out_width, 1), dtype=np.int)
 
-            for i, (_, vs) in enumerate(CLS.items()):
+            for i , (label, vs) in enumerate(CLS.items()):
                 ind = (gt[...,0] == vs[0]) * (gt[...,1] == vs[1]) * (gt[...,2] == vs[2])
-                t[ind] = i + 1
+                t[ind] = 1
 
             #print(gt_path)
             #import matplotlib.pyplot as plt
@@ -135,12 +135,9 @@ def train():
 
         y = model(x)
 
-        #accu = F.accuracy(y, t[..., 0])
+        accu = F.accuracy(y, t[..., 0])
         y = F.transpose(y, axes=(0,2,3,1))
-        y = F.reshape(y, [-1, num_classes+1])
-        t = F.reshape(t, [-1])
-        loss = F.softmax_cross_entropy(y, t)
-        accu = F.accuracy(y, t)
+        loss = F.sigmoid_cross_entropy(y, t)
 
         model.cleargrads()
         loss.backward()
@@ -156,55 +153,6 @@ def train():
 
     chainer.serializers.save_npz('cnn.npz', model)
 
-# test
-def test():
-    model = Mynet(train=False)
-
-    if GPU >= 0:
-        chainer.cuda.get_device_from_id(cf.GPU).use()
-        model.to_gpu()
-
-    ## Load pretrained parameters
-    chainer.serializers.load_npz('cnn.npz', model)
-
-    xs, ts, paths = data_load('../Dataset/test/images/')
-
-    for i in range(len(paths)):
-        x = xs[i]
-        t = ts[i]
-        path = paths[i]
-        
-        x = np.expand_dims(x, axis=0)
-        if GPU >= 0:
-            x = chainer.cuda.to_gpu(x)
-
-        pred = model(x)
-
-        pred = F.transpose(pred, axes=(0,2,3,1))
-        pred = F.reshape(pred, [-1, num_classes+1])
-        pred = F.softmax(pred)
-        pred = F.reshape(pred, [-1, out_height, out_width, num_classes+1])
-        
-        if GPU >= 0:
-            pred = chainer.cuda.to_cpu(pred)
-        pred = pred.data[0]
-        pred = pred.argmax(axis=-1)
-
-        # visualize
-        out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
-        for i, (_, vs) in enumerate(CLS.items()):
-            out[pred == (i+1)] = vs
-        
-        x = chainer.cuda.to_cpu(x) if GPU >= 0 else x
-        plt.subplot(1,2,1)
-        plt.imshow(x[0].transpose(1,2,0))
-        plt.title("input")
-        plt.subplot(1,2,2)
-        plt.imshow(out[..., ::-1])
-        plt.title("predicted")
-        plt.show()
-
-        print("in {}".format(path))
     
 
 def arg_parse():
@@ -220,8 +168,8 @@ if __name__ == '__main__':
 
     if args.train:
         train()
-    if args.test:
-        test()
+    #if args.test:
+    #    test()
 
     if not (args.train or args.test):
         print("please select train or test flag")
