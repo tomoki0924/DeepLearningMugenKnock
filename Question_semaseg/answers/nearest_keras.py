@@ -27,11 +27,25 @@ out_height, out_width = 64, 64#388, 388
 def Mynet(train=False):
     inputs = Input((img_height, img_width, 3), name='in')
     x = inputs
-    for i in range(6):
+    for i in range(2):
         x = Conv2D(32, (3, 3), padding='same', strides=1, name='conv1_{}'.format(i+1))(x)
         x = Activation('relu')(x)
         x = BatchNormalization()(x)
 
+    x = MaxPooling2D((2,2), 2)(x)
+    
+    for i in range(2):
+        x = Conv2D(32, (3, 3), padding='same', strides=1, name='conv2_{}'.format(i+1))(x)
+        x = Activation('relu')(x)
+        x = BatchNormalization()(x)
+
+    x = keras.layers.UpSampling2D(size=(2,2), interpolation='nearest')(x)
+
+    for i in range(2):
+        x = Conv2D(32, (3, 3), padding='same', strides=1, name='dec1_{}'.format(i+1))(x)
+        x = Activation('relu')(x)
+        x = BatchNormalization()(x)
+    
     x = Conv2D(num_classes+1, (1, 1), padding='same', strides=1)(x)
     x = Reshape([-1, num_classes+1])(x)
     x = Activation('softmax', name='out')(x)

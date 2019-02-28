@@ -1,47 +1,59 @@
-import keras
+import chainer
+import chainer.links as L
+import chainer.functions as F
+import argparse
 import cv2
 import numpy as np
-import argparse
 from glob import glob
 import matplotlib.pyplot as plt
-
-# GPU config
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-import tensorflow as tf
-from keras import backend as K
-config = tf.ConfigProto()
-config.gpu_options.allow_growth = True
-config.gpu_options.visible_device_list="0"
-sess = tf.Session(config=config)
-K.set_session(sess)
-
-# network
-from keras.models import Sequential, Model
-from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization, Reshape
 
 num_classes = 2
 img_height, img_width = 64, 64#572, 572
 out_height, out_width = 64, 64#388, 388
+GPU = -1
     
-def Mynet(train=False):
-    inputs = Input((img_height, img_width, 3), name='in')
-    x = inputs
-    for i in range(6):
-        x = Conv2D(32, (3, 3), padding='same', strides=1, name='conv1_{}'.format(i+1))(x)
-        x = Activation('relu')(x)
-        x = BatchNormalization()(x)
+class Mynet(chainer.Chain):
+    def __init__(self, train=False):
+        self.train = train
+        super(Mynet, self).__init__()
+        with self.init_scope():
+            self.enc1 = chainer.Sequential()
+            for i in range(2):
+                self.enc1.append(L.Convolution2D(None, 32, ksize=3, pad=1, stride=1, nobias=True))
+                self.enc1.append(F.relu)
+                self.enc1.append(L.BatchNormalization(32))
 
-    x = Conv2D(num_classes+1, (1, 1), padding='same', strides=1)(x)
-    x = Reshape([-1, num_classes+1])(x)
-    x = Activation('softmax', name='out')(x)
-    
-    model = Model(inputs=inputs, outputs=x, name='model')
-    return model
+            self.enc2 = chainer.Sequential()
+            for i in range(2):
+                self.enc2.append(L.Convolution2D(None, 32, ksize=3, pad=1, stride=1, nobias=True))
+                self.enc2.append(F.relu)
+                self.enc2.append(L.BatchNormalization(32))
+
+            self.dec1 = chainer.Sequential()
+            for i in range(2):
+                self.dec1.append(L.Convolution2D(None, 32, ksize=3, pad=1, stride=1, nobias=True))
+                self.dec1.append(F.relu)
+                self.dec1.append(L.BatchNormalization(32))
+                
+            self.out = L.Convolution2D(None, num_classes+1, ksize=1, pad=0, stride=1, nobias=False)
+        
+    def forward(self, x):
+        # block conv1
+        x = self.enc1(x)
+        x = F.max_pooling_2d(x, ksize=2, stride=2)
+
+        x = self.enc2(x)
+
+        mb, c, h, w = x.shape
+        x = chainer.functions.resize_images(x, output_shape=[h*2, w*2])
+
+        x = self.dec1(x)
+        
+        x = self.out(x)
+        return x
 
     
-CLS = {'background': [0,0,0],
-       'akahara': [0,0,128],
+CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
     
 # get train data
@@ -62,12 +74,11 @@ def data_load(path, hf=False, vf=False):
             gt = cv2.imread(gt_path)
             gt = cv2.resize(gt, (out_width, out_height), interpolation=cv2.INTER_NEAREST)
 
-            t = np.zeros((out_height, out_width, num_classes+1), dtype=np.int)
+            t = np.zeros((out_height, out_width), dtype=np.int)
 
             for i, (_, vs) in enumerate(CLS.items()):
                 ind = (gt[...,0] == vs[0]) * (gt[...,1] == vs[1]) * (gt[...,2] == vs[2])
-                ind = np.where(ind == True)
-                t[ind[0], ind[1], i] = 1
+                t[ind] = i + 1
 
             #print(gt_path)
             #import matplotlib.pyplot as plt
@@ -96,22 +107,23 @@ def data_load(path, hf=False, vf=False):
     xs = np.array(xs)
     ts = np.array(ts)
 
+    xs = xs.transpose(0,3,1,2)
+
     return xs, ts, paths
 
 
 # train
 def train():
+    # model
     model = Mynet(train=True)
 
-    for layer in model.layers:
-        layer.trainable = True
-
-    model.compile(
-        loss={'out': 'categorical_crossentropy'},
-        optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, nesterov=False),
-        loss_weights={'out': 1},
-        metrics=['accuracy'])
-
+    if GPU >= 0:
+        chainer.cuda.get_device(GPU).use()
+        model.to_gpu()
+    
+    opt = chainer.optimizers.MomentumSGD(0.01, momentum=0.9)
+    opt.setup(model)
+    #opt.add_hook(chainer.optimizer.WeightDecay(0.0005))
 
     xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True)
 
@@ -134,19 +146,47 @@ def train():
 
         x = xs[mb_ind]
         t = ts[mb_ind]
+            
+        if GPU >= 0:
+            x = chainer.cuda.to_gpu(x)
+            t = chainer.cuda.to_gpu(t)
+        #else:
+        #    x = chainer.Variable(x)
+        #    t = chainer.Variable(t)
 
-        t = np.reshape(t, (mb, -1, num_classes+1))
+        y = model(x)
 
-        loss, acc = model.train_on_batch(x={'in':x}, y={'out':t})
-        print("iter >>", i+1, ",loss >>", loss, ',accuracy >>', acc)
+        #accu = F.accuracy(y, t[..., 0])
+        y = F.transpose(y, axes=(0,2,3,1))
+        y = F.reshape(y, [-1, num_classes+1])
+        t = F.reshape(t, [-1])
+        loss = F.softmax_cross_entropy(y, t)
+        accu = F.accuracy(y, t)
 
-    model.save('model.h5')
+        model.cleargrads()
+        loss.backward()
+        opt.update()
+
+        loss = loss.data
+        accu = accu.data
+        if GPU >= 0:
+            loss = chainer.cuda.to_cpu(loss)
+            accu = chainer.cuda.to_cpu(accu)
+        
+        print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', accu)
+
+    chainer.serializers.save_npz('cnn.npz', model)
 
 # test
 def test():
-    # load trained model
     model = Mynet(train=False)
-    model.load_weights('model.h5')
+
+    if GPU >= 0:
+        chainer.cuda.get_device_from_id(cf.GPU).use()
+        model.to_gpu()
+
+    ## Load pretrained parameters
+    chainer.serializers.load_npz('cnn.npz', model)
 
     xs, ts, paths = data_load('../Dataset/test/images/')
 
@@ -156,28 +196,36 @@ def test():
         path = paths[i]
         
         x = np.expand_dims(x, axis=0)
-        
-        pred = model.predict_on_batch(x={'in': x})[0]
-        pred = np.reshape(pred, (out_height, out_width, num_classes+1))
+        if GPU >= 0:
+            x = chainer.cuda.to_gpu(x)
 
+        pred = model(x)
+
+        pred = F.transpose(pred, axes=(0,2,3,1))
+        pred = F.reshape(pred, [-1, num_classes+1])
+        pred = F.softmax(pred)
+        pred = F.reshape(pred, [-1, out_height, out_width, num_classes+1])
+        
+        if GPU >= 0:
+            pred = chainer.cuda.to_cpu(pred)
+        pred = pred.data[0]
         pred = pred.argmax(axis=-1)
 
         # visualize
         out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
         for i, (_, vs) in enumerate(CLS.items()):
-            out[pred == i] = vs
-
-
-        print("in {}".format(path))
-   
+            out[pred == (i+1)] = vs
+        
+        x = chainer.cuda.to_cpu(x) if GPU >= 0 else x
         plt.subplot(1,2,1)
-        plt.imshow(x[0])
+        plt.imshow(x[0].transpose(1,2,0))
         plt.title("input")
         plt.subplot(1,2,2)
         plt.imshow(out[..., ::-1])
         plt.title("predicted")
         plt.show()
 
+        print("in {}".format(path))
     
 
 def arg_parse():
