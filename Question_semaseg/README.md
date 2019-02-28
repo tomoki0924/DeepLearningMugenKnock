@@ -189,9 +189,9 @@ CNNはよくMaxPoolingやstride2のconvolutionなどで画像サイズを小さ�
 
 これはPyTorchの出力例。
 
-| madara_0010.jpg (answers/answer_nearest_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_nearest_pytorch_akahara0011.png) |
+| madara_0010.jpg (answers/answer_nearest_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_nearest_pytorch_akahara_0011.png) |
 |:---:|:---:|
-| ![](answers/answer_nearest_pytorch_madara_0010.png) | ![](answers/answer_nearest_pytorch_akahara0011.png) |
+| ![](answers/answer_nearest_pytorch_madara_0010.png) | ![](answers/answer_nearest_pytorch_akahara_0011.png) |
 
 答え
 - Pytorch [answers/nearest_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/nearest_pytorch.py)
@@ -214,9 +214,9 @@ CNNはよくMaxPoolingやstride2のconvolutionなどで画像サイズを小さ�
 | pytorch | torch.nn.ConvTranspose2d | Keras | keras.layers.Conv2DTranspose |
 | TensorFlow | slim.conv2d_transpose | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
 
-| madara_0010.jpg (answers/answer_transposeconv_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_transposeconv_pytorch_akahara0011.png) |
+| madara_0010.jpg (answers/answer_transposeconv_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_transposeconv_pytorch_akahara_0011.png) |
 |:---:|:---:|
-| ![](answers/answer_nearest_pytorch_madara_0010.png) | ![](answers/answer_nearest_pytorch_akahara0011.png) |
+| ![](answers/answer_nearest_pytorch_madara_0010.png) | ![](answers/answer_nearest_pytorch_akahara_0011.png) |
 
 答え
 - Pytorch [answers/transposeconv_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/transposeconv_pytorch.py)
