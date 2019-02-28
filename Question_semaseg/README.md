@@ -174,14 +174,15 @@ CNNはよくMaxPoolingやstride2のconvolutionなどで画像サイズを小さ�
 よくあるのは、NearestNeighbor補間(最近傍補間)でサイズを２倍にする方法です。この補間は画像処理でよく使われる手法です。一度MaxpoolingしてNearestNeighborでupsampleしていきます。
 
 ネットワーク構成は、
-1. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU を２回
+1. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU + BN を２回
 2. MaxPooling(kernel_size=2, stride=2)
-3. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU を２回
+3. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU + BN を２回
 4. Bilinear補間でサイズを２倍にする。
-5. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU を２回
+5. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU + BN を２回
 6. Convoluton(kernel_size=1, kerner_num=3, padding=0, stride=1) + Softmax
 としてsegmentationを実現してください。
 
+Nearest Neighbourの方法
 | FW | function | FW | function |
 |:---:|:---:|:---:|:---:|
 | pytorch | torch.nn.functional.interpolate | Keras | keras.layers.UpSampling2D |
@@ -207,8 +208,9 @@ CNNはよくMaxPoolingやstride2のconvolutionなどで画像サイズを小さ�
 
 個人的体感だけど、Transposed Convolutionの方が学習の収束が悪い気がします。多分パラメータが増えていることで学習が難しくなっているので、NearestNeighborを使った方がいいと思いますマル
 
-ネットワークのnearest neighborの部分 Transposed conv(kernel_size=2, kernel_num=32, stride=2) + ReLU + BatchNorm に変更してネットワークを作成してください。
+ネットワークのnearest neighborの部分 Transposed conv(kernel_size=2, kernel_num=32, stride=2) + ReLU + BN に変更してネットワークを作成してください。
 
+Transposed convolutionの方法
 | FW | function | FW | function |
 |:---:|:---:|:---:|:---:|
 | pytorch | torch.nn.ConvTranspose2d | Keras | keras.layers.Conv2DTranspose |
@@ -223,3 +225,36 @@ CNNはよくMaxPoolingやstride2のconvolutionなどで画像サイズを小さ�
 - Tensorflow [answers/transposeconv_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/transposeconv_tensorflow_slim.py)
 - Keras [answers/transposeconv_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/transposeconv_keras.py)
 - chainer [answers/transposeconv_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/transposeconv_chainer.py)
+
+ここまででセグメンテーションを行うための基本は終わり。次から論文の実装に入っていきます！！
+
+## 特徴マップのconcat
+
+ここではセグメンテーションのもう一つのテクニックを紹介します。それが特徴マップの結合(concat)です。よくあるのが、一度downsampleしてupsapmleしたものとdownsampleする前の特徴マップをチャンネル方向に結合する方法です。これによって様々な特徴量を利用できるとされていて、また、プーリングによって荒くなった特徴量の活性化を精細にできるとも考えられている。
+
+![](assets/concat.png)
+
+このように少し前の層の特徴マップをチャネル方向に結合する手法は **skip connection** と呼ばれ、ResNetで提案されたものである。これによって出力層から伝搬してきたlossの勾配を減少せずに伝搬できると考えられている。
+
+ここではTransposed convolutionで作成したネットワークでの特徴マップのconcatを追加せよ。特徴マップを合成したものに対しては、convolution(kernel_size=1, kernel_num=結合前のチャネル, padding=0, stride=1)を適用することが多い。これにより、特徴マップの結合によりチャネル数が多くなり計算量が増えることを防ぎ、特徴量を合成することができる。
+
+1. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU + BN を２回
+2. MaxPooling(kernel_size=2, stride=2)
+3. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU + BN を２回
+4. Transposed convolution(kernel_size=2, kernel_num=32, padding=0, stride=2) + ReLU + BN
+5. 4と1をチャネル方向に結合
+6. Convolution(kernel_size=1, kernel_size=32, padding=0, stride=1) + ReLU + BN
+6. Convoluton(kernel_size=3, kerner_num=32, padding=1, stride=1) + ReLU + BN を２回
+7. Convoluton(kernel_size=1, kerner_num=3, padding=0, stride=1) + Softmax
+
+結合の方法
+| FW | function | FW | function |
+|:---:|:---:|:---:|:---:|
+| pytorch | torch.cat | Keras | keras.layers.concatenate |
+| TensorFlow | tf.concat | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
+
+## UNet
+
+論文 >> https://arxiv.org/abs/1505.04597
+
+まずはUNet。これはもともと医療の画像処理の中で、細胞をセグメンテーションするために提案されたネットワークです。Uの由来は論文中のFig.1のモデルの形がUに見えるから。（Vやんとか言っちゃだめ）
