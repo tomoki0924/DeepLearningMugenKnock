@@ -182,7 +182,8 @@ CNNはよくMaxPoolingやstride2のconvolutionなどで画像サイズを小さ�
 6. Convoluton(kernel_size=1, kerner_num=3, padding=0, stride=1) + Softmax
 としてsegmentationを実現してください。
 
-Nearest Neighbourの方法
+Nearest Neighborの方法
+
 | FW | function | FW | function |
 |:---:|:---:|:---:|:---:|
 | pytorch | torch.nn.functional.interpolate | Keras | keras.layers.UpSampling2D |
@@ -211,6 +212,7 @@ Nearest Neighbourの方法
 ネットワークのnearest neighborの部分 Transposed conv(kernel_size=2, kernel_num=32, stride=2) + ReLU + BN に変更してネットワークを作成してください。
 
 Transposed convolutionの方法
+
 | FW | function | FW | function |
 |:---:|:---:|:---:|:---:|
 | pytorch | torch.nn.ConvTranspose2d | Keras | keras.layers.Conv2DTranspose |
@@ -248,6 +250,7 @@ Transposed convolutionの方法
 7. Convoluton(kernel_size=1, kerner_num=3, padding=0, stride=1) + Softmax
 
 結合の方法
+
 | FW | function | FW | function |
 |:---:|:---:|:---:|:---:|
 | pytorch | torch.cat | Keras | keras.layers.concatenate |
