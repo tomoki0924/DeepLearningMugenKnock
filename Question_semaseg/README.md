@@ -184,10 +184,10 @@ CNNはよくMaxPoolingやstride2のconvolutionなどで画像サイズを小さ�
 
 Nearest Neighborの方法
 
-| FW | function | FW | function |
-|:---:|:---:|:---:|:---:|
-| pytorch | torch.nn.functional.interpolate | Keras | keras.layers.UpSampling2D |
-| TensorFlow | tf.image.resize_images | Chainer | chainer.functions.resize_image (NearestNeighborがなかったのでBilinearで対応) |
+| FW | function | | FW | function |
+|:---:|:---:|:---:|:---:|:---:|
+| pytorch | torch.nn.functional.interpolate | | Keras | keras.layers.UpSampling2D |
+| TensorFlow | tf.image.resize_images | | Chainer | chainer.functions.resize_image (NearestNeighborがなかったのでBilinearで対応) |
 
 これはPyTorchの出力例。
 
@@ -213,10 +213,10 @@ Nearest Neighborの方法
 
 Transposed convolutionの方法
 
-| FW | function | FW | function |
-|:---:|:---:|:---:|:---:|
-| pytorch | torch.nn.ConvTranspose2d | Keras | keras.layers.Conv2DTranspose |
-| TensorFlow | slim.conv2d_transpose | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
+| FW | function | | FW | function |
+|:---:|:---:|:---:|:---:|:---:|
+| pytorch | torch.nn.ConvTranspose2d | | Keras | keras.layers.Conv2DTranspose |
+| TensorFlow | slim.conv2d_transpose | | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
 
 | madara_0010.jpg (answers/answer_transposeconv_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_transposeconv_pytorch_akahara_0011.png) |
 |:---:|:---:|
@@ -251,10 +251,10 @@ Transposed convolutionの方法
 
 結合の方法
 
-| FW | function | FW | function |
-|:---:|:---:|:---:|:---:|
-| pytorch | torch.cat | Keras | keras.layers.concatenate |
-| TensorFlow | tf.concat | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
+| FW | function | | FW | function |
+|:---:|:---:|:---:|:---:|:---:|
+| pytorch | torch.cat | | Keras | keras.layers.concatenate |
+| TensorFlow | tf.concat | | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
 
 ## UNet
 
