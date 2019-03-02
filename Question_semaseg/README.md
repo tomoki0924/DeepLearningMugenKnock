@@ -220,7 +220,7 @@ Transposed convolutionの方法
 
 | madara_0010.jpg (answers/answer_transposeconv_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_transposeconv_pytorch_akahara_0011.png) |
 |:---:|:---:|
-| ![](answers/answer_nearest_pytorch_madara_0010.png) | ![](answers/answer_nearest_pytorch_akahara_0011.png) |
+| ![](answers/answer_transposeconv_pytorch_madara_0010.png) | ![](answers/answer_transposeconv_pytorch_akahara_0011.png) |
 
 答え
 - Pytorch [answers/transposeconv_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/transposeconv_pytorch.py)
@@ -256,8 +256,89 @@ Transposed convolutionの方法
 | pytorch | torch.cat | | Keras | keras.layers.concatenate |
 | TensorFlow | tf.concat | | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
 
+答え
+- Pytorch [answers/concat_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/concat_pytorch.py)
+- Tensorflow [answers/concat_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/concat_tensorflow_slim.py)
+- Keras [answers/concat_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/concat_keras.py)
+- chainer [answers/concat_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/concat_chainer.py)
+
 ## UNet
 
 論文 >> https://arxiv.org/abs/1505.04597
 
 まずはUNet。これはもともと医療の画像処理の中で、細胞をセグメンテーションするために提案されたネットワークです。Uの由来は論文中のFig.1のモデルの形がUに見えるから。（Vやんとか言っちゃだめ）
+
+セグメンテーションのディープラーニングでは**Encoder・エンコーダー**と**Decoder・デコーダー**という概念を持っています。
+EncoderはConvolutionやPoolingによってダウンサンプリングする操作で、DecoderはTransposed convollutionやNearest Neighborによるアップサンプリングを行います。
+
+![](assets/encoder_decoder.png)
+
+基本的にはEncoderではConvolutionを２回したらMaxPoolingでダウンサンプリングを5回繰り返し、その後DecoderではTransposed convolutionをして同じサイズのencoderの出力をconcatしてConvolutionを２回行うのを4回繰り返します。
+
+ただし、Convolutionはなぜかパディングなしでやっているので、画像サイズが段々小さくなっています（謎）。だからconcatする時も小さいほうのサイズに合わせて画像を切り取る（crop）する必要があります。
+
+ネットワーク構成は
+1. Encoder1: Convolution(k_size=3, k_num=64, padding=0, stride=1) + BN + ReLU を2回、 MaxPooling(k_size=2, stride=2)
+2. Encoder2: Convolution(k_size=3, k_num=128, padding=0, stride=1) + BN + ReLU を2回、 MaxPooling(k_size=2, stride=2)
+3. Encoder3: Convolution(k_size=3, k_num=256, padding=0, stride=1) + BN + ReLU を2回、 MaxPooling(k_size=2, stride=2)
+4. Encoder4: Convolution(k_size=3, k_num=512, padding=0, stride=1) + BN + ReLU を2回、 MaxPooling(k_size=2, stride=2)
+5. Encoder5: Convolution(k_size=3, k_num=1024, padding=0, stride=1) + BN + ReLU を2回
+6. Transposed Convolution(K_size=2, k_num=512, padding=0, stride=2) + BN + ReLU、Encoder4の出力とconcat
+7. Decoder4: Convolution(k_size=3, k_num=512, padding=0, stride=1) + BN + ReLU を2回
+8. Transposed Convolution(K_size=2, k_num=256, padding=0, stride=2) + BN + ReLU、Encoder3の出力とconcat
+9. Decoder3: Convolution(k_size=3, k_num=256, padding=0, stride=1) + BN + ReLU を2回
+10. Transposed Convolution(K_size=2, k_num=128, padding=0, stride=2) + BN + ReLU、Encoder2の出力とconcat
+11. Decoder2: Convolution(k_size=3, k_num=128, padding=0, stride=1) + BN + ReLU を2回
+12. Transposed Convolution(K_size=2, k_num=64, padding=0, stride=2) + BN + ReLU、Encoder1の出力とconcat
+13. Decoder1: Convolution(k_size=3, k_num=64, padding=0, stride=1) + BN + ReLU を2回
+14. Convolution(k_size=1, k_num=3(クラス数), padding=0, stride=1) + Softmax
+である。元論文では最後はbinalizatoinであるが、ここではSemantic Segmentationとする。入力画像のサイズは572、出力サイズは388であるが、これではGPUがないと計算時間がかかる。入力サイズを236、出力サイズ52にすればCPUでもまあまあ計算できるが、それでも遅いので、**GPUが使えない人はネットワーク作成とイテレーション１回ができればよしとします。CPUの人は次の「UNet風モデル」に移ってください。**
+
+各FWでのクラッピングの例は以下の通り。
+
+Pytorch
+
+```python
+def crop_layer(layer, size):
+    _, _, h, w = layer.size()
+    _, _, _h, _w = size
+    ph = int((h - _h) / 2)
+    pw = int((w - _w) / 2)
+    return layer[:, :, ph:ph+_h, pw:pw+_w]
+    
+
+_x = crop_layer(x_enc3, x.size())
+```
+
+答え
+- Pytorch [answers/unet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/unet_pytorch.py)
+
+
+## UNet風モデル
+
+これは論文などはないが、UNet風のモデルを作成する。UNetではconvolutionのpaddingが0だったことなどがあり、正直使いにくく、また入力サイズから出力サイズを自分で計算しなければいけない、というしがらみがありました。そこで、ネットワーク構成をなるべくUNetにしながら、SemaSegを行うモデルを作成します。
+
+1. Encoder1: Convolution(k_size=3, k_num=16, padding=1, stride=1) + BN + ReLU を2回、 MaxPooling(k_size=2, stride=2)
+2. Encoder2: Convolution(k_size=3, k_num=32, padding=1, stride=1) + BN + ReLU を2回、 MaxPooling(k_size=2, stride=2)
+3. Encoder3: Convolution(k_size=3, k_num=64, padding=1, stride=1) + BN + ReLU を2回、 MaxPooling(k_size=2, stride=2)
+4. Encoder4: Convolution(k_size=3, k_num=128, padding=1, stride=1) + BN + ReLU を2回、 MaxPooling(k_size=2, stride=2)
+5. Encoder5: Convolution(k_size=3, k_num=256, padding=1, stride=1) + BN + ReLU を2回
+6. Transposed Convolution(K_size=2, k_num=128, padding=0, stride=2) + BN + ReLU、Encoder4の出力とconcat
+7. Decoder4: Convolution(k_size=3, k_num=128, padding=1, stride=1) + BN + ReLU を2回
+8. Transposed Convolution(K_size=2, k_num=64, padding=0, stride=2) + BN + ReLU、Encoder3の出力とconcat
+9. Decoder3: Convolution(k_size=3, k_num=64, padding=1, stride=1) + BN + ReLU を2回
+10. Transposed Convolution(K_size=2, k_num=32, padding=0, stride=2) + BN + ReLU、Encoder2の出力とconcat
+11. Decoder2: Convolution(k_size=3, k_num=32, padding=1, stride=1) + BN + ReLU を2回
+12. Transposed Convolution(K_size=2, k_num=16, padding=0, stride=2) + BN + ReLU、Encoder1の出力とconcat
+13. Decoder1: Convolution(k_size=3, k_num=16, padding=1, stride=1) + BN + ReLU を2回
+14. Convolution(k_size=1, k_num=3(クラス数), padding=0, stride=1) + Softmax
+
+これなら入力サイズと出力サイズが同じになるので、ある程度使いやすくなったはずです。入力サイズを64にしてやってみましょう。学習率などは自分でいろいろ試してきれいにセグメンテーションできるハイパーパラメータを探してみてください。
+
+| madara_0010.jpg (answers/answer_unetlike_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_unertlike_pytorch_akahara_0011.png) |
+|:---:|:---:|
+| ![](answers/answer_unetlike_pytorch_madara_0010.png) | ![](answers/answer_unetlike_pytorch_akahara_0011.png) |
+
+答え
+- Pytorch [answers/unet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/unet_pytorch.py)
+
