@@ -94,8 +94,8 @@ $ pip install -r requirements.txt
 
 | 番号 | 問題 | | 番号 | 問題 |
 |:---:|:---:|:---:|:---:|:---:|
-| 1 | [共通事項](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_howto) | | 6 | [Caffeインストール(Docker環境)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_pytorch.md) | 
-| 2 | [PyTorch使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_pytorch.md) | | 7 | [Caffeインストール(Native環境)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_native.md)
+| 1 | [共通事項](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_howto) | | 6 | [Caffeインストール(Docker環境)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_docker.md) | 
+| 2 | [PyTorch使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_pytorch.md) | | 7 | [Caffeインストール(Native環境)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_native.md)
 | 3 | [Tensorflow使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_tensorflow.md) |
 | 4 | [Keras使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_keras.md) |
 | 5 | [Chainer使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_chainer.md) |
