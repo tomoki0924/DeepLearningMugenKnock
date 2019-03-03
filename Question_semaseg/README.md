@@ -296,7 +296,7 @@ EncoderはConvolutionやPoolingによってダウンサンプリングする操�
 
 各FWでのクラッピングの例は以下の通り。
 
-Pytorch
+### Pytorch, Chainer
 
 ```python
 def crop_layer(layer, size):
@@ -306,13 +306,51 @@ def crop_layer(layer, size):
     pw = int((w - _w) / 2)
     return layer[:, :, ph:ph+_h, pw:pw+_w]
     
-
 _x = crop_layer(x_enc3, x.size())
+```
+
+### Tensorflow, Keras
+
+```python
+def crop_layer(layer, size):
+   _, h, w, _ = layer.get_shape().as_list()
+   _, _h, _w, _ = size
+   ph = int((h - _h) / 2)
+   pw = int((w - _w) / 2)
+   return layer[:, ph:ph+_h, pw:pw+_w]
+   
+_enc3 = crop_layer(enc3, dec3.get_shape().as_list())
+```
+
+### Keras
+```python
+def crop_layer(layer, size):
+    _, h, w, _ = keras.backend.int_shape(layer)
+    _, _h, _w, _ = size
+    ph = int((h - _h) / 2)
+    pw = int((w - _w) / 2)
+    return keras.layers.Cropping2D(cropping=((ph, ph), (pw, pw)))(layer)
+    
+_enc3 = crop_layer(enc3, keras.backend.int_shape(dec3))
+```
+
+### Chainer
+```python
+def crop_layer(layer, size):
+    _, _, h, w = layer.shape
+    _, _, _h, _w = size
+    ph = int((h - _h) / 2)
+    pw = int((w - _w) / 2)
+    return layer[:, :, ph:ph+_h, pw:pw+_w]
+    
+_enc3 = crop_layer(enc3, dec3.shape)
 ```
 
 答え
 - Pytorch [answers/unet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/unet_pytorch.py)
-
+- Tensorflow [answers/unet_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unet_tensorflow_slim.py)
+- Keras [answers/unet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unet_keras.py)
+- chainer [answers/unet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unet_chainer.py)
 
 ## UNet風モデル
 
@@ -333,12 +371,15 @@ _x = crop_layer(x_enc3, x.size())
 13. Decoder1: Convolution(k_size=3, k_num=16, padding=1, stride=1) + BN + ReLU を2回
 14. Convolution(k_size=1, k_num=3(クラス数), padding=0, stride=1) + Softmax
 
-これなら入力サイズと出力サイズが同じになるので、ある程度使いやすくなったはずです。入力サイズを64にしてやってみましょう。学習率などは自分でいろいろ試してきれいにセグメンテーションできるハイパーパラメータを探してみてください。
+UNetからの変更点は２つ。１つはconvolutionのpaddingを1にしたこと、もう１つはカーネル数を1/4にしたこと。これなら入力サイズと出力サイズが同じになるので、ある程度使いやすくなったはずです。このように自分で論文の実装から少し変えることも重要です。入力サイズを64にしてやってみましょう。学習率などは自分でいろいろ試してきれいにセグメンテーションできるハイパーパラメータを探してみてください。
 
 | madara_0010.jpg (answers/answer_unetlike_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_unertlike_pytorch_akahara_0011.png) |
 |:---:|:---:|
 | ![](answers/answer_unetlike_pytorch_madara_0010.png) | ![](answers/answer_unetlike_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/unet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/unet_pytorch.py)
+- Pytorch [answers/unetlike_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/unetlike_pytorch.py)
+-  Tensorflow [answers/unetlike_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_tensorflow_slim.py)
+- Keras [answers/unetlike_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_keras.py)
+- chainer [answers/unetlike_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_chainer.py)
 

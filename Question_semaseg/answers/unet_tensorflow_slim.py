@@ -12,8 +12,16 @@ import matplotlib.pyplot as plt
 
 
 num_classes = 2
-img_height, img_width = 64, 64#572, 572
-out_height, out_width = 64, 64#388, 388
+img_height, img_width = 236, 236 #572, 572
+out_height, out_width = 52, 52 #388, 388
+
+def crop_layer(layer, size):
+    _, h, w, _ = layer.get_shape().as_list()
+    _, _h, _w, _ = size
+    ph = int((h - _h) / 2)
+    pw = int((w - _w) / 2)
+    return layer[:, ph:ph+_h, pw:pw+_w]
+    
     
 def Mynet(x, keep_prob, train=False):
     # block conv1
@@ -59,10 +67,12 @@ def Mynet(x, keep_prob, train=False):
         dec4 = tf.nn.relu(dec4)
         dec4 = slim.batch_norm(dec4, is_training=train)
 
-        dec4 = tf.concat((dec4, enc4), axis=-1)
+        _enc4 = crop_layer(enc4, dec4.get_shape().as_list())
+
+        dec4 = tf.concat((dec4, _enc4), axis=-1)
         
         for i in range(2):
-            dec4 = slim.conv2d(dec4, base*8, [3,3], padding='valie', scope='dec4_{}'.format(i+1))
+            dec4 = slim.conv2d(dec4, base*8, [3,3], padding='valid', scope='dec4_{}'.format(i+1))
             dec4 = tf.nn.relu(dec4)
             dec4 = slim.batch_norm(dec4, is_training=train)
 
@@ -71,7 +81,8 @@ def Mynet(x, keep_prob, train=False):
         dec3 = tf.nn.relu(dec3)
         dec3 = slim.batch_norm(dec3, is_training=train)
 
-        dec3 = tf.concat((dec3, enc3), axis=-1)
+        _enc3 = crop_layer(enc3, dec3.get_shape().as_list())
+        dec3 = tf.concat((dec3, _enc3), axis=-1)
         
         for i in range(2):
             dec3 = slim.conv2d(dec3, base*4, [3,3], padding='valid', scope='dec3_{}'.format(i+1))
@@ -83,7 +94,8 @@ def Mynet(x, keep_prob, train=False):
         dec2 = tf.nn.relu(dec2)
         dec2 = slim.batch_norm(dec2, is_training=train)
 
-        dec2 = tf.concat((dec2, enc2), axis=-1)
+        _enc2 = crop_layer(enc2, dec2.get_shape().as_list())
+        dec2 = tf.concat((dec2, _enc2), axis=-1)
         
         for i in range(2):
             dec2 = slim.conv2d(dec2, base*2, [3,3], padding='valid', scope='dec2_{}'.format(i+1))
@@ -95,16 +107,18 @@ def Mynet(x, keep_prob, train=False):
         dec1 = tf.nn.relu(dec1)
         dec1 = slim.batch_norm(dec1, is_training=train)
 
-        dec1 = tf.concat((dec1, enc1), axis=-1)
+        _enc1 = crop_layer(enc1, dec1.get_shape().as_list())
+
+        dec1 = tf.concat((dec1, _enc1), axis=-1)
         
         for i in range(2):
             dec1 = slim.conv2d(dec1, base, [3,3], padding='valid', scope='dec1_{}'.format(i+1))
             dec1 = tf.nn.relu(dec1)
             dec1 = slim.batch_norm(dec1, is_training=train)
             
-    x = slim.conv2d(x, num_classes+1, [1, 1], scope='out')
+    out = slim.conv2d(dec1, num_classes+1, [1, 1], scope='out')
 
-    return x
+    return out
 
     
 CLS = {'background': [0,0,0],
@@ -209,7 +223,7 @@ def train():
     with tf.Session(config=config) as sess:
         sess.run(tf.global_variables_initializer())
     
-        for i in range(500):
+        for i in range(100):
             if mbi + mb > len(xs):
                 mb_ind = train_ind[mbi:]
                 np.random.shuffle(train_ind)
