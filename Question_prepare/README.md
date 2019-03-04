@@ -181,6 +181,6 @@ Q.2-2では10回ミニバッチを回したが、これは10iterationしたこ�
 
 *data_load()* の引数に *rot* という引数(デフォルはNone)を加えて左右反転も加えられるようにして下さい。rotがNoneのときは回転は加えない、数値のときは数値毎に回転させた画像もデータセットに加えるようにしてみましょう。
 
-![](answer_rotation.png)
+![](answer_rotation.png)
 
 答え >> [answers/answer_rotation.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_rotation.py)
