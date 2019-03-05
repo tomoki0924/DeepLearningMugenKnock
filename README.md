@@ -146,12 +146,13 @@ $ pip install -r requirements.txt
 ### [画像処理編]()
 
 ### [言語処理編]()
+| 問題 |  PyTorch | TensorFlow | Keras | Chainer |
+|:---:|:---:|:---:|:---:|:---:|
+| [1 hotベクトル化](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-auto-encoder) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/onehot.py) 
+| [RNN (Many-to-one) Step.1. 学習 ](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-convolutional-auto-encoder) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py) |
+| [RNN (Many-to-one) Step.2. テスト]() | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py) |
 
 
-
-## TODO
-
-adaptivebinalizatino, poison image blending
 
 ## Citation
 
