@@ -12,10 +12,10 @@ AEはよく2層ネットワークで表される。入力層、中間層(Encoder
 
 ここでは次の構造を取る。
 
-input=64, width=64, channel=3 とする。
+input=64, width=64, channel=3 とする。
 
 1. Input = (height, width, channel)
-2. MLP(64)
+2. MLP(64)
 3. MLP(height x width x channel)
 
 画像を[-1, 1]に正規化する。出力層には活性化関数を使わず、LossはMeanSquaredErrorとする。最適化はAdamで学習率は0.001、イテレーション回数は1000としてKerasを使った例はこんな感じ。なんとなく色味を見た感じ復元できているように思えます。
@@ -41,7 +41,7 @@ AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convo
 
 | answer_convae_pytorch_akahara_0011.png | answer_convae_pytorch_madara_0011.png |
 |:---:|:---:|
-![](answer_convae_pytorch_akahara_0011.png) | ![](answer_convae_pytorch_madara_0011.png) | 
+![](answers/answer_convae_pytorch_akahara_0011.png) | ![](answers/answer_convae_pytorch_madara_0011.png) | 
 
 答え
 - Pytorch [answers/ae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_pytorch.py)
