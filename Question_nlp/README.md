@@ -41,6 +41,7 @@ chars = [c for c in _chars]
 
 答え
 - Pytorch [answers/rnn_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py)
+- Keras [answers/rnn_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_keras.py)
 
 ## Q. RNN (Many-to-one) Step.2. テスト
 
@@ -69,3 +70,4 @@ RNNへの最初の入力はin_text='@@@@@@@@@@'です。学習時にテキスト
 
 答え
 - Pytorch [answers/rnn_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py)
+- Keras [answers/rnn_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_keras.py)

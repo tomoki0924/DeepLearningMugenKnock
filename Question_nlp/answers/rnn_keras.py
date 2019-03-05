@@ -1,31 +1,38 @@
-import torch
-import torch.nn.functional as F
-import argparse
+import keras
 import cv2
 import numpy as np
+import argparse
 from glob import glob
-import os
 
-GPU = False
-torch.manual_seed(0)
+# GPU config
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import tensorflow as tf
+from keras import backend as K
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+config.gpu_options.visible_device_list="0"
+sess = tf.Session(config=config)
+K.set_session(sess)
+
+# network
+from keras.models import Sequential, Model
+from keras.layers import Dense, Input, SimpleRNN
+
 n_gram = 10
 
 _chars = "あいうおえかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっー１２３４５６７８９０！？、。@#"
 chars = [c for c in _chars]
 num_classes = len(chars) + 1
 
-class Mynet(torch.nn.Module):
-    def __init__(self):
-        super(Mynet, self).__init__()
-        base = 128
-        self.h1 = torch.nn.RNN(num_classes, base, batch_first=True)
-        self.fc_out = torch.nn.Linear(base, num_classes)
-        
-    def forward(self, x):
-        x, hn = self.h1(x)
-        x = x[:, -1]
-        x = self.fc_out(x)
-        return x
+def Mynet():
+    inputs = Input([n_gram, num_classes])
+    x = SimpleRNN(128, return_sequences=False)(inputs)
+    x = Dense(num_classes, activation='softmax')(x)
+    model = Model(inputs=inputs, outputs=x, name='model')
+    
+    return model
+
     
 def data_load():
     fname = 'sandwitchman.txt'
@@ -48,7 +55,7 @@ def data_load():
         
         for i in range(len(txt) - n_gram - 1):
             xs.append(onehots[i:i+n_gram])
-            ts.append(chars.index(txt[i+n_gram]))
+            ts.append(onehots[i+n_gram])
 
     xs = np.array(xs)
     ts = np.array(ts)
@@ -58,17 +65,19 @@ def data_load():
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
-    model = Mynet().to(device)
-    opt = torch.optim.Adam(model.parameters(), lr=0.01)
-    model.train()
+    model = Mynet()
+
+    for layer in model.layers:
+        layer.trainable = True
+
+    model.compile(
+        loss='categorical_crossentropy',
+        optimizer=keras.optimizers.Adam(lr=0.001),
+        metrics=['accuracy'])
 
     xs, ts = data_load()
-    print(xs.shape)
-
+    
     # training
     mb = 128
     mbi = 0
@@ -85,30 +94,19 @@ def train():
             mb_ind = train_ind[mbi: mbi+mb]
             mbi += mb
 
-        x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
-        t = torch.tensor(ts[mb_ind], dtype=torch.long).to(device)
+        x = xs[mb_ind]
+        t = ts[mb_ind]
 
-        opt.zero_grad()
-        y = model(x)
-        y = F.log_softmax(y, dim=1)
+        loss, acc = model.train_on_batch(x=x, y=t)
+        print("iter >>", i+1, ",loss >>", loss, ',accuracy >>', acc)
 
-        loss = torch.nn.CrossEntropyLoss()(y, t)
-        loss.backward()
-        opt.step()
-    
-        pred = y.argmax(dim=1, keepdim=True)
-        acc = pred.eq(t.view_as(pred)).sum().item() / mb
-        
-        print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
-
-    torch.save(model.state_dict(), 'cnn.pt')
+    model.save('model.h5')
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
-    model = Mynet().to(device)
-    model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
+    # load trained model
+    model = Mynet()
+    model.load_weights('model.h5')
 
     def decode(x):
         return chars[x.argmax()]
@@ -130,10 +128,8 @@ def test():
             x.append(_x)
         
         x = np.expand_dims(np.array(x), axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
         
-        pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+        pred = model.predict_on_batch(x)[0]
 
         # sample random from probability distribution
         ind = np.random.choice(num_classes, 1, p=pred)
