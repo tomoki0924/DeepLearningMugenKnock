@@ -18,45 +18,24 @@ K.set_session(sess)
 
 # network
 from keras.models import Sequential, Model
-from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization, Reshape, UpSampling2D, LeakyReLU
+from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization, Reshape
 
 num_classes = 2
 img_height, img_width = 64, 64 #572, 572
+out_height, out_width = 64, 64 #388, 388
 channel = 3
 
-from keras.regularizers import l1_l2
 
-def G_model(Height, Width, channel=3):
-    inputs = Input((100,))
-    x = Dense(128, kernel_regularizer=l1_l2(1e-5, 1e-5), name='g_dense1')(inputs)
-    x = LeakyReLU(alpha=0.2)(x)
-    x = BatchNormalization()(x)
-    x = Dense(256, kernel_regularizer=l1_l2(1e-5, 1e-5), name='g_dense2')(x)
-    x = LeakyReLU(alpha=0.2)(x)
-    x = BatchNormalization()(x)
-    x = Dense(512, kernel_regularizer=l1_l2(1e-5, 1e-5), name='g_dense3')(x)
-    x = LeakyReLU(alpha=0.2)(x)
-    x = BatchNormalization()(x)
-    x = Dense(Height * Width * channel, activation='sigmoid', kernel_regularizer=l1_l2(1e-5, 1e-5), name='g_out')(x)
-    x = Reshape((Height, Width, channel))(x)
-    model = Model(inputs, x, name='G')
-    return model
-
-def D_model(Height, Width, channel=3):
-    inputs = Input((Height, Width, channel))
-    x = Flatten()(inputs)
-    x = Dense(512, kernel_regularizer=l1_l2(1e-5, 1e-5), name='d_dense1')(x)
-    x = LeakyReLU(alpha=0.2)(x)
-    x = Dense(256, kernel_regularizer=l1_l2(1e-5, 1e-5), name='d_dense2')(x)
-    x = LeakyReLU(alpha=0.2)(x)
-    x = Dense(1, kernel_regularizer=l1_l2(1e-5, 1e-5), activation='sigmoid', name='d_out')(x)
-    model = Model(inputs, x, name='D')
-    return model
-
-def Combined_model(g, d):
-    model = Sequential()
-    model.add(g)
-    model.add(d)
+def Mynet(train=False):
+    inputs = Input((img_height, img_width, channel), name='in')
+    x = Conv2D(32, (3, 3), padding='same', strides=1, name='enc1')(inputs)
+    x = MaxPooling2D((2,2), 2)(x)
+    x = Conv2D(16, (3, 3), padding='same', strides=1, name='enc2')(x)
+    x = MaxPooling2D((2,2), 2)(x)
+    x = keras.layers.Conv2DTranspose(32, (2,2), strides=2, padding='same', name='dec2')(x)
+    out = keras.layers.Conv2DTranspose(channel, (2,2), strides=2, padding='same', name='out')(x)
+    
+    model = Model(inputs=inputs, outputs=out, name='model')
     return model
 
     
@@ -126,34 +105,24 @@ def data_load(path, hf=False, vf=False, rot=None):
                     
     xs = np.array(xs, dtype=np.float32)
     ts = np.array(ts, dtype=np.int)
-    #xs = np.transpose(xs, (0,3,1,2))
-    
-    return xs, paths
-
+                    
+    return xs, ts, paths
 
 # train
 def train():
-    g = G_model(Height=img_height, Width=img_width, channel=channel)
-    d = D_model(Height=img_height, Width=img_width, channel=channel)
-    gan = Combined_model(g=g, d=d)
+    model = Mynet(train=True)
 
-    g_opt = keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
-    d_opt = keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
-    #g_opt = keras.optimizers.SGD(lr=0.0002, momentum=0.3, decay=1e-5)
-    #d_opt = keras.optimizers.SGD(lr=0.0002, momentum=0.1, decay=1e-5)
-
-    g.compile(loss='binary_crossentropy', optimizer='SGD')
-    d.trainable = False
-    for layer in d.layers:
-        layer.trainable = False
-    gan.compile(loss='binary_crossentropy', optimizer=g_opt)
-
-    d.trainable = True
-    for layer in d.layers:
+    for layer in model.layers:
         layer.trainable = True
-    d.compile(loss='binary_crossentropy', optimizer=d_opt)
 
-    xs, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
+    model.compile(
+        loss={'out': 'mse'},
+        optimizer=keras.optimizers.Adam(lr=0.001),#"adam", #keras.optimizers.SGD(lr=0.1, momentum=0.9, nesterov=False),
+        loss_weights={'out': 1},
+        metrics=['accuracy'])
+
+
+    xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
 
     # training
     mb = 64
@@ -161,8 +130,10 @@ def train():
     train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
+
+    print(xs.shape)
     
-    for i in range(1000):
+    for i in range(500):
         if mbi + mb > len(xs):
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
@@ -173,35 +144,50 @@ def train():
             mbi += mb
 
         x = xs[mb_ind]
+        #t = x.copy().reshape([mb, -1])
 
-        input_noise = np.random.normal(0, 1, size=(mb, 100))
-        g_output = g.predict(input_noise, verbose=0)
-        X = np.concatenate((x, g_output))
-        Y = [1] * mb + [0] * mb
-        d_loss = d.train_on_batch(X, Y)
-        # Generator training
-        input_noise = np.random.normal(0, 1, size=(mb, 100))
-        g_loss = gan.train_on_batch(input_noise, [1] * mb)
+        loss, acc = model.train_on_batch(x={'in':x}, y={'out':x})
+        print("iter >>", i+1, ",loss >>", loss, ',accuracy >>', acc)
 
-        print("iter >>", i+1, ",g_loss >>", g_loss, ',d_loss >>', d_loss)
-    
-    gan.save('model.h5')
+    model.save('model.h5')
 
 # test
 def test():
     # load trained model
-    g = G_model(Height=img_height, Width=img_width, channel=channel)
-    g.load_weights('model.h5', by_name=True)
+    model = Mynet(train=False)
+    model.load_weights('model.h5')
 
-    for i in range(3):
-        input_noise = np.random.normal(0, 1, size=(9, 100))
-        g_output = g.predict(input_noise, verbose=0)
+    xs, ts, paths = data_load('../Dataset/test/images/')
 
-        for i in range(9):
-            gen = g_output[i, ..., 0]
-            plt.subplot(3,3,i+1)
-            plt.imshow(gen, cmap='gray')
+    for i in range(len(paths)):
+        x = xs[i]
+        t = ts[i]
+        path = paths[i]
+        
+        x = np.expand_dims(x, axis=0)
+        
+        pred = model.predict_on_batch(x={'in': x})[0]
+        pred -= pred.min()
+        pred /= pred.max()
 
+        if channel == 1:
+            pred = np.reshape(pred, (out_height, out_width))
+        else:
+            pred = np.reshape(pred, (out_height, out_width, channel))
+
+        
+            
+        print("in {}".format(path))
+   
+        plt.subplot(1,2,1)
+        if channel == 1:
+            plt.imshow(x[0, ..., 0], cmap='gray')
+        else:
+            plt.imshow((x[0]+1)/2)
+        plt.title("input")
+        plt.subplot(1,2,2)
+        plt.imshow(pred)
+        plt.title("predicted")
         plt.show()
 
     

@@ -20,7 +20,7 @@ input=64, width=64, channel=3 とする。
 
 画像を[-1, 1]に正規化する。出力層には活性化関数を使わず、LossはMeanSquaredErrorとする。最適化はAdamで学習率は0.001、イテレーション回数は1000としてKerasを使った例はこんな感じ。なんとなく色味を見た感じ復元できているように思えます。
 
-| akahara_0009.jpg (answer_ae_keras_akahara_0009.png) | akahara_0010.jpg (answer_ae_keras_akahara_0009.png) |
+| answer_ae_keras_akahara_0009.png | answer_ae_keras_akahara_0009.png |
 |:---:|:---:|
 ![](answers/answer_ae_keras_akahara_0009.png) | ![](answers/answer_ae_keras_akahara_0010.png) | 
 
@@ -28,7 +28,23 @@ input=64, width=64, channel=3 とする。
 - Pytorch [answers/ae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_pytorch.py)
 - Keras [answers/ae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_keras.py)
 
+## Q. Convolutional Auto Encoder
 
+AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convolutionでAEを行う。SemaSegの時と似たようなネットワーク構造をとる。
+
+モデル構成は、
+1. Input = (height, width, channel)
+2. Conv(kernel_num=32, kernel_size=3, padding=1, strfide=1)
+3. Conv(kernel_num=16, kernel_size=3, padding=1, strfide=1)
+4. TransposedConv(kernel_num=64, kernel_size=2, padding=0, strfide=2)
+4. TransposedConv(kernel_num=channel, kernel_size=2, padding=0, strfide=2)
+
+| answer_convae_pytorch_akahara_0011.png | answer_convae_pytorch_madara_0011.png |
+|:---:|:---:|
+![](answer_convae_pytorch_akahara_0011.png) | ![](answer_convae_pytorch_madara_0011.png) | 
+
+答え
+- Pytorch [answers/ae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_pytorch.py)
 
 ## Q. GAN
 
@@ -66,9 +82,7 @@ GANはピクセルごとにLossを取るAutoEncoderとは違い、画像を非�
 
 答え
 - Pytorch [answers/lenet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_pytorch.py)
-- Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
 - Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
-- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
 
 ## DCGAN
 
