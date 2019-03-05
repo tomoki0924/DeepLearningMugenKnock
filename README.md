@@ -20,6 +20,7 @@
 - なんとなく本とか買わずにDLを勉強したいーーーって人向けだと思う
 
 ## Recent
+- 2019.3.5. AutoEncoder, RNNを追加　
 - 2019.3.4. データ拡張・回転を追加
 - 2019.3.3. UNetを追加
 
@@ -145,12 +146,12 @@ $ pip install -r requirements.txt
 
 ### [画像処理編]()
 
-### [言語処理編]()
+### [言語処理編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_nlp#q-%E8%A8%80%E8%AA%9E%E5%87%A6%E7%90%86%E7%B7%A8)
 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |
 |:---:|:---:|:---:|:---:|:---:|
-| [1 hotベクトル化](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-auto-encoder) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/onehot.py) 
-| [RNN (Many-to-one) Step.1. 学習 ](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-convolutional-auto-encoder) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py) |
-| [RNN (Many-to-one) Step.2. テスト]() | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py) |
+| [1 hotベクトル化](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_nlp#q-1hot%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%8C%96) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/onehot.py) 
+| [RNN (Many-to-one) Step.1. 学習 ](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_nlp#q-rnn-many-to-one-step1-%E5%AD%A6%E7%BF%92) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py) |
+| [RNN (Many-to-one) Step.2. テスト](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_nlp#q-rnn-many-to-one-step2-%E3%83%86%E3%82%B9%E3%83%88) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py) |
 
 
 
