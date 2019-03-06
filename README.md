@@ -68,15 +68,15 @@ $ pip install -r requirements.txt
 
 ## フレームワーク早見表
 
-[**CNN・フレームワークの使い方編**](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_howto)
-[**共通事項**](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_howto)
+- [**CNN・フレームワークの使い方編**](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_howto)
+- [**共通事項**](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_howto)
 
 | | PyTorch | Tensorflow | Keras | Chainer | Caffe |
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | 入力 | [mb,c,h,w] | [mb, h, w, c] | [mb, h, w, c] | [mc, c, h, w] | [mb, c, h, w] |
 | 教師ラベル | index [mb] | onehot [mb, cls] | onehot [mb, cls] | index [mb] | index [mb] |
 | 速度 | まあまあ早い | 早い | 早い | 普通 | まあまあ早い？ |
-| how to | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_pytorch.md) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_tensorflow.md) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_keras.md) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_chainer.md) | [インストール(Docker)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_docker.md) [インストール(Native)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_native.md) |
+| how to | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_pytorch.md) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_tensorflow.md) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_keras.md) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_chainer.md) | [install(Docker)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_docker.md) [install(Native)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_native.md) |
 
 
 ## 問題
