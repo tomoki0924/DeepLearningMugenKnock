@@ -86,7 +86,7 @@ RNNをLSTMに変えてみましょう。
 | FW | function | | FW | function |
 |:---:|:---:|:---:|:---:|:---:|
 | pytorch | torch.nn.LSTM | | Keras | keras.layers.LSTM |
-| TensorFlow | tf.keras.layers.SimpleRNN | | Chainer | chainer.links.LSTM |
+| TensorFlow | tf.keras.layers.LSTM | | Chainer | chainer.links.LSTM |
 
 解答例の一部
 ```bash
@@ -107,3 +107,29 @@ RNNをLSTMに変えてみましょう。
 - Tensorflow [answers/lstm_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_tensorflow_slim.py)
 - Keras [answers/lstm_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_keras.py)
 - Chainer [answers/lstm_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_chainer.py)
+
+## Q. Bi-directional LSTM (Many-to-one)
+
+LSTMをBi-directionalにしましょう。
+
+| FW | function | | FW | function |
+|:---:|:---:|:---:|:---:|:---:|
+| pytorch | torch.nn.LSTM(bidirectional=True) | | Keras | keras.layers.Bidirectional |
+| TensorFlow | tf.keras.layers.Bidirectional | | Chainer | chainer.links.LSTM |
+
+解答例の一部
+```bash
+３０えんのおかえしです。
+６００えんじゃねーかよ、じゃあ。なんで３０えんおおくとるんだよ。
+あと、これ５００えんいじょうのおかいあげのかたににちゃあたんだいれいれてにいいのでい。
+なにゅうなんで。かんなんのわかんだなにどめにがりーせろんがはしたでしきかんぜんおめしあたたよ。
+
+いいき。
+びっぐばーがーせっとがおひとつ。おのみものばななしぇいくでよろしかったですか？
+```
+
+答え
+- Pytorch [answers/lstm_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_pytorch.py)
+- Tensorflow [answers/lstm_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_tensorflow_slim.py)
+- Keras [answers/bdlstm_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_keras.py)
+- Chainer [answers/bdlstm_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/bdlstm_chainer.py)
