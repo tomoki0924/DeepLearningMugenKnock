@@ -1,30 +1,30 @@
-import torch
-import torch.nn.functional as F
+import chainer
+import chainer.links as L
+import chainer.functions as F
 import argparse
 import cv2
 import numpy as np
 from glob import glob
 import os
 
-GPU = False
-torch.manual_seed(0)
+GPU = -1
 n_gram = 10
 
 _chars = "あいうおえかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっー１２３４５６７８９０！？、。@#"
 chars = [c for c in _chars]
 num_classes = len(chars)
 
-class Mynet(torch.nn.Module):
-    def __init__(self):
+class Mynet(chainer.Chain):
+    def __init__(self, train=True):
+        self.train = train
         super(Mynet, self).__init__()
-        base = 128
-        self.h1 = torch.nn.RNN(num_classes, base, batch_first=True)
-        self.fc_out = torch.nn.Linear(base, num_classes)
+        with self.init_scope():
+            self.h = L.LSTM(None, 64)
+            self.out = L.Linear(None, num_classes)
         
     def forward(self, x):
-        x, hn = self.h1(x)
-        x = x[:, -1]
-        x = self.fc_out(x)
+        x = self.h(x)
+        x = self.out(x)
         return x
     
 def data_load():
@@ -50,25 +50,27 @@ def data_load():
             xs.append(onehots[i:i+n_gram])
             ts.append(chars.index(txt[i+n_gram]))
 
-    xs = np.array(xs)
-    ts = np.array(ts)
+    xs = np.array(xs, dtype=np.float32)
+    ts = np.array(ts, dtype=np.int)
     
     return xs, ts
 
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
-    model = Mynet().to(device)
-    opt = torch.optim.Adam(model.parameters(), lr=0.01)
-    model.train()
+    model = Mynet(train=True)
+
+    if GPU >= 0:
+        chainer.cuda.get_device(GPU).use()
+        model.to_gpu()
+    
+    opt = chainer.optimizers.Adam(0.01)
+    opt.setup(model)
+    #opt.add_hook(chainer.optimizer.WeightDecay(0.0005))
 
     xs, ts = data_load()
-    print(xs.shape)
-
+    
     # training
     mb = 128
     mbi = 0
@@ -76,7 +78,7 @@ def train():
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
-    for i in range(500):
+    for i in range(200):
         if mbi + mb > len(xs):
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
@@ -85,30 +87,45 @@ def train():
             mb_ind = train_ind[mbi: mbi+mb]
             mbi += mb
 
-        x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
-        t = torch.tensor(ts[mb_ind], dtype=torch.long).to(device)
+        x = xs[mb_ind]
+        t = ts[mb_ind]
+            
+        if GPU >= 0:
+            x = chainer.cuda.to_gpu(x)
+            t = chainer.cuda.to_gpu(t)
+        #else:
+        #    x = chainer.Variable(x)
+        #    t = chainer.Variable(t)
 
-        opt.zero_grad()
         y = model(x)
-        y = F.log_softmax(y, dim=1)
 
-        loss = torch.nn.CrossEntropyLoss()(y, t)
+        loss = F.softmax_cross_entropy(y, t)
+        accu = F.accuracy(y, t)
+
+        model.cleargrads()
         loss.backward()
-        opt.step()
-    
-        pred = y.argmax(dim=1, keepdim=True)
-        acc = pred.eq(t.view_as(pred)).sum().item() / mb
-        
-        print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
+        opt.update()
 
-    torch.save(model.state_dict(), 'cnn.pt')
+        loss = loss.data
+        accu = accu.data
+        if GPU >= 0:
+            loss = chainer.cuda.to_cpu(loss)
+            accu = chainer.cuda.to_cpu(accu)
+        
+        print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', accu)
+
+    chainer.serializers.save_npz('cnn.npz', model)
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
-    model = Mynet().to(device)
-    model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
+    model = Mynet(train=False)
+
+    if GPU >= 0:
+        chainer.cuda.get_device_from_id(cf.GPU).use()
+        model.to_gpu()
+
+    ## Load pretrained parameters
+    chainer.serializers.load_npz('cnn.npz', model)
 
     def decode(x):
         return chars[x.argmax()]
@@ -129,11 +146,18 @@ def test():
             _x[chars.index(_in)] = 1
             x.append(_x)
         
-        x = np.expand_dims(np.array(x), axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+        x = np.expand_dims(np.array(x, dtype=np.float32), axis=0)
+
+        if GPU >= 0:
+            x = chainer.cuda.to_gpu(x)
+            
+        pred = model(x).data
+        pred = F.softmax(pred)
+
+        if GPU >= 0:
+            pred = chainer.cuda.to_cpu(pred)
+                
+        pred = pred[0].data
 
         # sample random from probability distribution
         ind = np.random.choice(num_classes, 1, p=pred)

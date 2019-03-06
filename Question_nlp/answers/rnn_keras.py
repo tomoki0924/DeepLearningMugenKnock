@@ -23,7 +23,7 @@ n_gram = 10
 
 _chars = "あいうおえかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっー１２３４５６７８９０！？、。@#"
 chars = [c for c in _chars]
-num_classes = len(chars) + 1
+num_classes = len(chars)
 
 def Mynet():
     inputs = Input([n_gram, num_classes])

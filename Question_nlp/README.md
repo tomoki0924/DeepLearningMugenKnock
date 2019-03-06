@@ -35,12 +35,18 @@ chars = [c for c in _chars]
 ```
 10gram(n=10)として、モデルは
 1. Input=(minibatch, n, class)
-2. RNN(128)
+2. RNN(128) (chainerは64、128だと計算が遅くなるので)
 3. Dense(class) + Softmax
 とします。最適化は何でもいいけど、Adamがいいと思います。
 
+| FW | function | | FW | function |
+|:---:|:---:|:---:|:---:|:---:|
+| pytorch | torch.nn.RNN | | Keras | keras.layers.SimpleRNN |
+| TensorFlow | tf.keras.layers.SimpleRNN | | Chainer | ? |
+
 答え
 - Pytorch [answers/rnn_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py)
+- Tensorflow [answers/rnn_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_tensorflow_slim.py)
 - Keras [answers/rnn_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_keras.py)
 
 ## Q. RNN (Many-to-one) Step.2. テスト
@@ -70,4 +76,34 @@ RNNへの最初の入力はin_text='@@@@@@@@@@'です。学習時にテキスト
 
 答え
 - Pytorch [answers/rnn_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py)
+- Tensorflow [answers/rnn_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_tensorflow_slim.py)
 - Keras [answers/rnn_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_keras.py)
+
+## Q. LSTM (Many-to-one)
+
+RNNをLSTMに変えてみましょう。
+
+| FW | function | | FW | function |
+|:---:|:---:|:---:|:---:|:---:|
+| pytorch | torch.nn.LSTM | | Keras | keras.layers.LSTM |
+| TensorFlow | tf.keras.layers.SimpleRNN | | Chainer | chainer.links.LSTM |
+
+解答例の一部
+```bash
+３０えんのおかえしです。
+６００えんじゃねーかよ、じゃあ。なんで３０えんおおくとるんだよ。
+あと、これ５００えんいじょうのおかいあげのかたにさしあげてるんですけど。
+あ。なんかもらえるの？
+れしーとです。
+れしーとじゃねーか。ぜんいんにわたせ、これよ。
+おはしは２ぜんでよろしかったですか？っていったじゃん。
+はい。
+おれ、そのいいかただいっきらいなんだよ。
+いじ。こちくちってるかったゃ、よかきいす。
+```
+
+答え
+- Pytorch [answers/lstm_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_pytorch.py)
+- Tensorflow [answers/lstm_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_tensorflow_slim.py)
+- Keras [answers/lstm_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_keras.py)
+- Chainer [answers/lstm_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_chainer.py)

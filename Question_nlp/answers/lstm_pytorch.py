@@ -18,7 +18,7 @@ class Mynet(torch.nn.Module):
     def __init__(self):
         super(Mynet, self).__init__()
         base = 128
-        self.h1 = torch.nn.RNN(num_classes, base, batch_first=True)
+        self.h1 = torch.nn.LSTM(num_classes, base, batch_first=True)
         self.fc_out = torch.nn.Linear(base, num_classes)
         
     def forward(self, x):
