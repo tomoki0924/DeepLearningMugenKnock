@@ -76,7 +76,7 @@ $ pip install -r requirements.txt
 | 入力 | [mb,c,h,w] | [mb, h, w, c] | [mb, h, w, c] | [mc, c, h, w] | [mb, c, h, w] |
 | 教師ラベル | index [mb] | onehot [mb, cls] | onehot [mb, cls] | index [mb] | index [mb] |
 | 速度 | まあまあ早い | 早い | 早い | 普通 | まあまあ早い？ |
-| how to | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_pytorch.md) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_tensorflow.md)  |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_keras.md) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_chainer.md) | [install(Docker)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_docker.md) <br>  [install(Native)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_native.md) |
+| how to | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_pytorch.md) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_tensorflow.md)  |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_keras.md) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_chainer.md) | [✓install(Docker)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_docker.md) <br>  [✓install(Native)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_native.md) |
 | sample | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/main_pytorch.py)  | [✓(slim)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/main_tensorflow_slim.py) <br> [✓(layers)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/main_tensorflow_layers.py) <br> [✓(raw)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/main_tensorflow_raw.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/main_keras.py)  | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/main_chainer.py)  |
 
 ## 問題
@@ -98,16 +98,6 @@ $ pip install -r requirements.txt
 | 3 | [イテレーション・エポック](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q2-3-%E3%82%A4%E3%83%86%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%82%A8%E3%83%9D%E3%83%83%E3%82%AF) |
 | 4 | [データ拡張・水平反転](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q4-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E5%B7%A6%E5%8F%B3%E5%8F%8D%E8%BB%A2) |
 | 5 | [データ拡張・上下反転](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q5-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E4%B8%8A%E4%B8%8B%E5%8F%8D%E8%BB%A2) |
-
-### [CNN・フレームワークの使い方編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_howto)
-
-| 番号 | 問題 | | 番号 | 問題 |
-|:---:|:---:|:---:|:---:|:---:|
-| 1 | [共通事項](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_howto) | | 6 | [Caffeインストール(Docker環境)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_docker.md) | 
-| 2 | [PyTorch使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_pytorch.md) | | 7 | [Caffeインストール(Native環境)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_caffe_install_native.md)
-| 3 | [Tensorflow使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_tensorflow.md) |
-| 4 | [Keras使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_keras.md) |
-| 5 | [Chainer使ったった](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_howto/README_chainer.md) |
 
 ### [画像認識モデル編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model)
 
