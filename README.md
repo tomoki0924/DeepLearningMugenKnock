@@ -19,6 +19,10 @@
 - コードの書き方は私の趣向がけっこう出てるので、この書き方キモってなったら自分の書き方でやっていってください。答えはあくまで参考です。
 - なんとなく本とか買わずにDLを勉強したいーーーって人向けだと思う
 
+画像処理ノックはこっち
+
+>> [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
+
 ## Recent
 - 2019.3.6. RNN, LSTM, BDLSTMを追加
 - 2019.3.5. AutoEncoder, RNNを追加　
@@ -99,7 +103,7 @@ $ pip install -r requirements.txt
 | 4 | [データ拡張・水平反転](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q4-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E5%B7%A6%E5%8F%B3%E5%8F%8D%E8%BB%A2) |
 | 5 | [データ拡張・上下反転](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q5-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E4%B8%8A%E4%B8%8B%E5%8F%8D%E8%BB%A2) |
 
-### [画像認識モデル編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model)
+### [画像認識編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model)
 
 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |
 |:---:|:---:|:---:|:---:|:---:|
