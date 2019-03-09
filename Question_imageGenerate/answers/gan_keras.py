@@ -186,7 +186,7 @@ def train():
 def test():
     # load trained model
     g = G_model(Height=img_height, Width=img_width, channel=channel)
-    g.load_weights('model.h5', by_name=True)
+    g.load_weights('../gan_model.h5', by_name=True)
 
     np.random.seed(100)
     
@@ -202,6 +202,11 @@ def test():
             plt.axis('off')
             #plt.subplots_adjust(left=0, right=1, top=1, bottom=0, hspace=0, wspace=0)
 
+        plt.subplot(1,2,1)
+        plt.imshow(input_noise[0].reshape(10,10))
+        plt.subplot(1,2,2)
+        plt.imshow(g_output[0])
+            
         plt.show()
 
     
