@@ -201,11 +201,6 @@ def test():
             plt.imshow(gen)
             plt.axis('off')
             #plt.subplots_adjust(left=0, right=1, top=1, bottom=0, hspace=0, wspace=0)
-
-        plt.subplot(1,2,1)
-        plt.imshow(input_noise[0].reshape(10,10))
-        plt.subplot(1,2,2)
-        plt.imshow(g_output[0])
             
         plt.show()
 

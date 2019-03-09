@@ -83,7 +83,7 @@ GANはピクセルごとにLossを取るAutoEncoderとは違い、画像を非�
 3. MLP(256) + LeakyReLU(alpha=0.2)
 4. MLP(1) + sigomid
 
-
+GANの出力
 ![](answers/gan_keras.png)
 
 ちなみにGAN系は収束がくそ難しいことでも有名です。GANの学習ノウハウだけで論文が出てるほどです。なので、各種パラメータ調整はかなり厳しい戦いになると思います。がんばりましょう。僕もがんばりました(´；ω；｀)
@@ -118,7 +118,8 @@ GANの進化版、DCGAN (Deep Convolutional GAN)。GANはMulti layer perceptron�
 2. Conv(kernel_size=(5,5), kernel_num=256, stride=2) + LeakyReLU(alpha=0.2)
 4. MLP(1) + sigomid
 
-![](dcgan_keras.png)
+DCGANの出力
+![](answers/dcgan_keras.png)
 
 答え
 - Keras [answers/dcgan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/dcgan_keras.py)
