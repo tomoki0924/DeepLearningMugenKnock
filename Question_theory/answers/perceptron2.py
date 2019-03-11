@@ -9,6 +9,7 @@ lr = 0.1
 
 # perceptron
 w = np.random.normal(0., 1, (3))
+print("weight >>", w)
 
 # add bias
 _x = np.hstack([x, [[1] for _ in range(4)]])
@@ -31,6 +32,7 @@ while True:
     else:
         break
 print("training finished!")
+print("weight >>", w)
 
 # test
 y = np.array(list(map(lambda x: np.dot(w, x), _x)))
