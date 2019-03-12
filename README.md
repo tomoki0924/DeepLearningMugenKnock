@@ -25,6 +25,7 @@
 >> [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
+- 2019.3.12 AutoEncoder, ConvAutoEncoder, パーセプトロンを追加
 - 2019.3.9 GAN, DCGANを追加
 - 2019.3.6 RNN, LSTM, BDLSTMを追加
 - 2019.3.5 AutoEncoder, RNNを追加　
