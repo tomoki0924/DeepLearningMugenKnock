@@ -2,8 +2,8 @@ import numpy as np
 
 np.random.seed(0)
 
-x = np.array(((0,0), (0,1), (1,0), (1,1)), dtype=np.float32)
-t = np.array(((-1), (-1), (-1), (1)), dtype=np.float32)
+xs = np.array(((0,0), (0,1), (1,0), (1,1)), dtype=np.float32)
+ts = np.array(((-1), (-1), (-1), (1)), dtype=np.float32)
 
 lrs = [0.1, 0.01]
 linestyles = ['solid', 'dashed']
@@ -18,7 +18,7 @@ for _i in range(len(lrs)):
     print("weight >>", w)
 
     # add bias
-    _x = np.hstack([x, [[1] for _ in range(4)]])
+    _xs = np.hstack([xs, [[1] for _ in range(4)]])
 
     # train
     ite = 0
@@ -28,22 +28,24 @@ for _i in range(len(lrs)):
 
     while True:
         ite += 1
-        y = np.array(list(map(lambda x: np.dot(w, x), _x)))
+        # feed forward
+        ys = np.array(list(map(lambda x: np.dot(w, x), _xs)))
 
-        En = np.array([0 for _ in range(3)], dtype=np.float32)
+        print("iteration:", ite, "y >>", ys)
 
-        for i in range(4):
-            if y[i] * t[i] < 0:
-                En += t[i] * _x[i]
-
-        print("iteration:", ite, "y >>", y)
-        if np.any(En != 0):
-            w += lr * En
-            w1.append(w[0])
-            w2.append(w[1])
-            w3.append(w[2])
-        else:
+        # update parameters
+        if len(np.where(ys * ts < 0)[0]) < 1:
             break
+
+        _ts = ts.copy()
+        _ts[ys * ts >= 0] = 0
+        En = np.dot(_ts, _xs)
+        w += lr * En
+
+        w1.append(w[0])
+        w2.append(w[1])
+        w3.append(w[2])
+
     print("training finished!")
     print("weight >>", w)
 
@@ -59,9 +61,9 @@ plt.savefig("answer_perceptron3.png")
 plt.show()
 
 # test
-y = np.array(list(map(lambda x: np.dot(w, x), _x)))
+ys = np.array(list(map(lambda x: np.dot(w, x), _xs)))
 
 for i in range(4):
-    y = np.dot(w, _x[i])
-    print("in >>", _x[i], ", out >>", y) 
+    ys = np.dot(w, _xs[i])
+    print("in >>", _xs[i], ", out >>", ys) 
     
