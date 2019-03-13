@@ -47,7 +47,7 @@ in >> [1. 0. 1.] y >> 2.742790330073403
 in >> [1. 1. 1.] y >> 3.1429475384406267
 ```
 
-答え >> [answers/perceptron_1.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_1.py )
+答え >> [answers/perceptron_1.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/perceptron_1.py )
 
 ## Q. パーセプトロン 学習
 
@@ -95,7 +95,7 @@ in >> [1. 0.] , out >> -0.05720966992659737
 in >> [1. 1.] , out >> 0.04294753844062582
 ```
 
-答え >> [answers/perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_2.py )
+答え >> [answers/perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/perceptron_2.py )
 
 ## Q. パーセプトロン 収束性
 
@@ -106,7 +106,7 @@ lr=0.1と0.01で収束までの、w1, w2, w3の値をそれぞれ線グラフで
 これを見ると、lr=0.1の方が早く学習を終わっていることが分かる。いわゆる学習が終了したことは、最適化によって最適解に到達したことを意味する。lr=0.01ではゆっくりではあるが、最適解に向かっていることが分かる。lr=0.1では学習が終了する直前に値が増えている。解は"谷"の底であり、学習とは谷の底に向かっていくが、学習率が大きいと底に向かう速度が早いため通り越してしまうこともある。これが原因で値が一瞬上昇した。（ただし谷に向かうのは値が減少する方向とは限らない。今回は重みの初期値の関係でたまたま減少の方向だった）
 
 
-答え >> [answers/perceptron_3.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_3.py )
+答え >> [answers/perceptron_3.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/perceptron_3.py )
 
 ## Q. パーセプトロン Sigmoid
 
@@ -128,7 +128,7 @@ in >> [1. 0.] , out >> 0.0814184274721598
 in >> [1. 1.] , out >> 0.9027847768204669
 ```
 
-答え >> [answers/perceptron_sigmoid.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_sigmoid.py )
+答え >> [answers/perceptron_sigmoid.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/perceptron_sigmoid.py )
 
 ## Q. パーセプトロン bias
 
@@ -151,7 +151,7 @@ in >> [1. 0.] , out >> 0.0814184274721598
 in >> [1. 1.] , out >> 0.9027847768204669
 ```
 
-答え >> [answers/perceptron_sigmoid_bias.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_sigmoid_bias.py )
+答え >> [answers/perceptron_sigmoid_bias.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/perceptron_sigmoid_bias.py )
 
 ## Q.パーセプトロン OR
 
@@ -176,7 +176,7 @@ in >> [1. 0.] , out >> 0.9501742881694675
 in >> [1. 1.] , out >> 0.9997593840396385
 ```
 
-答え >> [answers/perceptron_or.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_or.py )
+答え >> [answers/perceptron_or.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/perceptron_or.py )
 
 ## Q. パーセプトロン NOT
 
@@ -199,7 +199,7 @@ in >> [0.] , out >> 0.9376120153439501
 in >> [1.] , out >> 0.050529755525618475
 ```
 
-答え >> [answers/perceptron_not.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_not.py )
+答え >> [answers/perceptron_not.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/perceptron_not.py )
 
 ## Q. パーセプトロン XORゲート
 
@@ -224,7 +224,7 @@ in >> [1. 0.] , out >> 0.4999999998923086
 in >> [1. 1.] , out >> 0.5000000004708783
 ```
 
-答え >> [answers/perceptron_xor.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_xor.py )
+答え >> [answers/perceptron_xor.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/perceptron_xor.py )
 
 ## Q. 多層パーセプトロン FeedForward
 
@@ -251,7 +251,7 @@ in >> [1. 0.] , out >> [0.68307483]
 in >> [1. 1.] , out >> [0.67045822]
 ```
 
-答え >> [answers/multi_perceptron_1.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/multi_perceptron_1.py )
+答え >> [answers/multi_perceptron_1.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/multi_perceptron_1.py )
 
 ## Q. 多層パーセプトロン 学習
 
@@ -294,4 +294,4 @@ in >> [1. 0.] , out >> [0.90588055]
 in >> [1. 1.] , out >> [0.10374782]
 ```
 
-答え >> [answers/multi_perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/multi_perceptron_2.py )
+答え >> [answers/multi_perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/multi_perceptron_2.py )
