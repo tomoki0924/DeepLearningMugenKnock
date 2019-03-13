@@ -94,16 +94,16 @@ $ pip install -r requirements.txt
 
 |番号|問題||番号|問題|
 |:---:|:---:|:---:|:---:|:---:|
-| 1 | [パーセプトロン AND](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step1)
-| 2 | [パーセプトロン 学習](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step2)
-| 3 | [パーセプトロン 収束性](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step3)
-| 4 | [パーセプトロン Sigmoid](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step3)
-| 5 | [パーセプトロン バイアス](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step3)
-| 6 | [パーセプトロン OR](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step3)
-| 7 | [パーセプトロン NOT](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step3)
-| 8 | [パーセプトロン XOR](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step3)
-| 9 | [多層パーセプトロン FeedForward](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step3)
-| 10 | [多層パーセプトロン 学習](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-step3)
+| 1 | [パーセプトロン AND](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-and)
+| 2 | [パーセプトロン 学習](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-%E5%AD%A6%E7%BF%92)
+| 3 | [パーセプトロン 収束性](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-%E5%8F%8E%E6%9D%9F%E6%80%A7)
+| 4 | [パーセプトロン Sigmoid](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-sigmoid)
+| 5 | [パーセプトロン バイアス](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-bias)
+| 6 | [パーセプトロン OR](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-or)
+| 7 | [パーセプトロン NOT](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-not)
+| 8 | [パーセプトロン XOR](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-xor%E3%82%B2%E3%83%BC%E3%83%88)
+| 9 | [多層パーセプトロン FeedForward](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E5%A4%9A%E5%B1%A4%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-feedforward)
+| 10 | [多層パーセプトロン 学習](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E5%A4%9A%E5%B1%A4%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-%E5%AD%A6%E7%BF%92)
 
 ### [ディープラーニングをやる前の準備編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare)
 
