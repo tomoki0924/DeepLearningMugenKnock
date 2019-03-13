@@ -1,1 +1,0 @@
-yoshito@nagayosi-pc.local.1743

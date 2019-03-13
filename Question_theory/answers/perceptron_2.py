@@ -19,7 +19,8 @@ ite = 0
 while True:
     ite += 1
     # feed forward
-    ys = np.array(list(map(lambda x: np.dot(w, x), _xs)))
+    ys = np.dot(_xs, w)
+    #ys = np.array(list(map(lambda x: np.dot(w, x), _xs)))
 
     print("iteration:", ite, "y >>", ys)
 
@@ -27,9 +28,12 @@ while True:
     if len(np.where(ys * ts < 0)[0]) < 1:
         break
 
+    _ys = ys.copy()
     _ts = ts.copy()
+    _ys[ys * ts >= 0] = 0
     _ts[ys * ts >= 0] = 0
     En = np.dot(_ts, _xs)
+
     w += lr * En
     
     """

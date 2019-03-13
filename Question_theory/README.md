@@ -2,8 +2,7 @@
 
 ここではディープラーニングの理論をnumpyを使って自分の手で実装していきます。わからないと無限に泥沼にはまってしまいやすいので、ちょっと答えを見たりしてコーディングしてみましょう。
 
-## Q. パーセプトロン Step.1
-
+## Q. パーセプトロン AND
 パーセプトロンは人の脳にある神経細胞、ニューロンを数式モデリングしたものです。その仕組は入力値それぞれに重みというパラメータを乗算し、それを加算して出力するシンプルなものです。
 
 ![](assets/perceptron.jpg)
@@ -25,8 +24,8 @@
 これはこんな風に書きます。
 
 ```python
-x = np.array([[0,0], [0,1], [1,0], [1,1]], dtype=np.float32)
-t = np.array([[-1], [-1], [-1], [1]], dtype=np.float32)
+xs = np.array([[0,0], [0,1], [1,0], [1,1]], dtype=np.float32)
+ts = np.array([[-1], [-1], [-1], [1]], dtype=np.float32)
 ```
 重みはこれを用いて下さい。
 
@@ -48,9 +47,9 @@ in >> [1. 0. 1.] y >> 2.742790330073403
 in >> [1. 1. 1.] y >> 3.1429475384406267
 ```
 
-答え >> [answers/perceptron1.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron1.py )
+答え >> [answers/perceptron_1.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_1.py )
 
-## Q. パーセプトロン Step.2
+## Q. パーセプトロン 学習
 
 出力が得られたら、次に学習を行っていきます。
 そもそも学習というのは**パラメータの自動更新**をいいます。ここでいうパラメータとは重みのことです（バイアスもめんどいので重みとして扱います）。
@@ -76,29 +75,29 @@ in >> [1. 1. 1.] y >> 3.1429475384406267
 ```bash
 weight >> [1.76405235 0.40015721 0.97873798]
 iteration: 1 y >> [0.97873798 1.37889519 2.74279033 3.14294754]
-iteration: 2 y >> [0.67873797 0.97889518 2.34279032 2.64294752]
-iteration: 3 y >> [0.37873796 0.57889517 1.9427903  2.14294751]
-iteration: 4 y >> [0.07873795 0.17889515 1.54279029 1.64294749]
-iteration: 5 y >> [-0.22126206 -0.22110486  1.14279028  1.14294748]
-iteration: 6 y >> [-0.32126207 -0.32110486  0.94279027  0.94294748]
-iteration: 7 y >> [-0.42126207 -0.42110486  0.74279027  0.74294747]
-iteration: 8 y >> [-0.52126207 -0.52110487  0.54279027  0.54294747]
-iteration: 9 y >> [-0.62126207 -0.62110487  0.34279026  0.34294747]
-iteration: 10 y >> [-0.72126207 -0.72110487  0.14279026  0.14294746]
-iteration: 11 y >> [-0.82126207 -0.82110487 -0.05720974 -0.05705254]
-iteration: 12 y >> [-0.72126207 -0.62110487  0.14279026  0.24294747]
-iteration: 13 y >> [-0.82126207 -0.72110487 -0.05720974  0.04294746]
+iteration: 2 y >> [0.67873798 0.97889519 2.34279033 2.64294754]
+iteration: 3 y >> [0.37873798 0.57889519 1.94279033 2.14294754]
+iteration: 4 y >> [0.07873798 0.17889519 1.54279033 1.64294754]
+iteration: 5 y >> [-0.22126202 -0.22110481  1.14279033  1.14294754]
+iteration: 6 y >> [-0.32126202 -0.32110481  0.94279033  0.94294754]
+iteration: 7 y >> [-0.42126202 -0.42110481  0.74279033  0.74294754]
+iteration: 8 y >> [-0.52126202 -0.52110481  0.54279033  0.54294754]
+iteration: 9 y >> [-0.62126202 -0.62110481  0.34279033  0.34294754]
+iteration: 10 y >> [-0.72126202 -0.72110481  0.14279033  0.14294754]
+iteration: 11 y >> [-0.82126202 -0.82110481 -0.05720967 -0.05705246]
+iteration: 12 y >> [-0.72126202 -0.62110481  0.14279033  0.24294754]
+iteration: 13 y >> [-0.82126202 -0.72110481 -0.05720967  0.04294754]
 training finished!
-weight >> [ 0.76405233  0.1001572  -0.82126207]
-in >> [0. 0. 1.] , out >> -0.8212620725186733
-in >> [0. 1. 1.] , out >> -0.7211048686217985
-in >> [1. 0. 1.] , out >> -0.057209741452170504
-in >> [1. 1. 1.] , out >> 0.04294746244470449
+weight >> [ 0.76405235  0.10015721 -0.82126202]
+in >> [0. 0.] , out >> -0.8212620158942608
+in >> [0. 1.] , out >> -0.7211048075270377
+in >> [1. 0.] , out >> -0.05720966992659737
+in >> [1. 1.] , out >> 0.04294753844062582
 ```
 
-答え >> [answers/perceptron2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron2.py )
+答え >> [answers/perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_2.py )
 
-## Q. パーセプトロン Step.3
+## Q. パーセプトロン 収束性
 
 lr=0.1と0.01で収束までの、w1, w2, w3の値をそれぞれ線グラフでプロットしてください。
 
@@ -107,4 +106,192 @@ lr=0.1と0.01で収束までの、w1, w2, w3の値をそれぞれ線グラフで
 これを見ると、lr=0.1の方が早く学習を終わっていることが分かる。いわゆる学習が終了したことは、最適化によって最適解に到達したことを意味する。lr=0.01ではゆっくりではあるが、最適解に向かっていることが分かる。lr=0.1では学習が終了する直前に値が増えている。解は"谷"の底であり、学習とは谷の底に向かっていくが、学習率が大きいと底に向かう速度が早いため通り越してしまうこともある。これが原因で値が一瞬上昇した。（ただし谷に向かうのは値が減少する方向とは限らない。今回は重みの初期値の関係でたまたま減少の方向だった）
 
 
-答え >> [answers/perceptron3.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron3.py )
+答え >> [answers/perceptron_3.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_3.py )
+
+## Q. パーセプトロン Sigmoid
+
+ここではパーセプトロンの出力をSigmoidにしてANDゲートを作成します。
+
+**Sigmoid関数**は sigmoid(x) = 1 / (1 + exp(-x)) で出される関数であり、**[0,1] の範囲に正規化する**ことができます。この関数は最後に**確率**を表したい時などに使います。
+
+出力にSigmoidを仕様した時、誤差関数は En = - (t - y) * y * (1 - y) になります。
+
+出力例
+
+```bash
+weight >> [1.76405235 0.40015721 0.97873798]
+training finished!
+weight >> [ 4.65178795  4.65178595 -7.07501703]
+in >> [0. 0.] , out >> 0.0008452630740809337
+in >> [0. 1.] , out >> 0.08141827807657631
+in >> [1. 0.] , out >> 0.0814184274721598
+in >> [1. 1.] , out >> 0.9027847768204669
+```
+
+答え >> [answers/perceptron_sigmoid.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_sigmoid.py )
+
+## Q. パーセプトロン bias
+
+これでANDゲートが作成できましたが、今は入力の後ろにわざわざ1を付け足して、バイアスを表記しています。これは非常にめんどくさいです。なので、ここではバイアスをwとは違うパラメータとして変数定義するように書き直してみましょう。
+
+つまり、 np.dot(z1, w) + b という表記になります。この時、バイアスの勾配計算では Enと[1,1,...,1]の内積をとって計算します。
+それは grad_b = np.dot(np.ones([En.shape[0]]), En) と書けば表すことができます。
+
+出力例。これを見ると、さっきと全く同じ結果になっています。つまり、バイアスを別変数化することに成功している証拠です。
+
+```bash
+weight >> [1.76405235 0.40015721]
+bias >> [0.97873798]
+training finished!
+weight >> [4.65178795 4.65178595]
+bias >> [-7.07501703]
+in >> [0. 0.] , out >> 0.0008452630740809337
+in >> [0. 1.] , out >> 0.08141827807657631
+in >> [1. 0.] , out >> 0.0814184274721598
+in >> [1. 1.] , out >> 0.9027847768204669
+```
+
+答え >> [answers/perceptron_sigmoid_bias.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_sigmoid_bias.py )
+
+## Q.パーセプトロン OR
+
+ANDゲートができたので、次はORゲートをやってみましょう。ORゲートは２入力値の少なくともどっちかが1なら出力が1になるゲートです。
+
+```bash
+xs = np.array([[0,0], [0,1], [1,0], [1,1]], dtype=np.float32)
+ts = np.array([0, 1, 1, 1], dtype=np.float32)
+```
+
+出力例
+
+```bash
+weight >> [1.76405235 0.40015721]
+bias >> [0.97873798]
+training finished!
+weight >> [5.38562211 5.3839535 ]
+bias >> [-2.43750783]
+in >> [0. 0.] , out >> 0.08035689026769402
+in >> [0. 1.] , out >> 0.9500952318233824
+in >> [1. 0.] , out >> 0.9501742881694675
+in >> [1. 1.] , out >> 0.9997593840396385
+```
+
+答え >> [answers/perceptron_or.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_or.py )
+
+## Q. パーセプトロン NOT
+
+ここまできたらNOTゲートも作りましょう。NOTは0と1を反転させるものです。
+
+```bash
+xs = np.array([[0], [1]], dtype=np.float32)
+ts = np.array([1, 0], dtype=np.float32)
+```
+
+出力例
+
+```bash
+weight >> [1.76405235]
+bias >> [0.40015721]
+training finished!
+weight >> [-5.64330534]
+bias >> [2.70996353]
+in >> [0.] , out >> 0.9376120153439501
+in >> [1.] , out >> 0.050529755525618475
+```
+
+答え >> [answers/perceptron_not.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_not.py )
+
+## Q. パーセプトロン XORゲート
+
+次にXORを作成しましょう。XORは2入力値のうち、どっちかのみが1なら出力１、それ以外は出力０となる関数です。
+
+```bash
+xs = np.array([[0,0], [0,1], [1,0], [1,1]], dtype=np.float32)
+ts = np.array([0, 1, 1, 0], dtype=np.float32)
+```
+
+出力例。いくらがんばってもXORはパーセプトロンでは実現できません。XORは１次関数で表せない、**非線形**関数だからです。一個のパーセプトロンではAND, OR, NOTのような線形なものは解くことができることを**パーセプトロンの収束定理**といいます。
+
+```bash
+weight >> [1.76405235 0.40015721]
+bias >> [0.97873798]
+training finished!
+weight >> [2.31431790e-09 2.31427894e-09]
+bias >> [-2.74508346e-09]
+in >> [0. 0.] , out >> 0.4999999993137292
+in >> [0. 1.] , out >> 0.4999999998922988
+in >> [1. 0.] , out >> 0.4999999998923086
+in >> [1. 1.] , out >> 0.5000000004708783
+```
+
+答え >> [answers/perceptron_xor.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/perceptron_xor.py )
+
+## Q. 多層パーセプトロン FeedForward
+
+XORを解くためにパーセプトロンを2段にしましょう。
+
+2段は左図のイメージですがこれだと見にくいので、右図のイメージで作りましょう。
+まずはFeedForward(順伝搬)を作成しましょう。全部のパーセプトロンの出力にsigmoidを適用します。
+
+![](assets/multi_perceptron.png)
+
+```bash
+weight1 >>
+[[1.76405235 0.40015721]
+[0.97873798 2.2408932 ]]
+bias1 >>
+[ 1.86755799 -0.97727788]
+weight_out >>\m [[ 0.95008842]
+[-0.15135721]]
+bias_out >>
+[-0.10321885]
+in >> [0. 0.] , out >> [0.66336776]
+in >> [0. 1.] , out >> [0.66300847]
+in >> [1. 0.] , out >> [0.68307483]
+in >> [1. 1.] , out >> [0.67045822]
+```
+
+答え >> [answers/multi_perceptron_1.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/multi_perceptron_1.py )
+
+## Q. 多層パーセプトロン 学習
+
+順伝搬ができたら学習の仕組みも作りましょう。
+
+まず出力層の逆伝搬は１個のパーセプトロンの時と同じです。
+問題は中間層の学習。重みとバイアスの勾配はこんな風に計算します。
+
+```bash
+grad_u1 = np.dot(En, wout.T) * z2 * (1 - z2)
+grad_w1 = np.dot(z1.T, grad_u1)
+grad_b1 = np.dot(np.ones([grad_u1.shape[0]]), grad_u1)
+```
+
+出力例
+
+```bash
+weight1 >>
+[[1.76405235 0.40015721]
+[0.97873798 2.2408932 ]]
+bias1 >>
+[ 1.86755799 -0.97727788]
+weight_out >>\m [[ 0.95008842]
+[-0.15135721]]
+bias_out >>
+[-0.10321885]
+weight1 >>
+[[5.13045752 3.40840853]
+[5.22368332 3.42965266]]
+bias1 >>
+[-2.01148476 -5.21795913]
+weight_out >>
+[[ 6.45339121]
+[-6.76002403]]
+bias_out >>
+[-2.96478314]
+in >> [0. 0.] , out >> [0.09624175]
+in >> [0. 1.] , out >> [0.90638069]
+in >> [1. 0.] , out >> [0.90588055]
+in >> [1. 1.] , out >> [0.10374782]
+```
+
+答え >> [answers/multi_perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/multi_perceptron_2.py )

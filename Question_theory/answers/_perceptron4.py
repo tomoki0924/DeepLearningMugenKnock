@@ -3,11 +3,14 @@ import numpy as np
 np.random.seed(0)
 
 xs = np.array(((0,0), (0,1), (1,0), (1,1)), dtype=np.float32)
-ts = np.array(((-1), (-1), (-1), (1)), dtype=np.float32)
+ts = np.array(((0), (0), (0), (1)), dtype=np.float32)
 
 lrs = [0.1, 0.01]
 linestyles = ['solid', 'dashed']
 plts = []
+
+def sigmoid(x):
+    return 1. / (1 + np.exp(-x))
 
 for _i in range(len(lrs)):
     lr = lrs[_i]
@@ -18,33 +21,30 @@ for _i in range(len(lrs)):
     print("weight >>", w)
 
     # add bias
-    _xs = np.hstack([xs, [[1] for _ in range(4)]])
+    z1 = np.hstack([xs, [[1] for _ in range(4)]])
 
     # train
-    ite = 0
+    ite = 1
     w1 = [w[0]]
     w2 = [w[1]]
     w3 = [w[2]]
 
-    while True:
-        ite += 1
+    for _ in range(1000):
         # feed forward
-        ys = np.array(list(map(lambda x: np.dot(w, x), _xs)))
+        ys = sigmoid(np.dot(z1, w))
+        #ys = sigmoid(np.array(list(map(lambda x: np.dot(w, x), z1))))
 
         print("iteration:", ite, "y >>", ys)
 
-        # update parameters
-        if len(np.where(ys * ts < 0)[0]) < 1:
-            break
-
-        _ts = ts.copy()
-        _ts[ys * ts >= 0] = 0
-        En = np.dot(_ts, _xs)
-        w += lr * En
+        En = -2 * (ys - ts) * ys * (1 - ys)
+        grad_w = np.dot(z1.T, En)
+        w += lr * grad_w
 
         w1.append(w[0])
         w2.append(w[1])
         w3.append(w[2])
+
+        ite += 1
 
     print("training finished!")
     print("weight >>", w)
@@ -61,9 +61,9 @@ plt.savefig("answer_perceptron3.png")
 plt.show()
 
 # test
-ys = np.array(list(map(lambda x: np.dot(w, x), _xs)))
+#ys = np.array(list(map(lambda x: np.dot(w, x), _xs)))
 
 for i in range(4):
-    ys = np.dot(w, _xs[i])
-    print("in >>", _xs[i], ", out >>", ys) 
+    ys = sigmoid(np.dot(w, np.hstack([xs[i], [1]])))
+    print("in >>", xs[i], ", out >>", ys) 
     
