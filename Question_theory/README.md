@@ -294,4 +294,20 @@ in >> [1. 0.] , out >> [0.90588055]
 in >> [1. 1.] , out >> [0.10374782]
 ```
 
+ちなみに2層で実現できる理由は、XORが３つの線形ゲートで等価できるから。
+A xor B = (A or B) and not(A and B)
+つまり それぞれのゲートをパーセプトロンで置き換えることができるから、2パーセプトロン層と1パーセプトロン層で表現可能になる。
+
+```bash
+A --- A or B --------|
+   X                 +--- A and
+B --- not(A anb B) --|
+```
+
 答え >> [answers/multi_perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/multi_perceptron_2.py )
+
+## Q. 更に多層パーセプトロン
+
+今度は中間層を1層さらに増やして、3層構造にしましょう。
+
+答え >> [answers/multi_perceptron_3.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/multi_perceptron_3.py )
