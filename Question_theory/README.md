@@ -159,7 +159,7 @@ ANDゲートができたので、次はORゲートをやってみましょう。
 
 ```bash
 xs = np.array([[0,0], [0,1], [1,0], [1,1]], dtype=np.float32)
-ts = np.array([0, 1, 1, 1], dtype=np.float32)
+ts = np.array([[0], [1], [1], [1]], dtype=np.float32)
 ```
 
 出力例
@@ -184,7 +184,7 @@ in >> [1. 1.] , out >> 0.9997593840396385
 
 ```bash
 xs = np.array([[0], [1]], dtype=np.float32)
-ts = np.array([1, 0], dtype=np.float32)
+ts = np.array([[1], [0], dtype=np.float32)
 ```
 
 出力例
@@ -207,7 +207,7 @@ in >> [1.] , out >> 0.050529755525618475
 
 ```bash
 xs = np.array([[0,0], [0,1], [1,0], [1,1]], dtype=np.float32)
-ts = np.array([0, 1, 1, 0], dtype=np.float32)
+ts = np.array([[0], [1], [1], [0]], dtype=np.float32)
 ```
 
 出力例。いくらがんばってもXORはパーセプトロンでは実現できません。XORは１次関数で表せない、**非線形**関数だからです。一個のパーセプトロンではAND, OR, NOTのような線形なものは解くことができることを**パーセプトロンの収束定理**といいます。
