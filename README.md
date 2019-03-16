@@ -24,6 +24,7 @@
 >> [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
+- 2019.3.16 ニューラルネットをクラス化　を追加
 - 2019.3.13 パーセプトロン系を追加
 - 2019.3.12 AutoEncoder, ConvAutoEncoder, パーセプトロンを追加
 - 2019.3.9 GAN, DCGANを追加
@@ -90,6 +91,8 @@ $ pip install -r requirements.txt
 
 詳細な問題内容は各ディレクトリのREADMEにあります。（ディレクトリで下にスクロールすればあります）
 
+## 自分で全部実装編
+
 ### [理論編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory)
 
 |番号|問題||番号|問題|
@@ -115,6 +118,8 @@ $ pip install -r requirements.txt
 | 3 | [イテレーション・エポック](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q2-3-%E3%82%A4%E3%83%86%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%82%A8%E3%83%9D%E3%83%83%E3%82%AF) |
 | 4 | [データ拡張・水平反転](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q4-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E5%B7%A6%E5%8F%B3%E5%8F%8D%E8%BB%A2) |
 | 5 | [データ拡張・上下反転](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q5-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E4%B8%8A%E4%B8%8B%E5%8F%8D%E8%BB%A2) |
+
+## ライブラリ使い方編
 
 ### [画像認識編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model)
 

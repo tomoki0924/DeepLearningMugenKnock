@@ -306,8 +306,67 @@ B --- not(A anb B) --|
 
 答え >> [answers/multi_perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/multi_perceptron_2.py )
 
-## Q. 更に多層パーセプトロン
+## Q. 更に多層パーセプトロン(ディープラーニングへ)
 
 今度は中間層を1層さらに増やして、3層構造にしましょう。
 
 答え >> [answers/multi_perceptron_3.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/multi_perceptron_3.py )
+
+## Q. ニューラルネットのクラス化
+
+ここから、ちょっと厄介になります。注意してください。
+
+ここまでで、ニューラルネットの原型ができました。だけど今の状態では、重みをいちいち手動で定義したり、順伝搬、逆伝搬も全て手動でやらなきゃなので、とても使いにくいです。実際、DLのライブラリはこんな面倒な定義をしなくてもいいようにできています。
+
+なのでクラス化してもっと楽に定義してみましょう。ここでは、PyTorchっぽく作ってみましょう。
+
+
+例えば、FullyConnectedLayerをクラス化して、かつlayer同士を繋げるModelというクラスを作って、こんなふうに定義できるようにしてみましょう。
+
+```python
+model = Model(FullyConnectedLayer(in_n=2, out_n=64, activation=sigmoid),
+              FullyConnectedLayer(in_n=64, out_n=32, activation=sigmoid),
+              FullyConnectedLayer(in_n=32, out_n=1, activation=sigmoid), lr=0.1)
+```
+
+forward計算は
+
+```python
+model.forward(xs)
+```
+
+Lossの計算は
+
+```python
+model.backward(ts)
+```
+
+これならPyTorchっぽくできます。これっぽくするには、こうするといいかもしれません。（この通りにしなくても、自分の作りやすいようにしてください）
+
+```python
+class FullyConnectedLayer():
+    def __init__(self, in_n, out_n, use_bias=True, activation=None):
+        # write your process
+
+    def forward(self, feature_in):
+        # write your process
+    
+    def backward(self, w_pro, grad_pro):
+        # write your process
+    
+class Model():
+    def __init__(self, *args, lr=0.1):
+        self.layers = args
+        for l in self.layers:
+            l.set_lr(lr=lr)
+    
+    def forward(self, x):
+        # write your process
+    
+    def backward(self, t):
+        # write your process
+```
+
+答え >> [answers/multi_perceptron_class.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/multi_perceptron_class.py )
+
+
