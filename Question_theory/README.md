@@ -306,7 +306,7 @@ B --- not(A anb B) --|
 
 答え >> [answers/multi_perceptron_2.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/multi_perceptron_2.py )
 
-## Q. 更に多層パーセプトロン(ディープラーニングへ)
+## Q. 更に多層パーセプトロン(ディープラーニングへの進化)
 
 今度は中間層を1層さらに増やして、3層構造にしましょう。
 
