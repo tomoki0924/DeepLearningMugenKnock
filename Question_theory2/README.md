@@ -83,7 +83,7 @@ kernels = np.random.normal(0, 0.01, [3, 3, 4])
 |:---:|:---:|
 | ![](assets/maxpool.gif) | ![](assets/avepool.gif) |
 
-ここではakahara_0001.jpgを64x64にリサイズして、2x2でmax-poolingしてみましょう。
+ここではakahara_0001.jpgを64x64にリサイズして、2x2でmax-poolingしてみましょう。poolingでは入力サイズと同じチャネル数の出力を出す。今回は入力は3チャネル(BGR)なので、出力もBGRの順になる。
 
 答え
 
