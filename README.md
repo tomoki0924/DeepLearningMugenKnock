@@ -106,7 +106,7 @@ $ pip install -r requirements.txt
 | 6 | [パーセプトロン OR](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-or) | | 12 | [ニューラルネットのクラス化](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96)
 
 
-### [理論編2](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory/README.md)
+### [理論編2](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/)
 
 | 番号 | 問題 | | 番号 | 問題 |
 |:---:|:---:|:---:|:---:|:---:|

@@ -1,9 +1,5 @@
 # 理論編
 
-理論編2はこっち
-
-> https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/README2.md
-
 ここではディープラーニングの理論をnumpyを使って自分の手で実装していきます。わからないと無限に泥沼にはまってしまいやすいので、ちょっと答えを見たりしてコーディングしてみましょう。
 
 ## Q. パーセプトロン AND
