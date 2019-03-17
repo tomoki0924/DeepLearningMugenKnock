@@ -13,12 +13,16 @@ k_channel = 4
 k_size = 3
 kernels = np.random.normal(0, 0.01, [k_size, k_size, k_channel])
 
-out = np.zeros((height-2, width-2, k_channel), dtype=np.float32)
+out = np.zeros((height, width, k_channel), dtype=np.float32)
 
-for y in range(height-2):
-    for x in range(width-2):
+pad = np.floor(k_size / 2).astype(np.int)
+pad_img = np.zeros((pad * 2 + height, pad * 2 + width, 3), np.float32)
+pad_img[pad: pad+height, pad: pad+width] = img
+
+for y in range(height):
+    for x in range(width):
         for ki in range(k_channel):
-            out[y, x, ki] = np.sum(img[y:y+3, x:x+3] * kernels[..., ki])
+            out[y, x, ki] = np.sum(pad_img[y:y+3, x:x+3] * kernels[..., ki])
 
 for i in range(k_channel):
     plt.subplot(1,k_channel,i+1)

@@ -24,7 +24,7 @@
 > [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
-- 2019.3.17 seq2seq を追加
+- 2019.3.17 seq2seq, convolutional layer を追加
 - 2019.3.16 ニューラルネットをクラス化　を追加
 - 2019.3.13 パーセプトロン系を追加
 - 2019.3.12 AutoEncoder, ConvAutoEncoder, パーセプトロンを追加
@@ -110,7 +110,10 @@ $ pip install -r requirements.txt
 
 | 番号 | 問題 | | 番号 | 問題 |
 |:---:|:---:|:---:|:---:|:---:|
-| 1 | [Convolutiona Layer](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#convolutional-layer) | 
+| 1 | [Convolutional Layer](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#convolutional-layer) |
+| 2 | [Padding](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#padding) | 
+| 3 | [Stride](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#stride) |
+
 
 ### [ディープラーニングをやる前の準備編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare)
 

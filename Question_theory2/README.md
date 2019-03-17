@@ -51,3 +51,26 @@ kernels = np.random.normal(0, 0.01, [3, 3, 4])
 
 答え >> [answers/conv_kernel.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/conv_kernel.py )
 
+## Padding
+
+**padding(パディング)** とは、入力の周りを何らかの値で埋めることです。先のconvolutionでは出力画像が入力画像より小さくなっています。具体的には floor(kernel_size / 2) * 2だけ小さくなってしまいます。これでは、特徴量も減ってしまうし、サイズも変わってしまうので、デメリットが多いです。
+
+そこで、入力画像をパディングします。具体的には0で周りを埋める**0-padding** がよく使われます。先のconvolutionにも0パディングをして、入力画像と出力画像のサイズを同じにしましょう。
+
+![](assets/zeropadding.png)
+
+答え >> [answers/conv_pad.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/conv_pad.py )
+
+## Stride
+
+**Stride(ストライド)** とは、カーネルを動かすサイズのことです。stride=2にしてみると、出力サイズがだいたい半分になります。
+
+| stride 1 | stride 2 |
+|:---:|:---:|
+| ![](assets/stride1.gif) | ![](assets/stride2.gif) |
+
+答え。これを見ると、画像が少し集約されているように見えます。実際画像サイズが半分になっています。
+
+![](answers/conv_stride.png)
+
+答え >> [answers/conv_stride.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/conv_stride.py )
