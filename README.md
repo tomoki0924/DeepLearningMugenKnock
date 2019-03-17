@@ -21,7 +21,7 @@
 
 画像処理ノックはこっち
 
->> [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
+> [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
 - 2019.3.17 seq2seq を追加
@@ -94,7 +94,7 @@ $ pip install -r requirements.txt
 
 ## 自分で全部実装編
 
-### [理論編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory/README.md)
+### [理論編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory)
 
 | 番号 | 問題 | | 番号 | 問題 |
 |:---:|:---:|:---:|:---:|:---:|

@@ -1,6 +1,8 @@
 # Q. 理論編2
 
-ここではディープラーニングの理論をnumpyを使って自分の手で実装していきます。わからないと無限に泥沼にはまってしまいやすいので、ちょっと答えを見たりしてコーディングしてみましょう。
+理論編1はこっち
+
+> https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/README.md
 
 ## Convolutional Layer
 
