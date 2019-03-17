@@ -74,3 +74,29 @@ kernels = np.random.normal(0, 0.01, [3, 3, 4])
 ![](answers/conv_stride.png)
 
 答え >> [answers/conv_stride.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/conv_stride.py )
+
+## Max Pooling Layer
+
+次にPoolingLayerを実装しましょう。PoolingLayerとはPooling、つまりピクセルの集約操作を行います。これは一般的には入力を一定サイズにグリッド分割し、各グリッド内の代表値を出力します。代表値はグリッド領域内の最大値(Max-pooling)、または平均値(Average-pooling)などを用いる。
+
+| Max-pooling | Average-pooling |
+|:---:|:---:|
+| ![](assets/maxpool.gif) | ![](assets/avepool.gif) |
+
+ここではakahara_0001.jpgを64x64にリサイズして、2x2でmax-poolingしてみましょう。
+
+答え
+
+![](answers/maxpool.png)
+
+答え >> [answers/maxpool.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/maxpool.py )
+
+## Average Pooling Layer
+
+ここではakahara_0001.jpgを64x64にリサイズして、2x2でaverage-poolingしてみましょう。
+
+答え
+
+![](answers/avepool.png)
+
+答え >> [answers/avepool.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/avepool.py )
