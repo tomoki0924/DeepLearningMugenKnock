@@ -111,18 +111,16 @@ $ pip install -r requirements.txt
 | 10 | [多層パーセプトロン 学習](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E5%A4%9A%E5%B1%A4%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-%E5%AD%A6%E7%BF%92) |
 | 11 | [更に多層パーセプトロン](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E6%9B%B4%E3%81%AB%E5%A4%9A%E5%B1%A4%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3) | 
 | 12 | [ニューラルネットのクラス化](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96)
-| 13 | [画像認識](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96)
-| 14 | [誤差関数](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96)
-
-
 
 ### [理論編2](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/)
 
 | 番号 | 問題 | | 番号 | 問題 |
 |:---:|:---:|:---:|:---:|:---:|
-| 1 | [Convolutional Layer](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#convolutional-layer) |
-| 2 | [Padding](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#padding) | 
-| 3 | [Stride](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#stride) |
+| 13 | [画像認識](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96)
+| 14 | [誤差関数](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96)
+|  | [Convolutional Layer](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#convolutional-layer) |
+|  | [Padding](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#padding) | 
+|  | [Stride](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#stride) |
 |  | [Max-pooling layer](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2#max-pooling-layer) |
 |  | [Average-pooling layer](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2#average-pooling-layer) |
 

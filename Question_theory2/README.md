@@ -1,5 +1,95 @@
 # Q. 理論編2
 
+## 画像認識
+
+ニューラルネットを用いて画像認識をしてみましょう。ここではホーム下にあるData/Train/Imagesのアカハライモリとマダライモリの2クラス分類をします。データセットの読み込みは「ディープラーニングをやる前の準備編」を参照して下さい。
+
+前に作成したニューラルネットをクラス化したものは、最後が[0,1]で出力されるものでした。なので、アカハライモリなら0、マダライモリなら1になるように学習させましょう。ネットワークの構成や学習率など変えてみましょう。
+
+解答例
+
+```bash
+in >> ../Dataset/test/images/madara/madara_0011.jpg , out >> [[0.64227836]]
+in >> ../Dataset/test/images/madara/madara_0010.jpg , out >> [[0.95394102]]
+in >> ../Dataset/test/images/madara/madara_0009.jpg , out >> [[0.97719531]]
+in >> ../Dataset/test/images/akahara/akahara_0009.jpg , out >> [[0.3966193]]
+in >> ../Dataset/test/images/akahara/akahara_0011.jpg , out >> [[0.15386073]]
+in >> ../Dataset/test/images/akahara/akahara_0010.jpg , out >> [[0.45547317]]
+```
+
+答え >> [answers/neuralnet_classification.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/neuralnet_classification.py )
+
+
+## 誤差関数
+
+上の画像認識ができたら、学習の途中の様子を見るために誤差関数を定義してみましょう。
+
+**誤差関数** とは、ニューラルネットを学習させる時に勾配を決定するためのものでした。これまでは、詳しく言ってませんでしたが、誤差関数を**MSE(Mean Squared Error、平均二乗誤差)** としていました。つまり、
+
+En = 1 / 2 x Sum(y - t)^2
+
+です。tは教師ラベル、yはネットワークの出力です。Enはミニバッチ数で割ったりすることもあります。学習ではEnを出力について微分することで、勾配(gradient)を求めます。MSEの勾配を求めると、
+
+dEn = (y - t) x dt 
+
+となり、ネットワークの出力にsigmoidを用いていると、 dt = t x (1 - t) となることから、
+
+dEn = (y - t) x t x (1 - t)
+
+となります。
+
+50イテレーション毎にlossを見てみましょう。するとこんな感じになります。Lossが小さくなってるなっています。つまり、学習が進んでいます。
+
+```bash
+ite: 1 Loss >> 0.21145435854370662
+ite: 51 Loss >> 0.017194028985311683
+ite: 101 Loss >> 0.01043327245961434
+ite: 151 Loss >> 0.006335812451576117
+ite: 201 Loss >> 0.011451181062997718
+ite: 251 Loss >> 0.004575797174016214
+ite: 301 Loss >> 0.009644233244169778
+ite: 351 Loss >> 0.009414837693413225
+ite: 401 Loss >> 0.0033257868572083194
+ite: 451 Loss >> 0.004476944922050385
+ite: 501 Loss >> 0.002690575432099319
+ite: 551 Loss >> 0.0019436343984067564
+ite: 601 Loss >> 0.0018718536177370353
+ite: 651 Loss >> 0.0027758770291329074
+ite: 701 Loss >> 0.0013937762166776222
+ite: 751 Loss >> 0.0025263516368287924
+ite: 801 Loss >> 0.0017231197400640326
+ite: 851 Loss >> 0.0012856963828671334
+ite: 901 Loss >> 0.001245978643753974
+ite: 951 Loss >> 0.007154258371970642
+```
+
+答え >> [answers/neuralnet_loss.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/neuralnet_loss.py )
+
+## Sigmoid Cross Entropy
+
+ここでは誤差関数を**CrossEntropy** に変えてみましょう。
+
+Sigmoidを用いたCrossEntropyは次式で定義されます。
+
+En = -t ln(y) - (1 - t) ln(1 - y)
+
+これを微分して、ある程度計算すると、
+
+dEn = t - y
+
+となります。（実装時は注意）
+
+```bash
+in >> ../Dataset/test/images/madara/madara_0011.jpg , out >> [[0.80955499]]
+in >> ../Dataset/test/images/madara/madara_0010.jpg , out >> [[0.92180663]]
+in >> ../Dataset/test/images/madara/madara_0009.jpg , out >> [[0.9601341]]
+in >> ../Dataset/test/images/akahara/akahara_0009.jpg , out >> [[0.41643517]]
+in >> ../Dataset/test/images/akahara/akahara_0011.jpg , out >> [[0.16013807]]
+in >> ../Dataset/test/images/akahara/akahara_0010.jpg , out >> [[0.57682873]]
+```
+
+答え >> [answers/neuralnet_sce.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/neuralnet_sce.py )
+
 ## Convolutional Layer
 
 これまではニューラルネットをやってきました。ニューラルネットはそもそも認識のために提案されたものでした。認識とは一般的には(1)特徴抽出、(2)認識の２つのパートに別れます。
@@ -37,12 +127,12 @@ N次元空間での分離超平面はN-1次元をとる。
 
 ここではニューラルネットのプログラムは一旦忘れて、akahara_0001.jpg を読み込み、3x3のサイズのランダムな値を持つ４つのカーネルで畳み込みしてみましょう。
 
-カーネルは次のように定義してみましょう。
+カーネルは次のように定義してみましょう。順番が[チャネル、縦、横]になっているので、入力画像も[チャネル、縦、横]にしましょう。
 
 ```python
 import numpy as np
 np.random.seed(0)
-kernels = np.random.normal(0, 0.01, [3, 3, 4])
+kernels = np.random.normal(0, 0.01, [4, 3, 3])
 ```
 
 答え。これを見ると、それぞれ出力が違っています（ランダムなので当たり前ですが）。Deep Learningではこのカーネルが多くあること、convolutionが何層にもあることで様々な状態の出力を取ることができます。この出力が**特徴量** として扱われます。
@@ -74,6 +164,10 @@ kernels = np.random.normal(0, 0.01, [3, 3, 4])
 ![](answers/conv_stride.png)
 
 答え >> [answers/conv_stride.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/conv_stride.py )
+
+## Convolutional Layer. クラス化
+
+
 
 ## Max Pooling Layer
 
