@@ -94,6 +94,7 @@ GANの出力
 ちなみにGAN系は収束がくそ難しいことでも有名です。GANの学習ノウハウだけで論文が出てるほどです。なので、各種パラメータ調整はかなり厳しい戦いになると思います。がんばりましょう。僕もがんばりました(´；ω；｀)
 
 答え
+- PyTorch [answers/gan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/gan_pytorch.py)
 - Keras [answers/gan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/gan_keras.py)
 
 ## DCGAN
@@ -127,4 +128,5 @@ DCGANの出力
 ![](answers/dcgan_keras.png)
 
 答え
+- Pytorch [answers/dcgan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/dcgan_pytorch.py)
 - Keras [answers/dcgan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/dcgan_keras.py)

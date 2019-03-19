@@ -17,7 +17,7 @@ in >> ../Dataset/test/images/akahara/akahara_0011.jpg , out >> [[0.15386073]]
 in >> ../Dataset/test/images/akahara/akahara_0010.jpg , out >> [[0.45547317]]
 ```
 
-答え >> [answers/neuralnet_classification.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/neuralnet_classification.py )
+答え >> [answers/neuralnet_classification.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory2/answers/neuralnet_classification.py )
 
 
 ## 誤差関数
@@ -63,7 +63,7 @@ ite: 901 Loss >> 0.001245978643753974
 ite: 951 Loss >> 0.007154258371970642
 ```
 
-答え >> [answers/neuralnet_loss.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/neuralnet_loss.py )
+答え >> [answers/neuralnet_loss.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory2/answers/neuralnet_loss.py )
 
 ## Sigmoid Cross Entropy
 
@@ -88,7 +88,7 @@ in >> ../Dataset/test/images/akahara/akahara_0011.jpg , out >> [[0.16013807]]
 in >> ../Dataset/test/images/akahara/akahara_0010.jpg , out >> [[0.57682873]]
 ```
 
-答え >> [answers/neuralnet_sce.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/neuralnet_sce.py )
+答え >> [answers/neuralnet_sce.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory2/answers/neuralnet_sce.py )
 
 ## Convolutional Layer
 
@@ -139,7 +139,7 @@ kernels = np.random.normal(0, 0.01, [4, 3, 3])
 
 ![](answers/conv_kernel.png)
 
-答え >> [answers/conv_kernel.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/conv_kernel.py )
+答え >> [answers/conv_kernel.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory2/answers/conv_kernel.py )
 
 ## Padding
 
@@ -149,7 +149,7 @@ kernels = np.random.normal(0, 0.01, [4, 3, 3])
 
 ![](assets/zeropadding.png)
 
-答え >> [answers/conv_pad.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/conv_pad.py )
+答え >> [answers/conv_pad.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory2/answers/conv_pad.py )
 
 ## Stride
 
@@ -163,7 +163,7 @@ kernels = np.random.normal(0, 0.01, [4, 3, 3])
 
 ![](answers/conv_stride.png)
 
-答え >> [answers/conv_stride.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/conv_stride.py )
+答え >> [answers/conv_stride.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory2/answers/conv_stride.py )
 
 ## Convolutional Layer. クラス化
 
@@ -183,7 +183,7 @@ kernels = np.random.normal(0, 0.01, [4, 3, 3])
 
 ![](answers/maxpool.png)
 
-答え >> [answers/maxpool.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/maxpool.py )
+答え >> [answers/maxpool.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory2/answers/maxpool.py )
 
 ## Average Pooling Layer
 
@@ -193,4 +193,4 @@ kernels = np.random.normal(0, 0.01, [4, 3, 3])
 
 ![](answers/avepool.png)
 
-答え >> [answers/avepool.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory/answers/avepool.py )
+答え >> [answers/avepool.py]( https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_theory2/answers/avepool.py )
