@@ -117,8 +117,9 @@ $ pip install -r requirements.txt
 
 | 番号 | 問題 | | 番号 | 問題 |
 |:---:|:---:|:---:|:---:|:---:|
-| 13 | [画像認識](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96)
-| 14 | [誤差関数](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96)
+| 13 | [画像認識](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#%E7%94%BB%E5%83%8F%E8%AA%8D%E8%AD%98)
+| 14 | [誤差関数](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#%E8%AA%A4%E5%B7%AE%E9%96%A2%E6%95%B0)
+|  | [Sigmoid Cross Entropy](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#sigmoid-cross-entropy)
 |  | [Convolutional Layer](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#convolutional-layer) |
 |  | [Padding](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#padding) | 
 |  | [Stride](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_theory2/#stride) |
