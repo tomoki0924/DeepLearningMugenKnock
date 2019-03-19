@@ -59,11 +59,11 @@ class Discriminator(torch.nn.Module):
         super(Discriminator, self).__init__()
         self.l1 = torch.nn.Conv2d(channel, self.base, kernel_size=5, padding=2, stride=2)
         self.l2 = torch.nn.Conv2d(self.base, self.base * 2, kernel_size=5, padding=2, stride=2)
-        self.bn2 = torch.nn.BatchNorm2d(self.base * 2)
+        #self.bn2 = torch.nn.BatchNorm2d(self.base * 2)
         self.l3 = torch.nn.Conv2d(self.base * 2, self.base * 4, kernel_size=5, padding=2, stride=2)
-        self.bn3 = torch.nn.BatchNorm2d(self.base * 4)
+        #self.bn3 = torch.nn.BatchNorm2d(self.base * 4)
         self.l4 = torch.nn.Conv2d(self.base * 4, self.base * 8, kernel_size=5, padding=2, stride=2)
-        self.bn4 = torch.nn.BatchNorm2d(self.base * 8)
+        #self.bn4 = torch.nn.BatchNorm2d(self.base * 8)
         self.l5 = torch.nn.Linear((img_height // 16) * (img_width // 16) * self.base * 8, 1)
 
     def forward(self, x):

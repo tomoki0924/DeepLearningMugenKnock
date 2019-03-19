@@ -12,19 +12,21 @@
 
 僕が研究室で３年修行してディープラーニングで必要そうだなーと思ったものを集めてます。
 
-例えば研究してて提案手法を急にKerasでやればとか簡単に言うけどそんなすぐにできるかいってよくあると思うんだけどそういうのにもすぐ対応できる力を身につけるためのものだとも思ってます。なんでフレームワーク(FW)をたくさんにしてるかと言うと、今はFWがありすぎて、使いたい論文の実装もいろんなFWになってしまっているからです。使いたい技術をすぐに使えるようにするために色んなFWを勉強する必要があると思ってます。
+例えば研究してて提案手法を急にKerasでやればとか簡単に言うけどそんなすぐにできるかいってよくあると思うんだけどそういうのにもすぐ対応できる力を身につけるためのものだとも思ってます。
 
-- **内容はいろいろな文献を調べて載っけてるので正しくないものもあるかもしれないので注意して下さい**
+- **内容はいろいろな文献を調べて載っけてるので正しくないものもあるかもしれないので注意して下さい。もし間違ってたらプルリク下さい笑**
 - 【注意】このページを利用して、または関して生じた事に関しては、**私は一切責任を負いません。** すべて **自己責任** でお願い致します。
-- コードの書き方は私の趣向がけっこう出てるので、この書き方キモってなったら自分の書き方でやっていってください。答えはあくまで参考です。
+- コードの書き方は私の趣向がけっこう出てるので、この書き方キモってなったら自分の書き方でやっていってください。答えはあくまで参考です。FWによってチョクチョク実装に小さな違いがあるのでそこはご愛嬌
 - なんとなく本とか買わずにDLを勉強したいーーーって人向けだと思う
+
+## Related
 
 画像処理ノックはこっち
 
 > [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
-- 2019.3.19 [Pytorch] GAN, DCGANを追加
+- 2019.3.19 [Pytorch][Chainer] GAN, DCGANを追加
 - 2019.3.17 Pooling layerを追加したけど、あとからクラス化と学習を追加する予定
 - 2019.3.17 seq2seq, convolutional layer を追加
 - 2019.3.16 ニューラルネットをクラス化　を追加
@@ -70,7 +72,7 @@ $ git clone https://github.com/yoyoyo-yo/DeepLearningMugenKnock.git
 
 ### 3. パッケージのインストール
 
-以下のコマンドで必要なパッケージをインストールします。
+以下のコマンドで必要なパッケージをインストールします。これで準備は完了です！！
 
 
 ```bash
@@ -176,8 +178,8 @@ $ pip install -r requirements.txt
 |:---:|:---:|:---:|:---:|:---:|
 | [AutoEncoder](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-auto-encoder) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/ae_pytorch.py) | [✓?](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_tensorflow_slim.py)  | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_keras.py) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_chainer.py) |
 | [ConvolutionalAutoEncoder](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-convolutional-auto-encoder) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/convae_pytorch.py) |  [✓?](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_tensorflow_slim.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_chainer.py) |
-| [GAN](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-gan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py) |   | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_keras.py)
-| [DCGAN](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-dcgan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py) | | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_keras.py)
+| [GAN](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-gan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py) |   | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_chainer.py)
+| [DCGAN](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-dcgan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py) | | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_chainer.py)
 
 ### [画像処理編]()
 
