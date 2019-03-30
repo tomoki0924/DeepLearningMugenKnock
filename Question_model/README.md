@@ -19,6 +19,8 @@ $ pip install cnn_finetune
 | pytorch | cnn_finetune.make_model  | | Keras |  |
 | TensorFlow |  | | Chainer |  |
 
+pytorchの参考サイト >> https://github.com/creafz/pytorch-cnn-finetune
+
 答え
 - Pytorch [answers/api_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/api_pytorch.py)
 - Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
