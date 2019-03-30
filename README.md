@@ -26,6 +26,7 @@
 > [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
+- 2019.3.31 [画像認識モデル]APIを追加
 - 2019.3.19 [Pytorch][Chainer] GAN, DCGANを追加
 - 2019.3.17 Pooling layerを追加したけど、あとからクラス化と学習を追加する予定
 - 2019.3.17 seq2seq, convolutional layer を追加
@@ -145,7 +146,7 @@ $ pip install -r requirements.txt
 
 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |
 |:---:|:---:|:---:|:---:|:---:|
-| [ API ](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-lenet) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/api_pytorch.py) | 
+| [ API ](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#api) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/api_pytorch.py) | 
 | [LeNet](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-lenet) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_pytorch.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py) | 
 | [AlexNet](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-alexnet) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/alexnet_pytorch.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/alexnet_tensorflow_layers.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/alexnet_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/alexnet_chainer.py) | 
 | [ZFNet](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-zfnet) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/zfnet_pytorch.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/zfnet_tensorflow_layers.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/zfnet_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/zfnet_chainer.py) | 
