@@ -1,7 +1,22 @@
-# Q. 画像認識モデル編
+# Q. 画像認識編
 
 ここではCNNの有名モデルを自分の手で実装していきます。フレームワークは自由だが、**とりあえずPyTorch, Tensorflow, Keras, Chainer全部で実装してください。**
 ネットワークを作ったら、学習率やイテレーションを変えて、テストデータセット *../Dataset/test/images* でテストしてみてください。
+
+## API
+
+各有名モデルのAPIを使ってみましょう。
+
+| FW | function | | FW | function |
+|:---:|:---:|:---:|:---:|:---:|
+| pytorch | cnn_finetune.make_model  | | Keras |  |
+| TensorFlow |  | | Chainer |  |
+
+答え
+- Pytorch [answers/lenet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/api_pytorch.py)
+- Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
+- Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
+- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
 
 ## Q. LeNet
 
