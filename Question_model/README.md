@@ -59,10 +59,11 @@ $ pip install cnn_finetune
 ディープラーニングを流行らせた張本人モデル。ImageNetという画像認識のコンペILSVRC2012で圧倒的一位で優勝したことから現在のディープラーニングブームが起こりました。これを実装してくさい。
 AlexNetでは*Local Response Normalization* という特別な正規化Layerがあります。
 
-| FW | function | FW | function |
-|:---:|:---:|:---:|:---:|
-| PyTorch | torch.nn.modules.normalization.LocalResponseNorm() | Keras | - |
-| TensorFlow | tf.nn.local_response_normalization() | Chainer | chainer.functions.local_response_normalization() |
+| FW | function | | FW | function |
+|:---:|:---:|:---:|:---:|:---:|
+| PyTorch | torch.nn.modules.normalization.LocalResponseNorm() | | Keras | - |
+| TensorFlow | tf.nn.local_response_normalization() | | Chainer | chainer.functions.local_response_normalization() |
+
 LRNは効果が薄いことから最近ではほとんど使われてません。こういうのもあったんだなあ程度に覚えておくといいと思います。
 
 ただし学習データの枚数が少ないので学習が進まないので、精度を上げたいときは自分で学習データを増やすか、パラメータ数を変えるなどの工夫が必要なので注意。
