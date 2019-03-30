@@ -7,13 +7,20 @@
 
 各有名モデルのAPIを使ってみましょう。
 
+pytorchは 
+
+```bash
+$ pip install cnn_finetune
+```
+をして、ライブラリを追加しなきゃいけません。
+
 | FW | function | | FW | function |
 |:---:|:---:|:---:|:---:|:---:|
 | pytorch | cnn_finetune.make_model  | | Keras |  |
 | TensorFlow |  | | Chainer |  |
 
 答え
-- Pytorch [answers/lenet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/api_pytorch.py)
+- Pytorch [answers/api_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/api_pytorch.py)
 - Tensorflow [answers/lenet_tensorflow_layers.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_tensorflow_layers.py)
 - Keras [answers/lenet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_keras.py)
 - chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/lenet_chainer.py)
