@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from glob import glob
+import copy
 
 np.random.seed(0)
 
@@ -48,7 +49,7 @@ np.random.shuffle(train_ind)
 
 for i in range(10):
     if mbi + mb > len(xs):
-        mb_ind = train_ind[mbi:]
+        mb_ind = copy.copy(train_ind)[mbi:]
         np.random.shuffle(train_ind)
         mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
         mbi = mb - (len(xs) - mbi)
