@@ -207,3 +207,10 @@ $ pip install -r requirements.txt
 }
 ```
 
+## License
+
+$copy; Yoshito Nagaoka All Rights Reserved.
+
+This is under MIT License.
+
+https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/LICENSE
