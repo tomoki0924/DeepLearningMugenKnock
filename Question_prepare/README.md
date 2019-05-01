@@ -184,3 +184,47 @@ Q.2-2では10回ミニバッチを回したが、これは10iterationしたこ�
 ![](answer_rotation.png)
 
 答え >> [answers/answer_rotation.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_rotation.py)
+
+## Q. CIFAR-10 Step.1 ダウンロード
+
+CIFAR-10は10クラス分類を行うための有名なオープンデータセットの1つです。学習データ50,000枚、テストデータ10,000枚で構成されます。
+ここではCIFAR-10を読み込むためのプログラムを作成してみましょう。
+
+CIFAR-10の公式ページはここです。>>  https://www.cs.toronto.edu/~kriz/cifar.html
+これの「CIFAR-10 python version」が今回使うデータセットのtarファイルですが、まずはカレントディレクトリに「cifar-10-batches-py」がなければ、ダウンロードするコードを書いてみましょう。
+ここではlinuxかosxを想定して、「wget」でダウンロード、「tar」でダウンロードしたファイルを展開します。
+
+答え >> [answers/load_cifar10_step1.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_cifar10_step1.py)
+
+## Q. CIFAR-10 Step.2 学習データの読み込み
+
+Step.1で展開したファイルは下記の構造となります。
+
+```bash
+cifar-10-batches-py --- readme.html
+                     |- data_batch_1 (~5)
+                     |- test_batch
+                     |- batches.meta
+```
+
+data_batch_1 - 5 には学習データ、test_batch　にはテストデータが入っています。
+公式サイトによれば、
+
+```python
+with open('data_batch_1', 'rb') as f:
+    datas = pickle.load(f, encoding='bytes')
+    x = datas[b'data']
+    y = np.array(datas[b'labels'], dtype=np.int)
+```
+でxに入力画像のデータ、yに教師ラベルが入ります。ただし、xは[10000, 3072( = 3 x 32 x 32)] という形になっているので、これを元の画像の大きさ、[10000, 32, 32, 3]にする必要があります。
+
+ここでは、data_batch_の1 - 5の全てを、train_xに入力画像のデータ、train_yに教師ラベルのデータとしてまとめてみましょう。
+
+答え >> [answers/load_cifar10_step2.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_cifar10_step2.py)
+
+## Q. CIFAR-10 Step.Final テストデータの読み込み
+
+test_batchに関しても同じように test_xとtest_yに分けて見ましょう。
+最後に関数の返り値をtrain_x, train_y, test_x, test_yとしてkeras.datasets.load_mnistっぽくしてみましょう。
+
+答え >> [answers/load_cifar10.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_cifar10.py)
