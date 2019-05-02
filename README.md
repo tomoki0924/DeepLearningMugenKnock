@@ -26,6 +26,7 @@
 > [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
+- 2019.5.2 [データセット準備]Cifar10、[AutoEncoder]Cifar10を追加
 - 2019.3.31 [画像認識モデル]APIを追加
 - 2019.3.19 [Pytorch][Chainer] GAN, DCGANを追加
 - 2019.3.17 Pooling layerを追加したけど、あとからクラス化と学習を追加する予定
