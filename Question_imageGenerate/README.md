@@ -27,10 +27,14 @@ input=64, width=64, channel=3 とする。
 ![](answers/answer_ae_keras_akahara_0009.png) | ![](answers/answer_ae_keras_akahara_0010.png) | 
 
 答え
-- Pytorch [answers/ae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_pytorch.py)
-- Tensorflow [answers/ae_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_tensorflow_slim.py)
-- Keras [answers/ae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_keras.py)
-- Chainer [answers/ae_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_chainer.py)
+- Pytorch [answers/ae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_pytorch.py)
+- Pytorch Cifar10 [answers/ae_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_pytorch.py)
+- Tensorflow [answers/ae_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_tensorflow_slim.py)
+- Tensorflow Cifar10[answers/ae_cifar10_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_tensorflow_slim.py)
+- Keras [answers/ae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_keras.py)
+- Keras Cifar10 [answers/ae_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_keras.py)
+- Chainer [answers/ae_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_chainer.py)
+- Chainer Cifar10 [answers/ae_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_chainer.py)
 
 ## Q. Convolutional Auto Encoder
 
@@ -48,10 +52,10 @@ AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convo
 ![](answers/answer_convae_pytorch_akahara_0011.png) | ![](answers/answer_convae_pytorch_madara_0011.png) | 
 
 答え
-- Pytorch [answers/convae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/convae_pytorch.py)
-- Tensorflow [answers/convae_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/ae_tensorflow_slim.py)
-- Keras [answers/convae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/convae_keras.py)
-- Chainer [answers/convae_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/convae_chainer.py)
+- Pytorch [answers/convae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_pytorch.py)
+- Tensorflow [answers/convae_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_tensorflow_slim.py)
+- Keras [answers/convae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_keras.py)
+- Chainer [answers/convae_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_chainer.py)
 
 ## Q. GAN
 
@@ -96,9 +100,9 @@ GANの出力
 なんとなくだけど、chainerがきれいにできる気がする。。。
 
 答え
-- PyTorch [answers/gan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/gan_pytorch.py)
-- Keras [answers/gan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/gan_keras.py)
-- Chainer [answers/gan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/gan_chainer.py)
+- PyTorch [answers/gan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_pytorch.py)
+- Keras [answers/gan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_keras.py)
+- Chainer [answers/gan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_chainer.py)
 
 ## DCGAN
 
@@ -131,7 +135,7 @@ DCGANの出力
 ![](answers/dcgan_keras.png)
 
 答え
-- Pytorch [answers/dcgan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/dcgan_pytorch.py)
-- Keras [answers/dcgan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/dcgan_keras.py)
-- Chainer [answers/dcgan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/dcgan_chainer.py)
+- Pytorch [answers/dcgan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py)
+- Keras [answers/dcgan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_keras.py)
+- Chainer [answers/dcgan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_chainer.py)
 
