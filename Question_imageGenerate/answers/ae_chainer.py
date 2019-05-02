@@ -165,7 +165,7 @@ def test():
     model = Mynet(train=False)
 
     if GPU >= 0:
-        chainer.cuda.get_device_from_id(cf.GPU).use()
+        chainer.cuda.get_device_from_id(GPU).use()
         model.to_gpu()
 
     ## Load pretrained parameters

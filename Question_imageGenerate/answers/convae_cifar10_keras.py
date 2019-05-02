@@ -1,36 +1,44 @@
-import chainer
-import chainer.links as L
-import chainer.functions as F
-import argparse
+import keras
 import cv2
 import numpy as np
+import argparse
 from glob import glob
 import matplotlib.pyplot as plt
+
+# GPU config
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import tensorflow as tf
+from keras import backend as K
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+config.gpu_options.visible_device_list="0"
+sess = tf.Session(config=config)
+K.set_session(sess)
+
+# network
+from keras.models import Sequential, Model
+from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization, Reshape
 
 num_classes = 2
 img_height, img_width = 32, 32
 out_height, out_width = 32, 32
 channel = 3
 
-GPU = -1
 
+def Mynet(train=False):
+    inputs = Input((img_height, img_width, channel), name='in')
+    x = Conv2D(32, (3, 3), padding='same', strides=1, name='enc1')(inputs)
+    x = MaxPooling2D((2,2), 2)(x)
+    x = Conv2D(16, (3, 3), padding='same', strides=1, name='enc2')(x)
+    x = MaxPooling2D((2,2), 2)(x)
+    x = keras.layers.Conv2DTranspose(32, (2,2), strides=2, padding='same', name='dec2')(x)
+    out = keras.layers.Conv2DTranspose(channel, (2,2), strides=2, padding='same', name='out')(x)
     
-class Mynet(chainer.Chain):
-    def __init__(self, train=False):
-        self.train = train
-        base = 128
-        
-        super(Mynet, self).__init__()
-        with self.init_scope():
-            self.dec1 = L.Linear(None, base)
-            self.enc1 = L.Linear(None, out_height * out_width * channel)
-        
-    def forward(self, x):
-        x = self.dec1(x)
-        x = self.enc1(x)
-        return x
+    model = Model(inputs=inputs, outputs=out, name='model')
+    return model
 
-    
+
 import pickle
 import os
     
@@ -84,20 +92,19 @@ def load_cifar10():
 
 # train
 def train():
-    # model
     model = Mynet(train=True)
 
-    if GPU >= 0:
-        chainer.cuda.get_device(GPU).use()
-        model.to_gpu()
-    
-    opt = chainer.optimizers.Adam(0.001)
-    opt.setup(model)
-    #opt.add_hook(chainer.optimizer.WeightDecay(0.0005))
+    for layer in model.layers:
+        layer.trainable = True
+
+    model.compile(
+        loss={'out': 'mse'},
+        optimizer=keras.optimizers.Adam(lr=0.001),#"adam", #keras.optimizers.SGD(lr=0.1, momentum=0.9, nesterov=False),
+        loss_weights={'out': 1},
+        metrics=['accuracy'])
 
     train_x, train_y, test_x, test_y = load_cifar10()
     xs = train_x / 255
-    xs = xs.transpose(0, 3, 1, 2)
 
     # training
     mb = 512
@@ -117,78 +124,43 @@ def train():
             mbi += mb
 
         x = xs[mb_ind]
-        t = x.copy().reshape([mb, -1])
-            
-        if GPU >= 0:
-            x = chainer.cuda.to_gpu(x)
-            t = chainer.cuda.to_gpu(t)
-        #else:
-        #    x = chainer.Variable(x)
-        #    t = chainer.Variable(t)
+        #t = x.copy().reshape([mb, -1])
 
-        y = model(x)
+        loss, acc = model.train_on_batch(x={'in':x}, y={'out':x})
 
-        loss = F.mean_squared_error(y, t)
+        if (i+1) % 100 == 0:
+            print("iter >>", i+1, ",loss >>", loss, ',accuracy >>', acc)
 
-        model.cleargrads()
-        loss.backward()
-        opt.update()
-
-        loss = loss.data
-        #accu = accu.data
-        if GPU >= 0:
-            loss = chainer.cuda.to_cpu(loss)
-        
-        print("iter >>", i+1, ',loss >>', loss.item())
-
-    chainer.serializers.save_npz('cnn.npz', model)
+    model.save('model.h5')
 
 # test
 def test():
+    # load trained model
     model = Mynet(train=False)
-
-    if GPU >= 0:
-        chainer.cuda.get_device_from_id(GPU).use()
-        model.to_gpu()
-
-    ## Load pretrained parameters
-    chainer.serializers.load_npz('cnn.npz', model)
+    model.load_weights('model.h5')
 
     train_x, train_y, test_x, test_y = load_cifar10()
     xs = test_x / 255
-    xs = xs.transpose(0, 3, 1, 2)
 
     for i in range(10):
         x = xs[i]
-        path = paths[i]
         
         x = np.expand_dims(x, axis=0)
-        if GPU >= 0:
-            x = chainer.cuda.to_gpu(x)
-
-        pred = model(x).data
         
-        if GPU >= 0:
-            pred = chainer.cuda.to_cpu(pred)
-                
-        pred = pred[0]
-        #pred = (pred + 1) / 2
-        pred = pred.reshape([channel, out_height, out_width])
-        pred = pred.transpose([1,2,0])
+        pred = model.predict_on_batch(x={'in': x})[0]
         pred -= pred.min()
         pred /= pred.max()
-        
-        x = chainer.cuda.to_cpu(x) if GPU >= 0 else x
-        #x = (x + 1) / 2
-        
+
         if channel == 1:
             pred = pred[..., 0]
-            _x = x[0, 0]
+            _x = x[0, ..., 0]
+            #_x = (x[0, ..., 0] + 1) / 2
             cmap = 'gray'
         else:
-            _x = x[0].transpose(1,2,0)
+            _x = x[0]
+            #_x = (x[0] + 1) / 2
             cmap = None
-        
+            
         plt.subplot(1,2,1)
         plt.title("input")
         plt.imshow(_x, cmap=cmap)
@@ -197,7 +169,6 @@ def test():
         plt.imshow(pred, cmap=cmap)
         plt.show()
 
-        print("in {}".format(path))
     
 
 def arg_parse():

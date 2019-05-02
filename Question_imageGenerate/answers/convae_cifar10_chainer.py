@@ -13,20 +13,24 @@ out_height, out_width = 32, 32
 channel = 3
 
 GPU = -1
-
     
 class Mynet(chainer.Chain):
     def __init__(self, train=False):
         self.train = train
-        base = 128
         
         super(Mynet, self).__init__()
         with self.init_scope():
-            self.dec1 = L.Linear(None, base)
-            self.enc1 = L.Linear(None, out_height * out_width * channel)
+            self.dec1 = L.Convolution2D(None, 32, ksize=3, pad=1, stride=1)
+            self.dec2 = L.Convolution2D(None, 16, ksize=3, pad=1, stride=1)
+            self.enc2 = L.Deconvolution2D(None, 32, ksize=2, stride=2)
+            self.enc1 = L.Deconvolution2D(None, channel, ksize=2, stride=2)
         
     def forward(self, x):
         x = self.dec1(x)
+        x = F.max_pooling_2d(x, ksize=2, stride=2)
+        x = self.dec2(x)
+        x = F.max_pooling_2d(x, ksize=2, stride=2)
+        x = self.enc2(x)
         x = self.enc1(x)
         return x
 
@@ -117,7 +121,7 @@ def train():
             mbi += mb
 
         x = xs[mb_ind]
-        t = x.copy().reshape([mb, -1])
+        t = x.copy()
             
         if GPU >= 0:
             x = chainer.cuda.to_gpu(x)
@@ -138,8 +142,9 @@ def train():
         #accu = accu.data
         if GPU >= 0:
             loss = chainer.cuda.to_cpu(loss)
-        
-        print("iter >>", i+1, ',loss >>', loss.item())
+
+        if (i+1) % 100 == 0:
+            print("iter >>", i+1, ',loss >>', loss.item())
 
     chainer.serializers.save_npz('cnn.npz', model)
 
@@ -160,7 +165,6 @@ def test():
 
     for i in range(10):
         x = xs[i]
-        path = paths[i]
         
         x = np.expand_dims(x, axis=0)
         if GPU >= 0:
@@ -173,7 +177,6 @@ def test():
                 
         pred = pred[0]
         #pred = (pred + 1) / 2
-        pred = pred.reshape([channel, out_height, out_width])
         pred = pred.transpose([1,2,0])
         pred -= pred.min()
         pred /= pred.max()
@@ -196,8 +199,6 @@ def test():
         plt.title("predicted")
         plt.imshow(pred, cmap=cmap)
         plt.show()
-
-        print("in {}".format(path))
     
 
 def arg_parse():

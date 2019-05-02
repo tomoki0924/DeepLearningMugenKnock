@@ -156,7 +156,7 @@ def test():
         pred = pred.transpose(1,2,0)
         
         _x = x.detach().cpu().numpy()[0]
-        _x = (_x + 1) / 2
+        #_x = (_x + 1) / 2
         if channel == 1:
             pred = pred[..., 0]
             _x = _x[0]

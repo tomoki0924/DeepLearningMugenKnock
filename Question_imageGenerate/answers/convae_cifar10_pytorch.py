@@ -1,6 +1,5 @@
-import chainer
-import chainer.links as L
-import chainer.functions as F
+import torch
+import torch.nn.functional as F
 import argparse
 import cv2
 import numpy as np
@@ -9,25 +8,27 @@ import matplotlib.pyplot as plt
 
 num_classes = 2
 img_height, img_width = 32, 32
-out_height, out_width = 32, 32
 channel = 3
 
-GPU = -1
-
+GPU = True
+torch.manual_seed(0)
     
-class Mynet(chainer.Chain):
-    def __init__(self, train=False):
-        self.train = train
-        base = 128
-        
+class Mynet(torch.nn.Module):
+    def __init__(self):
         super(Mynet, self).__init__()
-        with self.init_scope():
-            self.dec1 = L.Linear(None, base)
-            self.enc1 = L.Linear(None, out_height * out_width * channel)
+
+        self.enc1 = torch.nn.Conv2d(channel, 32, kernel_size=3, padding=1)
+        self.enc2 = torch.nn.Conv2d(32, 16, kernel_size=3, padding=1)
+        self.dec2 = torch.nn.ConvTranspose2d(16, 32, kernel_size=2, stride=2)
+        self.dec1 = torch.nn.ConvTranspose2d(32, channel, kernel_size=2, stride=2)
         
     def forward(self, x):
-        x = self.dec1(x)
         x = self.enc1(x)
+        x = F.max_pool2d(x, 2)
+        x = self.enc2(x)
+        x = F.max_pool2d(x, 2)
+        x = self.dec2(x)
+        x = self.dec1(x)
         return x
 
     
@@ -84,16 +85,13 @@ def load_cifar10():
 
 # train
 def train():
-    # model
-    model = Mynet(train=True)
+    # GPU
+    device = torch.device("cuda" if GPU else "cpu")
 
-    if GPU >= 0:
-        chainer.cuda.get_device(GPU).use()
-        model.to_gpu()
-    
-    opt = chainer.optimizers.Adam(0.001)
-    opt.setup(model)
-    #opt.add_hook(chainer.optimizer.WeightDecay(0.0005))
+    # model
+    model = Mynet().to(device)
+    opt = torch.optim.Adam(model.parameters(), lr=0.001)
+    model.train()
 
     train_x, train_y, test_x, test_y = load_cifar10()
     xs = train_x / 255
@@ -116,43 +114,30 @@ def train():
             mb_ind = train_ind[mbi: mbi+mb]
             mbi += mb
 
-        x = xs[mb_ind]
-        t = x.copy().reshape([mb, -1])
-            
-        if GPU >= 0:
-            x = chainer.cuda.to_gpu(x)
-            t = chainer.cuda.to_gpu(t)
-        #else:
-        #    x = chainer.Variable(x)
-        #    t = chainer.Variable(t)
+        x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
+        t = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
+
+        opt.zero_grad()
 
         y = model(x)
-
-        loss = F.mean_squared_error(y, t)
-
-        model.cleargrads()
+        loss = torch.nn.MSELoss()(y, t)
         loss.backward()
-        opt.update()
+        opt.step()
+    
+        #pred = y.argmax(dim=1, keepdim=True)
+        acc = y.eq(t.view_as(y)).sum().item() / mb
 
-        loss = loss.data
-        #accu = accu.data
-        if GPU >= 0:
-            loss = chainer.cuda.to_cpu(loss)
-        
-        print("iter >>", i+1, ',loss >>', loss.item())
+        if (i+1) % 100 == 0:
+            print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
 
-    chainer.serializers.save_npz('cnn.npz', model)
+    torch.save(model.state_dict(), 'cnn.pt')
 
 # test
 def test():
-    model = Mynet(train=False)
-
-    if GPU >= 0:
-        chainer.cuda.get_device_from_id(GPU).use()
-        model.to_gpu()
-
-    ## Load pretrained parameters
-    chainer.serializers.load_npz('cnn.npz', model)
+    device = torch.device("cuda" if GPU else "cpu")
+    model = Mynet().to(device)
+    model.eval()
+    model.load_state_dict(torch.load('cnn.pt'))
 
     train_x, train_y, test_x, test_y = load_cifar10()
     xs = test_x / 255
@@ -160,35 +145,29 @@ def test():
 
     for i in range(10):
         x = xs[i]
-        path = paths[i]
         
         x = np.expand_dims(x, axis=0)
-        if GPU >= 0:
-            x = chainer.cuda.to_gpu(x)
-
-        pred = model(x).data
+        x = torch.tensor(x, dtype=torch.float).to(device)
         
-        if GPU >= 0:
-            pred = chainer.cuda.to_cpu(pred)
-                
-        pred = pred[0]
-        #pred = (pred + 1) / 2
-        pred = pred.reshape([channel, out_height, out_width])
-        pred = pred.transpose([1,2,0])
+        pred = model(x)
+
+        pred = pred.view(channel, img_height, img_width)
+        pred = pred.detach().cpu().numpy()
         pred -= pred.min()
         pred /= pred.max()
+        pred = pred.transpose(1,2,0)
+
         
-        x = chainer.cuda.to_cpu(x) if GPU >= 0 else x
-        #x = (x + 1) / 2
-        
+        _x = x.detach().cpu().numpy()[0]
+        #_x = (_x + 1) / 2
         if channel == 1:
             pred = pred[..., 0]
-            _x = x[0, 0]
+            _x = _x[0]
             cmap = 'gray'
         else:
-            _x = x[0].transpose(1,2,0)
+            _x = _x.transpose(1,2,0)
             cmap = None
-        
+
         plt.subplot(1,2,1)
         plt.title("input")
         plt.imshow(_x, cmap=cmap)
@@ -196,8 +175,6 @@ def test():
         plt.title("predicted")
         plt.imshow(pred, cmap=cmap)
         plt.show()
-
-        print("in {}".format(path))
     
 
 def arg_parse():

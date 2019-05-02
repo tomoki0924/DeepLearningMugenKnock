@@ -53,9 +53,13 @@ AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convo
 
 答え
 - Pytorch [answers/convae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_pytorch.py)
+- Pytorch cifar10 [answers/convae_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_cifar10_pytorch.py)
 - Tensorflow [answers/convae_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_tensorflow_slim.py)
+- Tensorflow cifar10 [answers/convae_cifar10_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_tensorflow_slim.py)
 - Keras [answers/convae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_keras.py)
+- Keras cifar10 [answers/convae_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_cifar10_keras.py)
 - Chainer [answers/convae_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_chainer.py)
+- Chainer cifar10[answers/convae_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_cifar10_chainer.py)
 
 ## Q. GAN
 
