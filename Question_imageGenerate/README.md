@@ -43,7 +43,7 @@ input=64, width=64, channel=3 とする。
 
 AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convolutionでAEを行う。SemaSegの時と似たようなネットワーク構造をとります。
 
-![](assets/ae.png)
+![](assets/convae.png)
 
 モデル構成は、
 1. Input = (height, width, channel)
