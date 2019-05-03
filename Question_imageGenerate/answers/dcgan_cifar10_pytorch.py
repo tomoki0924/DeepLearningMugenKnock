@@ -7,7 +7,7 @@ from glob import glob
 import matplotlib.pyplot as plt
 
 num_classes = 2
-img_height, img_width = 64, 64
+img_height, img_width = 32, 32
 channel = 3
 
 GPU = False
@@ -18,11 +18,11 @@ class Generator(torch.nn.Module):
     def __init__(self):
         self.in_h = img_height // 16
         self.in_w = img_width // 16
-        self.base = 64
+        self.base = 128
         
         super(Generator, self).__init__()
         #self.lin = torch.nn.Linear(100, self.in_h * self.in_w * self.base * 8)
-        self.lin = torch.nn.ConvTranspose2d(100, self.base * 8, kernel_size=4, stride=1, bias=False)
+        self.lin = torch.nn.ConvTranspose2d(100, self.base * 8, kernel_size=self.in_h, stride=1, bias=False)
         self.bnin = torch.nn.BatchNorm2d(self.base * 8)
         self.l1 = torch.nn.ConvTranspose2d(self.base* 8, self.base * 4, kernel_size=4, stride=2, padding=1, bias=False)
         self.bn1 = torch.nn.BatchNorm2d(self.base * 4)
@@ -54,7 +54,7 @@ class Generator(torch.nn.Module):
 
 class Discriminator(torch.nn.Module):
     def __init__(self):
-        self.base = 64
+        self.base = 32
         
         super(Discriminator, self).__init__()
         self.l1 = torch.nn.Conv2d(channel, self.base, kernel_size=5, padding=2, stride=2)
@@ -84,70 +84,55 @@ class Discriminator(torch.nn.Module):
         return x
 
 
+import pickle
+import os
     
-CLS = {'akahara': [0,0,128],
-       'madara': [0,128,0]}
+def load_cifar10():
+
+    path = 'cifar-10-batches-py'
+
+    if not os.path.exists(path):
+        os.system("wget {}".format(path))
+        os.system("tar xvf {}".format(path))
+
+    # train data
     
-# get train data
-def data_load(path, hf=False, vf=False, rot=None):
-    xs = []
-    paths = []
+    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
+    train_y = np.ndarray([0, ], dtype=np.int)
     
-    for dir_path in glob(path + '/*'):
-        for path in glob(dir_path + '/*'):
-            x = cv2.imread(path)
-            if channel == 1:
-                x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-            x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
-            x = x / 127.5 - 1
-            if channel == 3:
-                x = x[..., ::-1]
-            xs.append(x)
+    for i in range(1, 6):
+        data_path = path + '/data_batch_{}'.format(i)
+        with open(data_path, 'rb') as f:
+            datas = pickle.load(f, encoding='bytes')
+            print(data_path)
+            x = datas[b'data']
+            x = x.reshape(x.shape[0], 3, 32, 32)
+            x = x.transpose(0, 2, 3, 1)
+            train_x = np.vstack((train_x, x))
+        
+            y = np.array(datas[b'labels'], dtype=np.int)
+            train_y = np.hstack((train_y, y))
 
-            paths.append(path)
+    print(train_x.shape)
+    print(train_y.shape)
 
-            if hf:
-                xs.append(x[:, ::-1])
-                paths.append(path)
-
-            if vf:
-                xs.append(x[::-1])
-                paths.append(path)
-
-            if hf and vf:
-                xs.append(x[::-1, ::-1])
-                paths.append(path)
-
-            if rot is not None:
-                angle = 0
-                scale = 1
-                while angle < 360:
-                    angle += rot
-                    if channel == 1:
-                        _h, _w = x.shape
-                        max_side = max(_h, _w)
-                        tmp = np.zeros((max_side, max_side))
-                    else:
-                        _h, _w, _c = x.shape
-                        max_side = max(_h, _w)
-                        tmp = np.zeros((max_side, max_side, _c))
-                    max_side = max(_h, _w)
-                    tmp = np.zeros((max_side, max_side, _c))
-                    tx = int((max_side - _w) / 2)
-                    ty = int((max_side - _h) / 2)
-                    tmp[ty: ty+_h, tx: tx+_w] = x.copy()
-                    M = cv2.getRotationMatrix2D((max_side/2, max_side/2), angle, scale)
-                    _x = cv2.warpAffine(tmp, M, (max_side, max_side))
-                    _x = _x[tx:tx+_w, ty:ty+_h]
-                    xs.append(x)
-                    paths.append(path)
-                    
-    xs = np.array(xs, dtype=np.float32)
-    if channel == 1:
-        xs = np.expand_dims(xs, axis=-1)
-    xs = np.transpose(xs, (0,3,1,2))
+    # test data
     
-    return xs, paths
+    data_path = path + '/test_batch'
+    
+    with open(data_path, 'rb') as f:
+        datas = pickle.load(f, encoding='bytes')
+        print(data_path)
+        x = datas[b'data']
+        x = x.reshape(x.shape[0], 3, 32, 32)
+        test_x = x.transpose(0, 2, 3, 1)
+    
+        test_y = np.array(datas[b'labels'], dtype=np.int)
+
+    print(test_x.shape)
+    print(test_y.shape)
+
+    return train_x, train_y, test_x, test_y
 
 
 # train
@@ -163,7 +148,9 @@ def train():
     opt_d = torch.optim.Adam(dis.parameters(), lr=0.0002,  betas=(0.5, 0.999))
     opt_g = torch.optim.Adam(gen.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
-    xs, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
+    train_x, train_y, test_x, test_y = load_cifar10()
+    xs = train_x / 127.5 - 1
+    xs = xs.transpose(0, 3, 1, 2)
 
     # training
     mb = 64
@@ -172,7 +159,7 @@ def train():
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
-    for i in range(5000):
+    for i in range(20000):
         if mbi + mb > len(xs):
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
@@ -190,7 +177,7 @@ def train():
         #for param in dis.parameters():
         #    param.requires_grad = True
         #dis.train()
-        input_noise = np.random.uniform(-1, 1, size=(mb, 100))
+        input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
         input_noise = torch.tensor(input_noise, dtype=torch.float).to(device)
         g_output = gen(input_noise)
 
@@ -198,7 +185,7 @@ def train():
         t = [1] * mb + [0] * mb
         t = torch.tensor(t, dtype=torch.float).to(device)
 
-        dy = dis(X)
+        dy = dis(X)[..., 0]
         loss_d = torch.nn.BCELoss()(dy, t)
 
         loss_d.backward()
@@ -208,9 +195,9 @@ def train():
         #    param.requires_grad = False
         #dis.eval()
         #gen.train()
-        input_noise = np.random.uniform(-1, 1, size=(mb, 100))
+        input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
         input_noise = torch.tensor(input_noise, dtype=torch.float).to(device)
-        y = gan(input_noise)
+        y = gan(input_noise)[..., 0]
         t = torch.tensor([1] * mb, dtype=torch.float).to(device)
         loss_g = torch.nn.BCELoss()(y, t)
 
@@ -234,7 +221,7 @@ def test():
     
     for i in range(3):
         mb = 10
-        input_noise = np.random.uniform(-1, 1, size=(mb, 100))
+        input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
         input_noise = torch.tensor(input_noise, dtype=torch.float).to(device)
 
         g_output = gen(input_noise)

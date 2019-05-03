@@ -2,7 +2,7 @@
 
 ここでは画像生成の手法を自分の手で実装していきます。**とりあえずPyTorch, Tensorflow, Keras, Chainer全部で実装してください。**
 ネットワークを作ったら、学習率やイテレーションを変えて、テストデータセット *../Dataset/test/images* でテストしてみてください。
-**画像生成では学習データの数が非常に重要になってきます。なので、データ拡張をできる限り多く使って下さい**、もしくはMNISTやCIFAR10のデータセットを使った方がいいかもしれません。
+**画像生成では学習データの数が非常に重要になってきます。なので、データ拡張をできる限り多く使って下さい**、もしくはMNISTやCIFAR10のデータセットを使った方がいいかもしれません。ここではイモリのものとcifar10のものの解答を載せます。
 
 ## Q. Auto Encoder
 
@@ -27,7 +27,7 @@ input=64, width=64, channel=3 とする。
 ![](answers/answer_ae_keras_akahara_0009.png) | ![](answers/answer_ae_keras_akahara_0010.png) | 
 
 答え
-### Imori
+### imori
 - Pytorch [answers/ae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_pytorch.py)
 - Tensorflow [answers/ae_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_tensorflow_slim.py)
 - Keras [answers/ae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_keras.py)
@@ -112,9 +112,15 @@ GANの出力
 なんとなくだけど、chainerがきれいにできる気がする。。。
 
 答え
+### imori
 - PyTorch [answers/gan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_pytorch.py)
 - Keras [answers/gan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_keras.py)
 - Chainer [answers/gan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_chainer.py)
+
+### cifar10
+- PyTorch [answers/gan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_pytorch.py)
+- Keras [answers/gan_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_keras.py)
+- Chainer [answers/gan_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_chainer.py)
 
 ## DCGAN
 
@@ -147,7 +153,13 @@ DCGANの出力
 ![](answers/dcgan_keras.png)
 
 答え
+### imori
 - Pytorch [answers/dcgan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py)
 - Keras [answers/dcgan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_keras.py)
 - Chainer [answers/dcgan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_chainer.py)
+
+### cifar10
+- Pytorch [answers/dcgan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_pytorch.py)
+- Keras [answers/dcgan_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_keras.py)
+- Chainer [answers/dcgan_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_chainer.py)
 

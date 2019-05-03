@@ -21,16 +21,17 @@ from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization, Reshape, UpSampling2D, LeakyReLU
 
 num_classes = 2
-img_height, img_width = 64, 64
+img_height, img_width = 32, 32
 channel = 3
 
 def G_model(Height, Width, channel=3):
     inputs = Input((100,))
-    x = Dense(128, name='g_dense1')(inputs)
+    base = 128
+    x = Dense(base, name='g_dense1')(inputs)
     x = LeakyReLU(alpha=0.2)(x)
-    x = Dense(256, name='g_dense2')(x)
+    x = Dense(base * 2, name='g_dense2')(x)
     x = LeakyReLU(alpha=0.2)(x)
-    x = Dense(512, name='g_dense3')(x)
+    x = Dense(base * 4, name='g_dense3')(x)
     x = LeakyReLU(alpha=0.2)(x)
     x = Dense(Height * Width * channel, activation='tanh', name='g_out')(x)
     x = Reshape((Height, Width, channel))(x)
@@ -39,10 +40,11 @@ def G_model(Height, Width, channel=3):
 
 def D_model(Height, Width, channel=3):
     inputs = Input((Height, Width, channel))
+    base = 512
     x = Flatten()(inputs)
-    x = Dense(512, name='d_dense1')(x)
+    x = Dense(base * 2, name='d_dense1')(x)
     x = LeakyReLU(alpha=0.2)(x)
-    x = Dense(256, name='d_dense2')(x)
+    x = Dense(base, name='d_dense2')(x)
     x = LeakyReLU(alpha=0.2)(x)
     x = Dense(1, activation='sigmoid', name='d_out')(x)
     model = Model(inputs, x, name='D')
@@ -55,75 +57,55 @@ def Combined_model(g, d):
     return model
 
     
-CLS = {'background': [0,0,0],
-       'akahara': [0,0,128],
-       'madara': [0,128,0]}
+import pickle
+import os
     
-# get train data
-def data_load(path, hf=False, vf=False, rot=None):
-    xs = []
-    ts = []
-    paths = []
+def load_cifar10():
+
+    path = 'cifar-10-batches-py'
+
+    if not os.path.exists(path):
+        os.system("wget {}".format(path))
+        os.system("tar xvf {}".format(path))
+
+    # train data
     
-    for dir_path in glob(path + '/*'):
-        for path in glob(dir_path + '/*'):
-            x = cv2.imread(path)
-            if channel == 1:
-                x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-            x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
-            x = x / 127.5 - 1
-            if channel == 1:
-                x = x[..., None]
-            else:
-                x = x[..., ::-1]
-            xs.append(x)
-
-            for i, cls in enumerate(CLS):
-                if cls in path:
-                    t = i
-            
-            ts.append(t)
-
-            paths.append(path)
-
-            if hf:
-                xs.append(x[:, ::-1])
-                ts.append(t)
-                paths.append(path)
-
-            if vf:
-                xs.append(x[::-1])
-                ts.append(t)
-                paths.append(path)
-
-            if hf and vf:
-                xs.append(x[::-1, ::-1])
-                ts.append(t)
-                paths.append(path)
-
-            if rot is not None:
-                angle = 0
-                scale = 1
-                while angle < 360:
-                    angle += rot
-                    _h, _w, _c = x.shape
-                    max_side = max(_h, _w)
-                    tmp = np.zeros((max_side, max_side, _c))
-                    tx = int((max_side - _w) / 2)
-                    ty = int((max_side - _h) / 2)
-                    tmp[ty: ty+_h, tx: tx+_w] = x.copy()
-                    M = cv2.getRotationMatrix2D((max_side/2, max_side/2), angle, scale)
-                    _x = cv2.warpAffine(tmp, M, (max_side, max_side))
-                    _x = _x[tx:tx+_w, ty:ty+_h]
-                    xs.append(x)
-                    ts.append(t)
-                    paths.append(path)
-                    
-    xs = np.array(xs, dtype=np.float32)
-    ts = np.array(ts, dtype=np.int)
-    #xs = np.transpose(xs, (0,3,1,2))
+    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
+    train_y = np.ndarray([0, ], dtype=np.int)
     
-    return xs, paths
+    for i in range(1, 6):
+        data_path = path + '/data_batch_{}'.format(i)
+        with open(data_path, 'rb') as f:
+            datas = pickle.load(f, encoding='bytes')
+            print(data_path)
+            x = datas[b'data']
+            x = x.reshape(x.shape[0], 3, 32, 32)
+            x = x.transpose(0, 2, 3, 1)
+            train_x = np.vstack((train_x, x))
+        
+            y = np.array(datas[b'labels'], dtype=np.int)
+            train_y = np.hstack((train_y, y))
+
+    print(train_x.shape)
+    print(train_y.shape)
+
+    # test data
+    
+    data_path = path + '/test_batch'
+    
+    with open(data_path, 'rb') as f:
+        datas = pickle.load(f, encoding='bytes')
+        print(data_path)
+        x = datas[b'data']
+        x = x.reshape(x.shape[0], 3, 32, 32)
+        test_x = x.transpose(0, 2, 3, 1)
+    
+        test_y = np.array(datas[b'labels'], dtype=np.int)
+
+    print(test_x.shape)
+    print(test_y.shape)
+
+    return train_x, train_y, test_x, test_y
 
 
 # train
@@ -148,10 +130,11 @@ def train():
     gan = Combined_model(g=g, d=d)
     gan.compile(loss='binary_crossentropy', optimizer=g_opt)
 
-    xs, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
+    train_x, train_y, test_x, test_y = load_cifar10()
+    xs = train_x / 127.5 - 1
 
     # training
-    mb = 32
+    mb = 64
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
@@ -178,7 +161,8 @@ def train():
         input_noise = np.random.uniform(-1, 1, size=(mb, 100))
         g_loss = gan.train_on_batch(input_noise, [1] * mb)
 
-        print("iter >>", i+1, ",g_loss >>", g_loss, ',d_loss >>', d_loss)
+        if (i+1) % 100 == 0:
+            print("iter >>", i+1, ",g_loss >>", g_loss, ',d_loss >>', d_loss)
     
     g.save('model.h5')
 
