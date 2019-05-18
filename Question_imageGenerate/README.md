@@ -183,11 +183,11 @@ DCGANはGANよりきれいな画像を作成することができますが、あ
 
 MNISTでの出力はこんな感じになります。
 
-![](answers/cgan_mnist_pytorch.png)
+![](answers/answer_cgan_mnist_pytorch.png)
 
 CIFAR10での出力はこんな感じになります。
 
-![](answers/cgan_cifar10_pytorch.png)
+![](answers/answer_cgan_cifar10_pytorch.png)
 
 
 ### mnist
