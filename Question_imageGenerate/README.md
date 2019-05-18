@@ -181,18 +181,17 @@ DCGANはGANよりきれいな画像を作成することができますが、あ
 
 ここでは上記事項をDCGANに追加してみましょう。
 
+### mnist
 MNISTでの出力はこんな感じになります。
 
 ![](answers/answer_cgan_mnist_pytorch.png)
 
+- Pytorch [answers/cgan_mnist_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_pytorch.py)
+
+### cifar10
 CIFAR10での出力はこんな感じになります。
 
 ![](answers/answer_cgan_cifar10_pytorch.png)
 
-
-### mnist
-- Pytorch [answers/cgan_mnist_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_pytorch.py)
-
-### cifar10
 - Pytorch [answers/cgan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_pytorch.py)
 
