@@ -185,6 +185,45 @@ Q.2-2では10回ミニバッチを回したが、これは10iterationしたこ�
 
 答え >> [answers/answer_rotation.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_rotation.py)
 
+
+## Q. MNIST Step.1 ダウンロード
+
+MNISTはNISTが公開している手書きの文字（0から9）の10クラス分類を行うための有名なオープンデータセットの1つです。学習データ60,000枚、テストデータ10,000枚で構成されます。
+ここではMNISTを読み込むためのプログラムを作成してみましょう。(以下は https://deepage.net/features/numpy-neuralnetwork-5.html を参照)
+
+MNIStの公式ページはここです。>>  http://yann.lecun.com/exdb/mnist/
+これの「train-images-idx3-ubyte.gz, train-labels-idx1-ubyte.gz, t10k-images-idx3-ubyte.gz, t10k-labels-idx1-ubyte.gz」が今回使うデータセットのgzファイルですが、まずはカレントディレクトリにこれらのファイルがなければ、ダウンロードするコードを書いてみましょう。
+ここではlinuxかosxを想定して、「wget」でダウンロードします。
+
+答え >> [answers/load_mnist_step1.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_mnist_step1.py)
+
+## Q. MNIST Step.2 学習データの読み込み
+
+MNISTのデータはバイナリ化されていて、非常に扱いにくいです。これを最終的には、[データ数, 28, 28]のshapeを持ったnumpyに変換したいです。そこで、gzip.open()とnumpy.frombuffer()という関数を使って、上記のデータを読み込みます。
+
+```python
+with gzip.open("train-images-idx3-ubyte.gz", 'rb') as f:
+    train_x = np.frombuffer(f.read(), np.uint8, offset=16)
+```
+こうすると、train_xには[47040000 (=60,000x28x28)]のnumpyが入ります。これを[60,000, 28, 28, 1]のshapeに変更しましょう。そして、型もfloatに変更しましょう。
+
+
+ラベルに関しては、以下で同様に読み込めます。
+
+```python
+with gzip.open("train-labels-idx1-ubyte.gz", 'rb') as f:
+    train_y = np.frombuffer(f.read(), np.uint8, offset=8)
+```
+
+答え >> [answers/load_mnist_step2.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_mnist_step2.py)
+
+## Q. MNIST Step. Final テストデータの読み込み
+
+test_batchに関しても同じように test_xとtest_yに分けて見ましょう。
+最後に関数の返り値をtrain_x, train_y, test_x, test_yとしてkeras.datasets.load_mnistっぽくしてみましょう。
+
+答え >> [answers/load_mnist.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_mnist.py)
+
 ## Q. CIFAR-10 Step.1 ダウンロード
 
 CIFAR-10は10クラス分類を行うための有名なオープンデータセットの1つです。学習データ50,000枚、テストデータ10,000枚で構成されます。

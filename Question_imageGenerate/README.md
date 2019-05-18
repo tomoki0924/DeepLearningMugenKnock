@@ -130,6 +130,8 @@ GANの進化版、DCGAN (Deep Convolutional GAN)。GANはMulti layer perceptron�
 
 この論文はどっちかというとGANを学習させるコツが多く書かれています。
 
+![](assets/dcgan.png)
+
 ネットワーク構成は
 
 **Generator**
@@ -162,4 +164,35 @@ DCGANの出力
 - Pytorch [answers/dcgan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_pytorch.py)
 - Keras [answers/dcgan_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_keras.py)
 - Chainer [answers/dcgan_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_chainer.py)
+
+
+## Conditional GAN
+
+元論文 >> https://arxiv.org/abs/1411.1784
+
+DCGANはGANよりきれいな画像を作成することができますが、あくまでランダムなノイズから作るのでどんな画像が作成されるかもランダムでした。例えば、CIFAR10では馬の画像か犬の画像ができるかこちら側では決めることができません。
+
+なので、何の画像を作成するかこちら側が指定できるものがConditional GANです。Condtionalは条件付きということを意味しており、つまりラベル指定ができます。conditionalGANではGeneratorとDiscriminatorの両方の入力でラベルyを追加します。
+
+![](assets/cgan.png)
+
+具体的にはまず、Generatorへの入力となるノイズzにone-hotベクトルをconcatします。そして、Generatorの出力に対しては、同じ縦横を持ち、チャネル数がクラス数となるone-hotのデータをチャネル方向にconcatします。
+これにより、Condition yをGeneratorに加えることができます。
+
+ここでは上記事項をDCGANに追加してみましょう。
+
+MNISTでの出力はこんな感じになります。
+
+![](answers/cgan_mnist_pytorch.png)
+
+CIFAR10での出力はこんな感じになります。
+
+![](answers/cgan_cifar10_pytorch.png)
+
+
+### mnist
+- Pytorch [answers/cgan_mnist_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_pytorch.py)
+
+### cifar10
+- Pytorch [answers/cgan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_pytorch.py)
 

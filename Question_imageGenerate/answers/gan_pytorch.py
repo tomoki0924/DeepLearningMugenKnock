@@ -56,6 +56,18 @@ class Discriminator(torch.nn.Module):
         x = torch.nn.functional.sigmoid(x)
         return x
 
+
+    
+class GAN(torch.nn.Module):
+    def __init__(self, g, d):
+        super(GAN, self).__init__()
+        self.g = g
+        self.d = d
+        
+    def forward(self, x, y):
+        x = self.g(x, y)
+        x = self.d(x)
+        return x
     
 CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
@@ -130,7 +142,8 @@ def train():
     # model
     gen = Generator().to(device)
     dis = Discriminator().to(device)
-    gan = torch.nn.Sequential(gen, dis)
+    gan = Gan(gen, dis)
+    #gan = torch.nn.Sequential(gen, dis)
 
     opt_d = torch.optim.Adam(dis.parameters(), lr=0.0002)
     opt_g = torch.optim.Adam(gen.parameters(), lr=0.0002)
