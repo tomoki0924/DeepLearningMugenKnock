@@ -7,20 +7,71 @@ import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
 
-num_classes = 2
+num_classes = 10
 img_height, img_width = 32, 32
 channel = 3
 
-GPU = 0
+GPU = -1
     
 class Generator(chainer.Chain):
     def __init__(self):
         super(Generator, self).__init__()
+        base = 64
         with self.init_scope():
-            self.l1 = L.Linear(None, 128)
-            self.l2 = L.Linear(None, 256)
-            self.l3 = L.Linear(None, 512)
-            self.l4 = L.Linear(None, img_height * img_width * channel)
+            self.l1 = L.Deconvolution2D(None, base * 8, ksize=int(img_height/16), stride=1, nobias=True)
+            self.bn1 = L.BatchNormalization(base * 8)
+            self.l2 = L.Deconvolution2D(None, base * 4, ksize=4, stride=2, pad=1,  nobias=True)
+            self.bn2 = L.BatchNormalization(base * 4)
+            self.l3 = L.Deconvolution2D(None, base * 2, ksize=4, stride=2, pad=1,  nobias=True)
+            self.bn3 = L.BatchNormalization(base * 2)
+            self.l4 = L.Deconvolution2D(None, base, ksize=4, stride=2, pad=1,  nobias=True)
+            self.bn4 = L.BatchNormalization(base)
+            self.l5 = L.Deconvolution2D(None, channel, ksize=4,  stride=2, pad=1)
+        
+    def forward(self, x, y, test=False):
+        con_x = np.zeros((len(y), num_classes, 1, 1), dtype=np.float32)
+        con_x[np.arange(len(y)), y] = 1
+        if GPU >= 0:
+            con_x = chainer.cuda.to_gpu(con_x)
+
+        x = F.concat([x, con_x], axis=1)
+            
+        x = self.l1(x)
+        x = self.bn1(x)
+        x = F.relu(x)
+        x = self.l2(x)
+        x = self.bn2(x)
+        x = F.relu(x)
+        x = self.l3(x)
+        x = self.bn3(x)
+        x = F.relu(x)
+        x = self.l4(x)
+        x = self.bn4(x)
+        x = F.relu(x)
+        x = self.l5(x)
+        x = F.tanh(x)
+
+        if test:
+            return x
+        else:
+            con_x = np.zeros((len(y), num_classes, img_height, img_width), dtype=np.float32)
+            con_x[np.arange(len(y)), y] = 1
+            if GPU >= 0:
+                con_x = chainer.cuda.to_gpu(con_x)
+            out_x = F.concat([x, con_x], axis=1)
+            return out_x
+
+    
+class Discriminator(chainer.Chain):
+    def __init__(self):
+        super(Discriminator, self).__init__()
+        base = 64
+        with self.init_scope():
+            self.l1 = L.Convolution2D(None, base, ksize=5, pad=2, stride=2)
+            self.l2 = L.Convolution2D(None, base * 2, ksize=5, pad=2, stride=2)
+            self.l3 = L.Convolution2D(None, base * 4, ksize=5, pad=2, stride=2)
+            self.l4 = L.Convolution2D(None, base * 8, ksize=5, pad=2, stride=2)
+            self.l5 = L.Linear(None, 1)
         
     def forward(self, x):
         x = self.l1(x)
@@ -30,23 +81,8 @@ class Generator(chainer.Chain):
         x = self.l3(x)
         x = F.leaky_relu(x, 0.2)
         x = self.l4(x)
-        x = F.tanh(x)
-        return x
-
-class Discriminator(chainer.Chain):
-    def __init__(self):
-        super(Discriminator, self).__init__()
-        with self.init_scope():
-            self.l1 = L.Linear(None, 512)
-            self.l2 = L.Linear(None, 256)
-            self.l3 = L.Linear(None, 1)
-        
-    def forward(self, x):
-        x = self.l1(x)
         x = F.leaky_relu(x, 0.2)
-        x = self.l2(x)
-        x = F.leaky_relu(x, 0.2)
-        x = self.l3(x)
+        x = self.l5(x)
         #x = F.sigmoid(x)
         return x  
     
@@ -80,7 +116,8 @@ def load_cifar10():
             y = np.array(datas[b'labels'], dtype=np.int)
             train_y = np.hstack((train_y, y))
 
-    # test data    
+    # test data
+    
     data_path = path + '/test_batch'
     
     with open(data_path, 'rb') as f:
@@ -93,6 +130,7 @@ def load_cifar10():
         test_y = np.array(datas[b'labels'], dtype=np.int)
 
     return train_x, train_y, test_x, test_y
+
 
 
 # train
@@ -108,9 +146,9 @@ def train():
         dis.to_gpu()
         gan.to_gpu()
 
-    opt_d = chainer.optimizers.Adam(0.0002)
+    opt_d = chainer.optimizers.Adam(0.0002, beta1=0.5)
     opt_d.setup(dis)
-    opt_g = chainer.optimizers.Adam(0.0002)
+    opt_g = chainer.optimizers.Adam(0.0002, beta1=0.5)
     opt_g.setup(gen)
     
     train_x, train_y, test_x, test_y = load_cifar10()
@@ -118,13 +156,13 @@ def train():
     xs = xs.transpose(0, 3, 1, 2)
 
     # training
-    mb = 64
+    mb = 128
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
-    for i in range(20000):
+    for i in range(30000):
         if mbi + mb > len(xs):
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
@@ -139,18 +177,23 @@ def train():
         dis.cleargrads()
         gan.cleargrads()
         
-        x = xs[mb_ind].reshape([mb, -1])
-        input_noise = np.random.uniform(-1, 1, size=(mb, 100)).astype(np.float32)
+        x = xs[mb_ind]
+        con_x = train_y[mb_ind]
+        input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1)).astype(np.float32)
         dt = np.array([1] * mb + [0] * mb, dtype=np.int32).reshape([mb*2, 1])
         gt = np.array([1] * mb, dtype=np.int32).reshape([mb, 1])
-            
+
+        _con_x = np.zeros((mb, num_classes, img_height, img_width), dtype=np.float32)
+        _con_x[np.arange(mb), con_x] = 1
+        x = np.hstack([x, _con_x])
+        
         if GPU >= 0:
             x = chainer.cuda.to_gpu(x)
             input_noise = chainer.cuda.to_gpu(input_noise)
             dt = chainer.cuda.to_gpu(dt)
             gt = chainer.cuda.to_gpu(gt)
 
-        g_output = gen(input_noise)
+        g_output = gen(input_noise, con_x)
 
         #if GPU >= 0:
         #    g_output = chainer.cuda.to_cpu(g_output)
@@ -162,7 +205,7 @@ def train():
         loss_d.backward()
         opt_d.update()
 
-        y = gan(input_noise)
+        y = gan(input_noise, con_x)
         
         loss_g = F.sigmoid_cross_entropy(y, gt)
         loss_g.backward()
@@ -179,8 +222,9 @@ def train():
         if (i+1) % 100 == 0:
             print("iter >>", i + 1, ',G:loss >>', loss_g.item(), ', D:loss >>', loss_d.item())
 
-    chainer.serializers.save_npz('cnn.npz', gen)
+    chainer.serializers.save_npz('cgan_cifar10_chainer.npz', gen)
 
+    
 # test
 def test():
     gen = Generator()
@@ -190,30 +234,39 @@ def test():
         gen.to_gpu()
 
     ## Load pretrained parameters
-    chainer.serializers.load_npz('cnn.npz', gen)
+    chainer.serializers.load_npz('cgan_cifar10_chainer.npz', gen)
 
     np.random.seed(100)
     
+    labels = ["air¥nplane", "auto¥bmobile", "bird", "cat", "deer",
+              "dog", "frog", "horse", "ship", "truck"]
+    
+    if channel == 1:
+        cmap = 'gray'
+    else:
+        cmap = None
+    
     for i in range(3):
         mb = 10
-        input_noise = np.random.uniform(-1, 1, size=(mb, 100)).astype(np.float32)
+        input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1)).astype(np.float32)
+        con_x = np.arange((num_classes), dtype=np.int)
 
         if GPU >= 0:
             input_noise = chainer.cuda.to_gpu(input_noise)
 
-        g_output = gen(input_noise).data
+        g_output = gen(input_noise, con_x, test=True).data
 
         if GPU >= 0:
             g_output = chainer.cuda.to_cpu(g_output)
             
         g_output = (g_output + 1) / 2
-        g_output = g_output.reshape([mb, channel, img_height, img_width])
         g_output = g_output.transpose(0,2,3,1)
 
         for i in range(mb):
             generated = g_output[i]
             plt.subplot(1,mb,i+1)
-            plt.imshow(generated)
+            plt.title(labels[i])
+            plt.imshow(generated, cmap=cmap)
             plt.axis('off')
 
         plt.show()

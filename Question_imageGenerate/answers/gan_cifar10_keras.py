@@ -24,7 +24,7 @@ num_classes = 2
 img_height, img_width = 32, 32
 channel = 3
 
-def G_model(Height, Width, channel=3):
+def G_model():
     inputs = Input((100,))
     base = 128
     x = Dense(base, name='g_dense1')(inputs)
@@ -33,13 +33,13 @@ def G_model(Height, Width, channel=3):
     x = LeakyReLU(alpha=0.2)(x)
     x = Dense(base * 4, name='g_dense3')(x)
     x = LeakyReLU(alpha=0.2)(x)
-    x = Dense(Height * Width * channel, activation='tanh', name='g_out')(x)
-    x = Reshape((Height, Width, channel))(x)
+    x = Dense(img_height * img_width * channel, activation='tanh', name='g_out')(x)
+    x = Reshape((img_height, img_width, channel))(x)
     model = Model(inputs, x, name='G')
     return model
 
-def D_model(Height, Width, channel=3):
-    inputs = Input((Height, Width, channel))
+def D_model():
+    inputs = Input((img_height, img_width, channel))
     base = 512
     x = Flatten()(inputs)
     x = Dense(base * 2, name='d_dense1')(x)
@@ -86,11 +86,7 @@ def load_cifar10():
             y = np.array(datas[b'labels'], dtype=np.int)
             train_y = np.hstack((train_y, y))
 
-    print(train_x.shape)
-    print(train_y.shape)
-
     # test data
-    
     data_path = path + '/test_batch'
     
     with open(data_path, 'rb') as f:
@@ -102,16 +98,13 @@ def load_cifar10():
     
         test_y = np.array(datas[b'labels'], dtype=np.int)
 
-    print(test_x.shape)
-    print(test_y.shape)
-
     return train_x, train_y, test_x, test_y
 
 
 # train
 def train():
-    g = G_model(Height=img_height, Width=img_width, channel=channel)
-    d = D_model(Height=img_height, Width=img_width, channel=channel)
+    g = G_model()
+    d = D_model()
     gan = Combined_model(g=g, d=d)
 
     g_opt = keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
@@ -169,7 +162,7 @@ def train():
 # test
 def test():
     # load trained model
-    g = G_model(Height=img_height, Width=img_width, channel=channel)
+    g = G_model()
     g.load_weights('model.h5', by_name=True)
 
     np.random.seed(100)

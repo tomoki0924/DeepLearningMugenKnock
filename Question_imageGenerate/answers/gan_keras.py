@@ -24,7 +24,7 @@ num_classes = 2
 img_height, img_width = 64, 64
 channel = 3
 
-def G_model(Height, Width, channel=3):
+def G_model():
     inputs = Input((100,))
     x = Dense(128, name='g_dense1')(inputs)
     x = LeakyReLU(alpha=0.2)(x)
@@ -32,13 +32,13 @@ def G_model(Height, Width, channel=3):
     x = LeakyReLU(alpha=0.2)(x)
     x = Dense(512, name='g_dense3')(x)
     x = LeakyReLU(alpha=0.2)(x)
-    x = Dense(Height * Width * channel, activation='tanh', name='g_out')(x)
-    x = Reshape((Height, Width, channel))(x)
+    x = Dense(img_height * img_width * channel, activation='tanh', name='g_out')(x)
+    x = Reshape((img_height, img_width, channel))(x)
     model = Model(inputs, x, name='G')
     return model
 
-def D_model(Height, Width, channel=3):
-    inputs = Input((Height, Width, channel))
+def D_model():
+    inputs = Input((img_height, img_width, channel))
     x = Flatten()(inputs)
     x = Dense(512, name='d_dense1')(x)
     x = LeakyReLU(alpha=0.2)(x)
@@ -128,8 +128,8 @@ def data_load(path, hf=False, vf=False, rot=None):
 
 # train
 def train():
-    g = G_model(Height=img_height, Width=img_width, channel=channel)
-    d = D_model(Height=img_height, Width=img_width, channel=channel)
+    g = G_model()
+    d = D_model()
     gan = Combined_model(g=g, d=d)
 
     g_opt = keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
@@ -185,7 +185,7 @@ def train():
 # test
 def test():
     # load trained model
-    g = G_model(Height=img_height, Width=img_width, channel=channel)
+    g = G_model()
     g.load_weights('model.h5', by_name=True)
 
     np.random.seed(100)

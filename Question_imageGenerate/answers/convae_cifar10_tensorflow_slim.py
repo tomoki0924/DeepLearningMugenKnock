@@ -56,9 +56,6 @@ def load_cifar10():
             y = np.array(datas[b'labels'], dtype=np.int)
             train_y = np.hstack((train_y, y))
 
-    print(train_x.shape)
-    print(train_y.shape)
-
     # test data
     
     data_path = path + '/test_batch'
@@ -71,9 +68,6 @@ def load_cifar10():
         test_x = x.transpose(0, 2, 3, 1)
     
         test_y = np.array(datas[b'labels'], dtype=np.int)
-
-    print(test_x.shape)
-    print(test_y.shape)
 
     return train_x, train_y, test_x, test_y
 

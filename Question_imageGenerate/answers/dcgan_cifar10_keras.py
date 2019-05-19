@@ -27,10 +27,10 @@ channel = 3
 from keras.regularizers import l1_l2
 from keras.initializers import RandomNormal as RN, Constant
 
-def G_model(Height, Width, channel=3):
+def G_model():
     inputs = Input((100,))
-    in_h = int(Height / 16)
-    in_w = int(Width / 16)
+    in_h = int(img_height / 16)
+    in_w = int(img_width / 16)
     d_dim = 256
     base = 128
     x = Dense(in_h * in_w * d_dim, name='g_dense1',
@@ -60,9 +60,9 @@ def G_model(Height, Width, channel=3):
     model = Model(inputs=inputs, outputs=x, name='G')
     return model
 
-def D_model(Height, Width, channel=3):
+def D_model():
     base = 32
-    inputs = Input((Height, Width, channel))
+    inputs = Input((img_height, img_width, channel))
     x = Conv2D(base, (5, 5), padding='same', strides=(2,2), name='d_conv1',
         kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(inputs)
     x = LeakyReLU(alpha=0.2)(x)
@@ -117,9 +117,6 @@ def load_cifar10():
             y = np.array(datas[b'labels'], dtype=np.int)
             train_y = np.hstack((train_y, y))
 
-    print(train_x.shape)
-    print(train_y.shape)
-
     # test data
     
     data_path = path + '/test_batch'
@@ -133,16 +130,13 @@ def load_cifar10():
     
         test_y = np.array(datas[b'labels'], dtype=np.int)
 
-    print(test_x.shape)
-    print(test_y.shape)
-
     return train_x, train_y, test_x, test_y
 
 
 # train
 def train():
-    g = G_model(Height=img_height, Width=img_width, channel=channel)
-    d = D_model(Height=img_height, Width=img_width, channel=channel)
+    g = G_model()
+    d = D_model()
     gan = Combined_model(g=g, d=d)
 
     g_opt = keras.optimizers.Adam(lr=0.0002, beta_1=0.5)
@@ -198,7 +192,7 @@ def train():
 # test
 def test():
     # load trained model
-    g = G_model(Height=img_height, Width=img_width, channel=channel)
+    g = G_model()
     g.load_weights('model.h5', by_name=True)
 
     np.random.seed(100)
