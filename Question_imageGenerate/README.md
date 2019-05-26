@@ -162,6 +162,7 @@ DCGANの出力
 
 ### cifar10
 - Pytorch [answers/dcgan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_pytorch.py)
+- Tensorflow [answers/dcgan_cifar10_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_tensorflow_slim.py)
 - Keras [answers/dcgan_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_keras.py)
 - Chainer [answers/dcgan_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_chainer.py)
 
@@ -194,6 +195,7 @@ CIFAR10での出力はこんな感じになります。
 ![](answers/answer_cgan_cifar10_pytorch.png)
 
 - Pytorch [answers/cgan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_pytorch.py)
+- Tensorflow [answers/cgan_cifar10_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_tensorflow_slim.py)
 - Keras [answers/cgan_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_keras.py)
 - Chainer [answers/cgan_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_chainer.py)
 
