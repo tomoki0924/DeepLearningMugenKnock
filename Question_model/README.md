@@ -340,7 +340,13 @@ x = F.max_pooling_2d(x, ksize=2, stride=2)
 
 サンプル >> [answers/easy_chaienr.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/easy_chainer.py)
 
-## Q. GoogLeNet
+## Q. GoogLeNet-v1
+
+- Pytorch [answers/googlenetv1_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/googlenetv1_pytorch.py)
+- Tensorflow [answers/googlenetv1_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/googlenetv1_tensorflow_slim.py)
+- Keras [answers/googlenetv1_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/googlenetv1_keras.py)
+- chainer [answers/bn_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bn_chainer.py)
+
 
 ##  Q. Batch Normalization
 
