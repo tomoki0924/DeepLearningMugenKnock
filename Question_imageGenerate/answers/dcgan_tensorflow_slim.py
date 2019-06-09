@@ -58,49 +58,71 @@ def Discriminator(x):
     
 
     
-import pickle
-import os
+# get train data
+def data_load(path, hf=False, vf=False, rot=None):
+    xs = []
+    ts = []
+    paths = []
     
-def load_cifar10():
+    for dir_path in glob(path + '/*'):
+        for path in glob(dir_path + '/*'):
+            x = cv2.imread(path)
+            if channel == 1:
+                x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
+            x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
+            x = x / 127.5 - 1
+            if channel == 1:
+                x = x[..., None]
+            else:
+                x = x[..., ::-1]
+            xs.append(x)
 
-    path = 'cifar-10-batches-py'
+            for i, cls in enumerate(CLS):
+                if cls in path:
+                    t = i
+            
+            ts.append(t)
 
-    if not os.path.exists(path):
-        os.system("wget {}".format(path))
-        os.system("tar xvf {}".format(path))
+            paths.append(path)
 
-    # train data
-    
-    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
-    train_y = np.ndarray([0, ], dtype=np.int)
-    
-    for i in range(1, 6):
-        data_path = path + '/data_batch_{}'.format(i)
-        with open(data_path, 'rb') as f:
-            datas = pickle.load(f, encoding='bytes')
-            print(data_path)
-            x = datas[b'data']
-            x = x.reshape(x.shape[0], 3, 32, 32)
-            x = x.transpose(0, 2, 3, 1)
-            train_x = np.vstack((train_x, x))
-        
-            y = np.array(datas[b'labels'], dtype=np.int)
-            train_y = np.hstack((train_y, y))
+            if hf:
+                xs.append(x[:, ::-1])
+                ts.append(t)
+                paths.append(path)
 
-    # test data
-    
-    data_path = path + '/test_batch'
-    
-    with open(data_path, 'rb') as f:
-        datas = pickle.load(f, encoding='bytes')
-        print(data_path)
-        x = datas[b'data']
-        x = x.reshape(x.shape[0], 3, 32, 32)
-        test_x = x.transpose(0, 2, 3, 1)
-    
-        test_y = np.array(datas[b'labels'], dtype=np.int)
+            if vf:
+                xs.append(x[::-1])
+                ts.append(t)
+                paths.append(path)
 
-    return train_x, train_y, test_x, test_y
+            if hf and vf:
+                xs.append(x[::-1, ::-1])
+                ts.append(t)
+                paths.append(path)
+
+            if rot is not None:
+                angle = 0
+                scale = 1
+                while angle < 360:
+                    angle += rot
+                    _h, _w, _c = x.shape
+                    max_side = max(_h, _w)
+                    tmp = np.zeros((max_side, max_side, _c))
+                    tx = int((max_side - _w) / 2)
+                    ty = int((max_side - _h) / 2)
+                    tmp[ty: ty+_h, tx: tx+_w] = x.copy()
+                    M = cv2.getRotationMatrix2D((max_side/2, max_side/2), angle, scale)
+                    _x = cv2.warpAffine(tmp, M, (max_side, max_side))
+                    _x = _x[tx:tx+_w, ty:ty+_h]
+                    xs.append(x)
+                    ts.append(t)
+                    paths.append(path)
+                    
+    xs = np.array(xs, dtype=np.float32)
+    ts = np.array(ts, dtype=np.int)
+    #xs = np.transpose(xs, (0,3,1,2))
+    
+    return xs, paths
 
 
 # train
@@ -109,7 +131,7 @@ def train():
 
     # place holder
     X = tf.placeholder(tf.float32, [None, 100])
-    X2 = tf.placeholder(tf.float32, [None, img_height, img_width, channel])
+    X2 = tf.placeholder(tf.float32, [None, out_height, out_width, channel])
     Y = tf.placeholder(tf.float32, [None, 1])
     keep_prob = tf.placeholder(tf.float32)
     
@@ -132,8 +154,7 @@ def train():
     G_vars = [var for var in tvars if 'g_' in var.name]
     G_train = G_optimizer.minimize(G_loss, var_list=G_vars)
 
-    train_x, train_y, test_x, test_y = load_cifar10()
-    xs = train_x / 127.5 - 1
+    xs, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
 
     # training
     mb = 64

@@ -16,18 +16,25 @@ GPU = -1
 class Generator(chainer.Chain):
     def __init__(self):
         super(Generator, self).__init__()
+        base = 64
         with self.init_scope():
-            self.l1 = L.Deconvolution2D(None, 512, ksize=4, stride=4, nobias=True)
-            self.bn1 = L.BatchNormalization(512)
-            self.l2 = L.Deconvolution2D(None, 256, ksize=4, stride=2, pad=1,  nobias=True)
-            self.bn2 = L.BatchNormalization(256)
-            self.l3 = L.Deconvolution2D(None, 128, ksize=4, stride=2, pad=1,  nobias=True)
-            self.bn3 = L.BatchNormalization(128)
-            self.l4 = L.Deconvolution2D(None, 64, ksize=4, stride=2, pad=1,  nobias=True)
-            self.bn4 = L.BatchNormalization(64)
+            #self.linear = L.Linear(None, int(img_height / 16 * img_width / 16 * base))
+            #self.bn = L.BatchNormalization(base)
+            self.l1 = L.Deconvolution2D(None, base * 8, ksize=4, stride=4, nobias=True)
+            self.bn1 = L.BatchNormalization(base * 8)
+            self.l2 = L.Deconvolution2D(None, base * 4, ksize=4, stride=2, pad=1,  nobias=True)
+            self.bn2 = L.BatchNormalization(base * 4)
+            self.l3 = L.Deconvolution2D(None, base * 2, ksize=4, stride=2, pad=1,  nobias=True)
+            self.bn3 = L.BatchNormalization(base * 2)
+            self.l4 = L.Deconvolution2D(None, base, ksize=4, stride=2, pad=1,  nobias=True)
+            self.bn4 = L.BatchNormalization(base)
             self.l5 = L.Deconvolution2D(None, channel, ksize=4,  stride=2, pad=1)
         
     def forward(self, x):
+        #x = F.relu(self.linear(x))
+        #mb, _ = x.data.shape
+        #x = F.reshape(x, [mb, -1, int(img_height / 16), int(img_width / 16)])
+        #x = self.bn(x)
         x = self.l1(x)
         x = self.bn1(x)
         x = F.relu(x)
@@ -49,10 +56,11 @@ class Discriminator(chainer.Chain):
     def __init__(self):
         super(Discriminator, self).__init__()
         with self.init_scope():
-            self.l1 = L.Convolution2D(None, 64, ksize=5, pad=2, stride=2)
-            self.l2 = L.Convolution2D(None, 128, ksize=5, pad=2, stride=2)
-            self.l3 = L.Convolution2D(None, 256, ksize=5, pad=2, stride=2)
-            self.l4 = L.Convolution2D(None, 512, ksize=5, pad=2, stride=2)
+            base  = 64
+            self.l1 = L.Convolution2D(None, base, ksize=5, pad=2, stride=2)
+            self.l2 = L.Convolution2D(None, base * 2, ksize=5, pad=2, stride=2)
+            self.l3 = L.Convolution2D(None, base * 4, ksize=5, pad=2, stride=2)
+            self.l4 = L.Convolution2D(None, base * 8, ksize=5, pad=2, stride=2)
             self.l5 = L.Linear(None, 1)
         
     def forward(self, x):
@@ -66,7 +74,7 @@ class Discriminator(chainer.Chain):
         x = F.leaky_relu(x, 0.2)
         x = self.l5(x)
         #x = F.sigmoid(x)
-        return x  
+        return x
     
     
 CLS = {'akahara': [0,0,128],
@@ -154,13 +162,13 @@ def train():
     xs, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
 
     # training
-    mb = 64
+    mb = 128
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
-    for ite in range(5000):
+    for ite in range(10000):
         if mbi + mb > len(xs):
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)

@@ -157,6 +157,7 @@ DCGANの出力
 答え
 ### imori
 - Pytorch [answers/dcgan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py)
+- tensorflow [answers/dcgan_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_tensorflow_slim.py)
 - Keras [answers/dcgan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_keras.py)
 - Chainer [answers/dcgan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_chainer.py)
 
