@@ -17,29 +17,17 @@ channel = 3
 
 
 def Generator(x):
-    in_h = int(img_height / 16)
-    in_w = int(img_width / 16)
     base = 128
     
-    x = slim.fully_connected(x, base * 4 * in_h * in_w, activation_fn=tf.nn.relu, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope='g_dense1')
-    x = tf.reshape(x, [-1, in_h, in_w, base * 4])
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn")
+    x = slim.fully_connected(x, base, activation_fn=tf.nn.leaky_relu, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope='g_dense1')
 
-    # 1/8
-    x = slim.conv2d_transpose(x, base * 4, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope="g_deconv1")
-    x = tf.nn.relu(x)
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn1")
-    # 1/4
-    x = slim.conv2d_transpose(x, base * 2, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope="g_deconv2")
-    x = tf.nn.relu(x)
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn2")
-    # 1/2
-    x = slim.conv2d_transpose(x, base, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE,  scope="g_deconv3")
-    x = tf.nn.relu(x)
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn3")
-    # 1/1
-    x = slim.conv2d_transpose(x, channel, [5, 5], stride=[2,2], activation_fn=None, reuse=tf.AUTO_REUSE, scope="g_deconv4")
-    #x = slim.batch_norm(x)
+    x = slim.fully_connected(x, base * 2, activation_fn=tf.nn.leaky_relu, normalizer_fn=lambda x:x, reuse=tf.AUTO_REUSE, scope='g_dense2')
+
+    x = slim.fully_connected(x, base * 4, activation_fn=tf.nn.leaky_relu, normalizer_fn=lambda x:x, reuse=tf.AUTO_REUSE, scope='g_dense3')
+
+    x = slim.fully_connected(x, img_height * img_width * channel, normalizer_fn=lambda x:x, reuse=tf.AUTO_REUSE, scope='g_dense4')
+    
+    x = tf.reshape(x, [-1, img_height, img_width, channel])
     x = tf.nn.tanh(x)
 
     return x
@@ -47,85 +35,59 @@ def Generator(x):
 
 def Discriminator(x):
     base = 64
-    x = slim.conv2d(x, base, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE,  scope="d_conv1")
-    x = slim.conv2d(x, base * 2, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv2")
-    x = slim.conv2d(x, base * 4, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv3")
-    x = slim.conv2d(x, base * 8, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv4")
+
+    x = slim.fully_connected(x, base * 2, activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_dense1")
+    x = slim.fully_connected(x, base, activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_dense2")
+    
     x = slim.flatten(x)
     x = slim.fully_connected(x, 1, activation_fn=None, reuse=tf.AUTO_REUSE, scope="d_dense")
 
     return x
     
 
-CLS = {'background': [0,0,0],
-       'akahara': [0,0,128],
-       'madara': [0,128,0]}
+
+import pickle
+import os
+
+def load_cifar10():
+
+    path = 'cifar-10-batches-py'
+
+    if not os.path.exists(path):
+        os.system("wget {}".format(path))
+        os.system("tar xvf {}".format(path))
+
+    # train data
     
-# get train data
-def data_load(path, hf=False, vf=False, rot=None):
-    xs = []
-    ts = []
-    paths = []
+    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
+    train_y = np.ndarray([0, ], dtype=np.int)
     
-    for dir_path in glob(path + '/*'):
-        for path in glob(dir_path + '/*'):
-            x = cv2.imread(path)
-            if channel == 1:
-                x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-            x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
-            x = x / 127.5 - 1
-            if channel == 1:
-                x = x[..., None]
-            else:
-                x = x[..., ::-1]
-            xs.append(x)
+    for i in range(1, 6):
+        data_path = path + '/data_batch_{}'.format(i)
+        with open(data_path, 'rb') as f:
+            datas = pickle.load(f, encoding='bytes')
+            print(data_path)
+            x = datas[b'data']
+            x = x.reshape(x.shape[0], 3, 32, 32)
+            x = x.transpose(0, 2, 3, 1)
+            train_x = np.vstack((train_x, x))
+        
+            y = np.array(datas[b'labels'], dtype=np.int)
+            train_y = np.hstack((train_y, y))
 
-            for i, cls in enumerate(CLS):
-                if cls in path:
-                    t = i
-            
-            ts.append(t)
-
-            paths.append(path)
-
-            if hf:
-                xs.append(x[:, ::-1])
-                ts.append(t)
-                paths.append(path)
-
-            if vf:
-                xs.append(x[::-1])
-                ts.append(t)
-                paths.append(path)
-
-            if hf and vf:
-                xs.append(x[::-1, ::-1])
-                ts.append(t)
-                paths.append(path)
-
-            if rot is not None:
-                angle = 0
-                scale = 1
-                while angle < 360:
-                    angle += rot
-                    _h, _w, _c = x.shape
-                    max_side = max(_h, _w)
-                    tmp = np.zeros((max_side, max_side, _c))
-                    tx = int((max_side - _w) / 2)
-                    ty = int((max_side - _h) / 2)
-                    tmp[ty: ty+_h, tx: tx+_w] = x.copy()
-                    M = cv2.getRotationMatrix2D((max_side/2, max_side/2), angle, scale)
-                    _x = cv2.warpAffine(tmp, M, (max_side, max_side))
-                    _x = _x[tx:tx+_w, ty:ty+_h]
-                    xs.append(x)
-                    ts.append(t)
-                    paths.append(path)
-                    
-    xs = np.array(xs, dtype=np.float32)
-    ts = np.array(ts, dtype=np.int)
-    #xs = np.transpose(xs, (0,3,1,2))
+    # test data
+    data_path = path + '/test_batch'
     
-    return xs, paths
+    with open(data_path, 'rb') as f:
+        datas = pickle.load(f, encoding='bytes')
+        print(data_path)
+        x = datas[b'data']
+        x = x.reshape(x.shape[0], 3, 32, 32)
+        test_x = x.transpose(0, 2, 3, 1)
+    
+        test_y = np.array(datas[b'labels'], dtype=np.int)
+
+    return train_x, train_y, test_x, test_y
 
 
 # train
@@ -157,7 +119,8 @@ def train():
     G_vars = [var for var in tvars if 'g_' in var.name]
     G_train = G_optimizer.minimize(G_loss, var_list=G_vars)
 
-    xs, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
+    train_x, train_y, test_x, test_y = load_cifar10()
+    xs = train_x / 127.5 - 1
 
     # training
     mb = 64

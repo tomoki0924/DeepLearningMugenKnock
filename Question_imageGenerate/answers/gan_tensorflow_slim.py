@@ -17,29 +17,17 @@ channel = 3
 
 
 def Generator(x):
-    in_h = int(img_height / 16)
-    in_w = int(img_width / 16)
     base = 128
     
-    x = slim.fully_connected(x, base * 4 * in_h * in_w, activation_fn=tf.nn.relu, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope='g_dense1')
-    x = tf.reshape(x, [-1, in_h, in_w, base * 4])
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn")
+    x = slim.fully_connected(x, base, activation_fn=tf.nn.leaky_relu, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope='g_dense1')
 
-    # 1/8
-    x = slim.conv2d_transpose(x, base * 4, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope="g_deconv1")
-    x = tf.nn.relu(x)
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn1")
-    # 1/4
-    x = slim.conv2d_transpose(x, base * 2, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope="g_deconv2")
-    x = tf.nn.relu(x)
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn2")
-    # 1/2
-    x = slim.conv2d_transpose(x, base, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE,  scope="g_deconv3")
-    x = tf.nn.relu(x)
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn3")
-    # 1/1
-    x = slim.conv2d_transpose(x, channel, [5, 5], stride=[2,2], activation_fn=None, reuse=tf.AUTO_REUSE, scope="g_deconv4")
-    #x = slim.batch_norm(x)
+    x = slim.fully_connected(x, base * 2, activation_fn=tf.nn.leaky_relu, normalizer_fn=lambda x:x, reuse=tf.AUTO_REUSE, scope='g_dense2')
+
+    x = slim.fully_connected(x, base * 4, activation_fn=tf.nn.leaky_relu, normalizer_fn=lambda x:x, reuse=tf.AUTO_REUSE, scope='g_dense3')
+
+    x = slim.fully_connected(x, img_height * img_width * channel, normalizer_fn=lambda x:x, reuse=tf.AUTO_REUSE, scope='g_dense4')
+    
+    x = tf.reshape(x, [-1, img_height, img_width, channel])
     x = tf.nn.tanh(x)
 
     return x
@@ -47,10 +35,10 @@ def Generator(x):
 
 def Discriminator(x):
     base = 64
-    x = slim.conv2d(x, base, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE,  scope="d_conv1")
-    x = slim.conv2d(x, base * 2, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv2")
-    x = slim.conv2d(x, base * 4, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv3")
-    x = slim.conv2d(x, base * 8, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv4")
+
+    x = slim.fully_connected(x, base * 2, activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_dense1")
+    x = slim.fully_connected(x, base, activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_dense2")
+    
     x = slim.flatten(x)
     x = slim.fully_connected(x, 1, activation_fn=None, reuse=tf.AUTO_REUSE, scope="d_dense")
 
@@ -60,6 +48,7 @@ def Discriminator(x):
 CLS = {'background': [0,0,0],
        'akahara': [0,0,128],
        'madara': [0,128,0]}
+
     
 # get train data
 def data_load(path, hf=False, vf=False, rot=None):
