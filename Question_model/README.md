@@ -366,3 +366,12 @@ pytorchでは*torch.nn.BatchNorm2d()*, tensorflowでは*tf.layers.batch_normaliz
 - Keras [answers/bn_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bn_keras.py)
 - chainer [answers/bn_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bn_chainer.py)
 
+## Q. ResNet-50
+
+論文 >> https://arxiv.org/abs/1512.03385
+
+答え
+- Pytorch [answers/res50_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res50_pytorch.py)
+- Tensorflow(not good) [answers/res50_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res50_tensorflow_slim.py)
+- Keras [answers/res50_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res50_keras.py)
+- chainer(not good) [answers/res50_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res50_chainer.py)
