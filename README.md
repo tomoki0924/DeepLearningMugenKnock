@@ -155,7 +155,7 @@ $ pip install -r requirements.txt
 |  | [CIFAR-10 Step.Final テストデータの読み込み](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_prepare#q-cifar-10-stepfinal-%E3%83%86%E3%82%B9%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) |
 
 
-## ライブラリ使い方編
+## 自分でネットワーク組む編
 
 ここから基本的に、「python answers/##.py --train --test」と打てば動きます。
 
