@@ -1,6 +1,10 @@
+import numpy as np
+
 import os
 import pickle
-import numpy as np
+
+labels = ["airplane", "automobile", "bird", "cat", "deer",
+              "dog", "frog", "horse", "ship", "truck"]
 
 def load_cifar10():
 
