@@ -10,8 +10,8 @@ import numpy as np
 from glob import glob
 import copy
 
-num_classes = 2
-img_height, img_width = 224, 224
+num_classes = 10
+img_height, img_width = 32, 32
 channel = 3
 tf.set_random_seed(0)
 
@@ -78,89 +78,56 @@ def Mynet(x, keep_prob):
     return x
 
 
-CLS = ['akahara', 'madara']
+import os
+import pickle
 
-# get train data
-def data_load(path, hf=False, vf=False, rot=None):
-    xs = []
-    ts = []
-    paths = []
+def load_cifar10():
+
+    path = 'cifar-10-batches-py'
+
+    if not os.path.exists(path):
+        os.system("wget {}".format(path))
+        os.system("tar xvf {}".format(path))
+
+    # train data
     
-    for dir_path in glob(path + '/*'):
-        for path in glob(dir_path + '/*'):
-            x = cv2.imread(path)
-            x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
-            x /= 255.
-            x = x[..., ::-1]
-            xs.append(x)
+    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
+    train_y = np.ndarray([0, ], dtype=np.int)
+    
+    for i in range(1, 6):
+        data_path = path + '/data_batch_{}'.format(i)
+        with open(data_path, 'rb') as f:
+            datas = pickle.load(f, encoding='bytes')
+            print(data_path)
+            x = datas[b'data']
+            x = x.reshape(x.shape[0], 3, 32, 32)
+            x = x.transpose(0, 2, 3, 1)
+            train_x = np.vstack((train_x, x))
+        
+            y = np.array(datas[b'labels'], dtype=np.int)
+            train_y = np.hstack((train_y, y))
 
-            t = [0 for _ in range(num_classes)]
-            for i, cls in enumerate(CLS):
-                if cls in path:
-                    t[i] = 1
-            
-            ts.append(t)
+    print("train X:", train_x.shape)
+    print("train y:", train_y.shape)
 
-            paths.append(path)
+    # test data
+    
+    data_path = path + '/test_batch'
+    
+    with open(data_path, 'rb') as f:
+        datas = pickle.load(f, encoding='bytes')
+        print(data_path)
+        x = datas[b'data']
+        x = x.reshape(x.shape[0], 3, 32, 32)
+        test_x = x.transpose(0, 2, 3, 1)
+    
+        test_y = np.array(datas[b'labels'], dtype=np.int)
 
-            if hf:
-                xs.append(x[:, ::-1])
-                ts.append(t)
-                paths.append(path)
+    print("test X:", test_x.shape)
+    print("test y:", test_y.shape)
 
-            if vf:
-                xs.append(x[::-1])
-                ts.append(t)
-                paths.append(path)
+    return train_x, train_y, test_x, test_y
 
-            if hf and vf:
-                xs.append(x[::-1, ::-1])
-                ts.append(t)
-                paths.append(path)
-
-            if rot is not None:
-                angle = rot
-                scale = 1
-
-                # show
-                a_num = 360 // rot
-                w_num = np.ceil(np.sqrt(a_num))
-                h_num = np.ceil(a_num / w_num)
-                count = 1
-                #plt.subplot(h_num, w_num, count)
-                #plt.axis('off')
-                #plt.imshow(x)
-                #plt.title("angle=0")
-                
-                while angle < 360:
-                    _h, _w, _c = x.shape
-                    max_side = max(_h, _w)
-                    tmp = np.zeros((max_side, max_side, _c))
-                    tx = int((max_side - _w) / 2)
-                    ty = int((max_side - _h) / 2)
-                    tmp[ty: ty+_h, tx: tx+_w] = x.copy()
-                    M = cv2.getRotationMatrix2D((max_side/2, max_side/2), angle, scale)
-                    _x = cv2.warpAffine(tmp, M, (max_side, max_side))
-                    _x = _x[tx:tx+_w, ty:ty+_h]
-                    xs.append(x)
-                    ts.append(t)
-                    paths.append(path)
-
-                    # show
-                    #count += 1
-                    #plt.subplot(h_num, w_num, count)
-                    #plt.imshow(_x)
-                    #plt.axis('off')
-                    #plt.title("angle={}".format(angle))
-
-                    angle += rot
-                #plt.show()
-
-
-    xs = np.array(xs, dtype=np.float32)
-    ts = np.array(ts, dtype=np.int)
-
-    return xs, ts, paths
 
 
 
@@ -179,17 +146,20 @@ def train():
     #loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
 
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
-    optimizer = tf.train.MomentumOptimizer(learning_rate=0.0001, momentum=0.9)
+    optimizer = tf.train.MomentumOptimizer(learning_rate=0.00001, momentum=0.9)
     train = optimizer.minimize(loss)
 
     correct_pred = tf.equal(tf.argmax(preds, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
     
-
-    xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
+    train_X, train_y, test_X, test_y = load_cifar10()
+    xs = train_X / 255
+    ts = np.zeros([len(train_y), num_classes], dtype=np.float32)
+    ts[np.arange(len(train_y)), train_y] = 1
+    #xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
 
     # training
-    mb = 16
+    mb = 512
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
@@ -234,7 +204,15 @@ def test():
     logits = Mynet(X, keep_prob)
     out = tf.nn.softmax(logits)
 
-    xs, ts, paths = data_load("../Dataset/test/images/")
+    #xs, ts, paths = data_load("../Dataset/test/images/")
+    train_X, train_y, test_X, test_y = load_cifar10()
+    xs = test_X / 255
+    ts = np.zeros([len(test_y), num_classes], dtype=np.float32)
+    ts[np.arange(len(test_y)), test_y] = 1
+    
+    labels = ["airplane", "automobile", "bird", "cat", "deer",
+              "dog", "frog", "horse", "ship", "truck"]
+    accuracy = 0.
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
@@ -244,18 +222,23 @@ def test():
         #saver = tf.train.import_meta_graph("./cnn.ckpt.meta")
         saver.restore(sess, "./cnn.ckpt")
 
-        for i in range(len(paths)):
+        for i in range(len(xs)):
             x = xs[i]
             t = ts[i]
-            path = paths[i]
             
             x = np.expand_dims(x, axis=0)
 
             pred = sess.run([out], feed_dict={X:x, keep_prob:1.})[0]
             pred = pred[0]
             #pred = out.eval(feed_dict={X: x, keep_prob: 1.0})[0]
+            
+            if t.argmax() == pred.argmax():
+                accuracy += 1
 
-            print("in {}, predicted probabilities >> {}".format(path, pred))
+            print("gt: {}, >> pred labels: {}, (prob: {:.4f})".format(labels[t.argmax()], labels[pred.argmax()], pred.max()))
+    
+    accuracy /= len(xs)
+    print("accuracy: ", accuracy)
     
 
 def arg_parse():

@@ -2,12 +2,12 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import tensorflow as tf
-from tensorflow.contrib import slim
 
 import argparse
 import cv2
 import numpy as np
 from glob import glob
+import copy
 
 num_classes = 2
 img_height, img_width = 224, 224
@@ -15,77 +15,66 @@ channel = 3
 tf.set_random_seed(0)
 
 
-def Mynet(x, keep_prob):
+def Mynet(x, keep_prob, train=True):
 
-    def inception_module(x, in_f, f_1, f_2_1, f_2_2, f_3_1, f_3_2, f_4_2):
-        x1 = slim.conv2d(x, f_1, [1, 1], stride=1, padding='SAME', activation_fn=tf.nn.relu)
+    def ResBlock(x, in_f, f_1, out_f, stride=1):
+        res_x = tf.layers.conv2d(x, f_1, [1, 1], strides=stride, padding='same', activation=None)
+        res_x = tf.layers.batch_normalization(res_x, training=train)
+        res_x = tf.nn.relu(res_x)
 
-        x2_1 = slim.conv2d(x, f_2_1, [1, 1], stride=1, padding='SAME', activation_fn=tf.nn.relu)
-        x2_2 = slim.conv2d(x2_1, f_2_1, [3, 3], stride=1, padding='SAME', activation_fn=tf.nn.relu)
+        res_x = tf.layers.conv2d(res_x, f_1, [3, 3], strides=1, padding='same', activation=None)
+        res_x = tf.layers.batch_normalization(res_x, training=train)
+        res_x = tf.nn.relu(res_x)
 
-        x3_1 = slim.conv2d(x, f_3_1, [1, 1], stride=1, padding='SAME', activation_fn=tf.nn.relu)
-        x3_2 = slim.conv2d(x3_1, f_3_2, [5, 5], stride=1, padding='SAME', activation_fn=tf.nn.relu)
+        res_x = tf.layers.conv2d(res_x, out_f, [1, 1], strides=1, padding='same', activation=None)
+        res_x = tf.layers.batch_normalization(res_x, training=train)
+        res_x = tf.nn.relu(res_x)
 
-        x4_1 = slim.max_pool2d(x, [3, 3], stride=1, padding='SAME')
-        x4_2 = slim.conv2d(x4_1, f_4_2, [1, 1], stride=1, padding='SAME', activation_fn=tf.nn.relu)
-        x = tf.concat([x1, x2_2, x3_2, x4_2], axis=-1)
+        if in_f != out_f:
+            x = tf.layers.conv2d(x, out_f, [1, 1], strides=1, padding='same', activation=None)
+            x = tf.layers.batch_normalization(x, training=train)
+            x = tf.nn.relu(x)
 
+        if stride != 1:
+            x = tf.layers.max_pooling2d(x, [2, 2], stride=stride, padding='same')
+
+        x = tf.add(res_x, x)
+        
         return x
 
     
-    x = slim.conv2d(x, 64, [7, 7], stride=2, padding="VALID", activation_fn=tf.nn.relu)
-    x = slim.max_pool2d(x, [3, 3], stride=2, padding='SAME')
-    x = tf.nn.local_response_normalization(x)
-
-    x = slim.conv2d(x, 64, [1, 1], stride=1, padding='SAME', activation_fn=tf.nn.relu)
-    x = slim.conv2d(x, 192, [3, 3], stride=1, padding='SAME', activation_fn=tf.nn.relu)
-    x = tf.nn.local_response_normalization(x)
-    x = slim.max_pool2d(x, [3, 3], stride=2, padding='SAME')
-
-    # inception 3a, 3b
-    x = inception_module(x, 194, 64, 96, 128, 16, 32, 32)
-    x = inception_module(x, 256, 128, 128, 192, 32, 96, 64)
-    x = slim.max_pool2d(x, [3, 3], stride=2, padding='SAME')
-
-    # inception 4a
-    x = inception_module(x, 480, 192, 96, 208, 16, 48, 64)
-
-    # auxiliary loss1
-    x_aux1 = slim.avg_pool2d(x, 5, padding='SAME', stride=1)
-    x_aux1 = slim.conv2d(x_aux1, 128, [1, 1], stride=1, padding='SAME', activation_fn=tf.nn.relu)
-    mb, h, w, c = x_aux1.get_shape().as_list()
-    x_aux1 = tf.reshape(x_aux1, [-1, h * w * c])
-    x_aux1 = slim.fully_connected(x_aux1, 1024, activation_fn=tf.nn.relu)
-    x_aux1 = slim.dropout(x_aux1, keep_prob=keep_prob)
-    x_aux1 = slim.fully_connected(x_aux1, num_classes)
-
-    # inception 4b, 4c, 4d
-    x = inception_module(x, 512, 160, 112, 224, 24, 64, 64)
-    x = inception_module(x, 512, 128, 128, 256, 24, 64, 64)
-    x = inception_module(x, 512, 112, 144, 288, 32, 64, 64)
+    x = tf.layers.conv2d(x, 64, [7, 7], strides=2, padding="same", activation_fn=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.nn.relu(x)
     
-    # auxiliary loss2
-    x_aux2 = slim.avg_pool2d(x, 5, padding='SAME', stride=1)
-    x_aux2 = slim.conv2d(x_aux2, 128, [1, 1], stride=1, padding='SAME', activation_fn=tf.nn.relu)
-    mb, h, w, c = x_aux2.get_shape().as_list()
-    x_aux2 = tf.reshape(x_aux2, [-1, h * w * c])
-    x_aux2 = slim.fully_connected(x_aux2, 1024, activation_fn=tf.nn.relu)
-    x_aux2 = slim.dropout(x_aux2, keep_prob=keep_prob)
-    x_aux2 = slim.fully_connected(x_aux2, num_classes)
+    x = tf.layers.max_pooling2d(x, [3, 3], strides=2, padding='same')
 
-    # inception 4e, 5a, 5b
-    x = inception_module(x, 528, 256, 160, 320, 32, 128, 128)
-    x = slim.max_pool2d(x, 3, padding='SAME', stride=2)
-    x = inception_module(x, 832, 256, 160, 320, 32, 128, 128)
-    x = inception_module(x, 832, 384, 192, 384, 48, 128, 128)
+    x = ResBlock(x, 64, 64, 256)
+    x = ResBlock(x, 256, 64, 256)
+    x = ResBlock(x, 256, 64, 256)
 
-    #x = slim.avg_pool2d(x, 7, stride=1, padding='SAME')
-    #mb, h, w, c = x.get_shape().as_list()
-    #x = tf.reshape(x, [-1, h * w * c])
-    x = tf.reduce_mean(x, axis=[1, 2])
-    x = slim.fully_connected(x, num_classes)
+    x = ResBlock(x, 256, 128, 512, stride=2)
+    x = ResBlock(x, 512, 128, 512)
+    x = ResBlock(x, 512, 128, 512)
+    x = ResBlock(x, 512, 128, 512)
+
+    x = ResBlock(x, 512, 256, 1024, stride=2)
+    x = ResBlock(x, 1024, 256, 1024)
+    x = ResBlock(x, 1024, 256, 1024)
+    x = ResBlock(x, 1024, 256, 1024)
+    x = ResBlock(x, 1024, 256, 1024)
+    x = ResBlock(x, 1024, 256, 1024)
+
+    x = ResBlock(x, 1024, 512, 2048, stride=2)
+    x = ResBlock(x, 2048, 256, 2048)
+    x = ResBlock(x, 2048, 256, 2048)
+
+    x = tf.layers.average_pooling2d(x, [img_height // 32, img_width // 32], strides=1, padding='VALID')
+    mb, h, w, c = x.get_shape().as_list()
+    x = tf.reshape(x, [-1, h * w * c])
+    x = tf.layers.dense(x, num_classes)
     
-    return x, x_aux1, x_aux2
+    return x
 
 
 CLS = ['akahara', 'madara']
@@ -179,30 +168,27 @@ def train():
     tf.reset_default_graph()
 
     # place holder
-    X = tf.placeholder(tf.float32, [None, img_height, img_width, 3])
+    X = tf.placeholder(tf.float32, [None, img_height, img_width, channel])
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits, logits_aux1, logits_aux2 = Mynet(X, keep_prob)
+    logits = Mynet(X, keep_prob)
     preds = tf.nn.softmax(logits)
-    preds_aux1 = tf.nn.softmax(logits_aux1)
-    preds_aux2 = tf.nn.softmax(logits_aux2)
     
-    loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
-    loss_aux1 = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits_aux1, onehot_labels=Y))
-    loss_aux2 = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits_aux2, onehot_labels=Y))
-    #loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
-    optimizer = tf.train.MomentumOptimizer(learning_rate=0.001, momentum=0.9)
-    train = optimizer.minimize(loss + loss_aux1 + loss_aux2)
+    #loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
+
+    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
+    optimizer = tf.train.MomentumOptimizer(learning_rate=0.0001, momentum=0.9)
+    train = optimizer.minimize(loss)
 
     correct_pred = tf.equal(tf.argmax(preds, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
     
 
-    xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=10)
+    xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
 
     # training
-    mb = 64
+    mb = 16
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
@@ -216,7 +202,7 @@ def train():
     
         for i in range(500):
             if mbi + mb > len(xs):
-                mb_ind = train_ind[mbi:]
+                mb_ind = copy.copy(train_ind)[mbi:]
                 np.random.shuffle(train_ind)
                 mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
                 mbi = mb - (len(xs) - mbi)
@@ -229,7 +215,7 @@ def train():
 
             _, acc, los = sess.run([train, accuracy, loss], feed_dict={X: x, Y: t, keep_prob: 0.7})
             if (i + 1) % 10 == 0:
-                print("iter >>", i+1, ',loss >>', los / mb, ',accuracy >>', acc)
+                print("iter >>", i+1, ', loss >>', los / mb, ', accuracy >>', acc)
 
         saver = tf.train.Saver()
         saver.save(sess, './cnn.ckpt')
@@ -244,7 +230,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits, _, _ = Mynet(X, keep_prob)
+    logits = Mynet(X, keep_prob)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")
