@@ -13,28 +13,25 @@ GPU = False
 torch.manual_seed(0)
 
 
+
 class ResBlock(torch.nn.Module):
-    def __init__(self, in_f, f_1, out_f, stride=1):
+    def __init__(self, in_f, out_f, stride=1):
         super(ResBlock, self).__init__()
 
         self.stride = stride
         self.fit_dim = False
 
         self.block = torch.nn.Sequential(
-            torch.nn.Conv2d(in_f, f_1, kernel_size=1, padding=0, stride=stride),
-            torch.nn.BatchNorm2d(f_1),
+            torch.nn.Conv2d(in_f, out_f, kernel_size=3, padding=1, stride=stride),
+            torch.nn.BatchNorm2d(out_f),
             torch.nn.ReLU(),
-            torch.nn.Conv2d(f_1, f_1, kernel_size=3, padding=1, stride=1),
-            torch.nn.BatchNorm2d(f_1),
-            torch.nn.ReLU(),
-            torch.nn.Conv2d(f_1, out_f, kernel_size=1, padding=0, stride=1),
+            torch.nn.Conv2d(out_f, out_f, kernel_size=3, padding=1, stride=1),
             torch.nn.BatchNorm2d(out_f),
             torch.nn.ReLU()
         )
 
         if in_f != out_f:
             self.fit_conv = torch.nn.Conv2d(in_f, out_f, kernel_size=1, padding=0, stride=1)
-            self.fit_bn = torch.nn.BatchNorm2d(out_f)
             self.fit_dim = True
             
             
@@ -44,8 +41,6 @@ class ResBlock(torch.nn.Module):
         
         if self.fit_dim:
             x = self.fit_conv(x)
-            x = self.fit_bn(x)
-            x = F.relu(x)
         
         if self.stride == 2:
             x = F.max_pool2d(x, 2, stride=2)
@@ -62,27 +57,27 @@ class Mynet(torch.nn.Module):
 
         self.conv1 = torch.nn.Conv2d(3, 64, kernel_size=7, padding=3, stride=2)
         self.bn1 = torch.nn.BatchNorm2d(64)
-        self.resblock2_1 = ResBlock(64, 64, 256)
-        self.resblock2_2 = ResBlock(256, 64, 256)
-        self.resblock2_3 = ResBlock(256, 64, 256)
+        self.resblock2_1 = ResBlock(64, 64)
+        self.resblock2_2 = ResBlock(64, 64)
+        self.resblock2_3 = ResBlock(64, 64)
 
-        self.resblock3_1 = ResBlock(256, 128, 512, stride=2)
-        self.resblock3_2 = ResBlock(512, 128, 512)
-        self.resblock3_3 = ResBlock(512, 128, 512)
-        self.resblock3_4 = ResBlock(512, 128, 512)
+        self.resblock3_1 = ResBlock(64, 128, stride=2)
+        self.resblock3_2 = ResBlock(128, 128)
+        self.resblock3_3 = ResBlock(128, 128)
+        self.resblock3_4 = ResBlock(128, 128)
 
-        self.resblock4_1 = ResBlock(512, 256, 1024, stride=2)
-        self.resblock4_2 = ResBlock(1024, 256, 1024)
-        self.resblock4_3 = ResBlock(1024, 256, 1024)
-        self.resblock4_4 = ResBlock(1024, 256, 1024)
-        self.resblock4_5 = ResBlock(1024, 256, 1024)
-        self.resblock4_6 = ResBlock(1024, 256, 1024)
+        self.resblock4_1 = ResBlock(128, 256, stride=2)
+        self.resblock4_2 = ResBlock(256, 256)
+        self.resblock4_3 = ResBlock(256, 256)
+        self.resblock4_4 = ResBlock(256, 256)
+        self.resblock4_5 = ResBlock(256, 256)
+        self.resblock4_6 = ResBlock(256, 256)
 
-        self.resblock5_1 = ResBlock(1024, 512, 2048, stride=2)
-        self.resblock5_2 = ResBlock(2048, 512, 2048)
-        self.resblock5_3 = ResBlock(2048, 512, 2048)
+        self.resblock5_1 = ResBlock(256, 512, stride=2)
+        self.resblock5_2 = ResBlock(512, 512)
+        self.resblock5_3 = ResBlock(512, 512)
         
-        self.linear = torch.nn.Linear(2048, num_classes)
+        self.linear = torch.nn.Linear(512, num_classes)
         
         
     def forward(self, x):
@@ -275,7 +270,7 @@ def test():
         x = torch.tensor(x, dtype=torch.float).to(device)
         
         pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+        pred = pred.detach().cpu().numpy()[0]
     
         print("in {}, predicted probabilities >> {}".format(path, pred))
     

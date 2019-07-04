@@ -62,21 +62,22 @@ class Mynet(torch.nn.Module):
 
         self.conv1 = torch.nn.Conv2d(3, 64, kernel_size=7, padding=3, stride=2)
         self.bn1 = torch.nn.BatchNorm2d(64)
+        
         self.resblock2_1 = ResBlock(64, 64, 256)
         self.resblock2_2 = ResBlock(256, 64, 256)
         self.resblock2_3 = ResBlock(256, 64, 256)
 
         self.resblock3_1 = ResBlock(256, 128, 512, stride=2)
-        self.resblock3_2 = ResBlock(512, 128, 512)
-        self.resblock3_3 = ResBlock(512, 128, 512)
-        self.resblock3_4 = ResBlock(512, 128, 512)
+        block = []
+        for _ in range(7):
+            block.append(ResBlock(512, 128, 512))
+        self.resblock3s = torch.nn.Sequential(*block)
 
         self.resblock4_1 = ResBlock(512, 256, 1024, stride=2)
-        self.resblock4_2 = ResBlock(1024, 256, 1024)
-        self.resblock4_3 = ResBlock(1024, 256, 1024)
-        self.resblock4_4 = ResBlock(1024, 256, 1024)
-        self.resblock4_5 = ResBlock(1024, 256, 1024)
-        self.resblock4_6 = ResBlock(1024, 256, 1024)
+        block = []
+        for _ in range(35):
+            block.append(ResBlock(1024, 256, 1024))
+        self.resblock4s = torch.nn.Sequential(*block)
 
         self.resblock5_1 = ResBlock(1024, 512, 2048, stride=2)
         self.resblock5_2 = ResBlock(2048, 512, 2048)
@@ -96,16 +97,10 @@ class Mynet(torch.nn.Module):
         x = self.resblock2_3(x)
 
         x = self.resblock3_1(x)
-        x = self.resblock3_2(x)
-        x = self.resblock3_3(x)
-        x = self.resblock3_4(x)
+        x = self.resblock3s(x)
 
         x = self.resblock4_1(x)
-        x = self.resblock4_2(x)
-        x = self.resblock4_3(x)
-        x = self.resblock4_4(x)
-        x = self.resblock4_5(x)
-        x = self.resblock4_6(x)
+        x = self.resblock4s(x)
 
         x = self.resblock5_1(x)
         x = self.resblock5_2(x)
@@ -275,7 +270,7 @@ def test():
         x = torch.tensor(x, dtype=torch.float).to(device)
         
         pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+        pred = pred.detach().cpu().numpy()[0]
     
         print("in {}, predicted probabilities >> {}".format(path, pred))
     
