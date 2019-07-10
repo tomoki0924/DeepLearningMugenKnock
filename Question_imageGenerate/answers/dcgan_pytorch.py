@@ -91,8 +91,8 @@ class GAN(torch.nn.Module):
         self.g = g
         self.d = d
         
-    def forward(self, x, y):
-        x = self.g(x, y)
+    def forward(self, x):
+        x = self.g(x)
         x = self.d(x)
         return x
     
@@ -211,7 +211,7 @@ def train():
         t = [1] * mb + [0] * mb
         t = torch.tensor(t, dtype=torch.float).to(device)
 
-        dy = dis(X)
+        dy = dis(X)[:, 0]
         loss_d = torch.nn.BCELoss()(dy, t)
 
         loss_d.backward()
@@ -223,7 +223,7 @@ def train():
         #gen.train()
         input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
         input_noise = torch.tensor(input_noise, dtype=torch.float).to(device)
-        y = gan(input_noise)
+        y = gan(input_noise)[:, 0]
         t = torch.tensor([1] * mb, dtype=torch.float).to(device)
         loss_g = torch.nn.BCELoss()(y, t)
 
