@@ -22,7 +22,7 @@ class Generator(torch.nn.Module):
         
         super(Generator, self).__init__()
         #self.lin = torch.nn.Linear(100, self.in_h * self.in_w * self.base * 8)
-        self.lin = torch.nn.ConvTranspose2d(100, self.base * 8, kernel_size=4, stride=1, bias=False)
+        self.lin = torch.nn.ConvTranspose2d(100, self.base * 8, kernel_size=[self.in_h, self.in_w], stride=1, bias=False)
         self.bnin = torch.nn.BatchNorm2d(self.base * 8)
         self.l1 = torch.nn.ConvTranspose2d(self.base* 8, self.base * 4, kernel_size=4, stride=2, padding=1, bias=False)
         self.bn1 = torch.nn.BatchNorm2d(self.base * 4)
@@ -105,8 +105,15 @@ def data_load(path, hf=False, vf=False, rot=None):
     xs = []
     paths = []
     
+    data_num = 0
+    for dir_path in glob(path + '/*'):
+        data_num += len(glob(dir_path + "/*"))
+            
+    pbar = tqdm(total = data_num)
+    
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
+            """
             x = cv2.imread(path)
             if channel == 1:
                 x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
@@ -115,9 +122,24 @@ def data_load(path, hf=False, vf=False, rot=None):
             if channel == 3:
                 x = x[..., ::-1]
             xs.append(x)
+            """
 
-            paths.append(path)
+            info = []
+            info.append(path)
+            
+            if hf:
+                info.append(True)
+            else:
+                info.append(False)
+            
+            if vf:
+                info.append(True)
+            else:
+                info.append(False)
+                
+            paths.append(info)
 
+            """
             if hf:
                 xs.append(x[:, ::-1])
                 paths.append(path)
@@ -153,13 +175,50 @@ def data_load(path, hf=False, vf=False, rot=None):
                     _x = _x[tx:tx+_w, ty:ty+_h]
                     xs.append(x)
                     paths.append(path)
+            """
+            pbar.update(1)
                     
+    """
     xs = np.array(xs, dtype=np.float32)
     if channel == 1:
         xs = np.expand_dims(xs, axis=-1)
     xs = np.transpose(xs, (0,3,1,2))
+    """
+    pbar.close()
     
     return xs, paths
+
+
+def get_image(paths):
+    xs = []
+    
+    for info in paths:
+        path, hf, vf = info
+        x = cv2.imread(path)
+        
+        if channel == 1:
+            x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
+        x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
+        x = x / 127.5 - 1
+        if channel == 3:
+            x = x[..., ::-1]
+
+        if hf:
+            x = x[:, ::-1]
+
+        if vf:
+            x = x[::-1]
+
+        xs.append(x)
+                
+    xs = np.array(xs, dtype=np.float32)
+    
+    if channel == 1:
+        xs = np.expand_dims(xs, axis=-1)
+    
+    xs = np.transpose(xs, (0,3,1,2))
+    
+    return xs
 
 
 # train
@@ -186,11 +245,11 @@ def train():
     np.random.shuffle(train_ind)
     
     for i in range(5000):
-        if mbi + mb > len(xs):
+        if mbi + mb > len(paths):
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
-            mbi = mb - (len(xs) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(paths)-mbi))]))
+            mbi = mb - (len(paths) - mbi)
         else:
             mb_ind = train_ind[mbi: mbi+mb]
             mbi += mb
@@ -198,7 +257,7 @@ def train():
         opt_d.zero_grad()
         opt_g.zero_grad()
             
-        x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
+        x = torch.tensor(get_image(paths[mb_ind]), dtype=torch.float).to(device)
 
         #for param in dis.parameters():
         #    param.requires_grad = True

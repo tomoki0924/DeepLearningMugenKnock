@@ -66,6 +66,12 @@ def data_load(path, hf=False, vf=False, rot=None):
     xs = []
     ts = []
     paths = []
+
+    data_num = 0
+    for dir_path in glob(path + '/*'):
+        data_num += len(glob(dir_path + "/*"))
+            
+    pbar = tqdm(total = data_num)
     
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
@@ -120,12 +126,16 @@ def data_load(path, hf=False, vf=False, rot=None):
                     xs.append(x)
                     ts.append(t)
                     paths.append(path)
+
+            pbar.update(1)
                     
     xs = np.array(xs, dtype=np.float32)
     ts = np.array(ts, dtype=np.int)
     #xs = np.transpose(xs, (0,3,1,2))
+    pbar.close()
     
     return xs, paths
+
 
 
 # train
