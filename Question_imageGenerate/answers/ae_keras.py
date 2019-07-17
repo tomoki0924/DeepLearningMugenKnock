@@ -43,7 +43,14 @@ CLS = {'background': [0,0,0],
 # get train data
 def data_load(path, hf=False, vf=False, rot=None):
     xs = []
+    ts = []
     paths = []
+
+    data_num = 0
+    for dir_path in glob(path + '/*'):
+        data_num += len(glob(dir_path + "/*"))
+            
+    pbar = tqdm(total = data_num)
     
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
@@ -52,22 +59,33 @@ def data_load(path, hf=False, vf=False, rot=None):
                 x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
             x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
             x = x / 127.5 - 1
-            if channel == 3:
+            if channel == 1:
+                x = x[..., None]
+            else:
                 x = x[..., ::-1]
             xs.append(x)
+
+            for i, cls in enumerate(CLS):
+                if cls in path:
+                    t = i
+            
+            ts.append(t)
 
             paths.append(path)
 
             if hf:
                 xs.append(x[:, ::-1])
+                ts.append(t)
                 paths.append(path)
 
             if vf:
                 xs.append(x[::-1])
+                ts.append(t)
                 paths.append(path)
 
             if hf and vf:
                 xs.append(x[::-1, ::-1])
+                ts.append(t)
                 paths.append(path)
 
             if rot is not None:
@@ -75,15 +93,9 @@ def data_load(path, hf=False, vf=False, rot=None):
                 scale = 1
                 while angle < 360:
                     angle += rot
-                    if channel == 1:
-                        _h, _w = x.shape
-                        max_side = max(_h, _w)
-                        tmp = np.zeros((max_side, max_side))
-                    else:
-                        _h, _w, _c = x.shape
-                        max_side = max(_h, _w)
-                        tmp = np.zeros((max_side, max_side, _c))
-                    
+                    _h, _w, _c = x.shape
+                    max_side = max(_h, _w)
+                    tmp = np.zeros((max_side, max_side, _c))
                     tx = int((max_side - _w) / 2)
                     ty = int((max_side - _h) / 2)
                     tmp[ty: ty+_h, tx: tx+_w] = x.copy()
@@ -91,13 +103,18 @@ def data_load(path, hf=False, vf=False, rot=None):
                     _x = cv2.warpAffine(tmp, M, (max_side, max_side))
                     _x = _x[tx:tx+_w, ty:ty+_h]
                     xs.append(x)
+                    ts.append(t)
                     paths.append(path)
+
+            pbar.update(1)
                     
     xs = np.array(xs, dtype=np.float32)
-    if channel == 1:
-        xs = np.expand_dims(xs, axis=-1)
-                    
+    ts = np.array(ts, dtype=np.int)
+    #xs = np.transpose(xs, (0,3,1,2))
+    pbar.close()
+    
     return xs, paths
+
 
 # train
 def train():

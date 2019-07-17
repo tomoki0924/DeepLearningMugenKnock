@@ -20,7 +20,7 @@ from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization
 
 num_classes = 2
-img_height, img_width = 224, 224
+img_height, img_width = 64, 64
 
 def Mynet():
     inputs = Input((img_height, img_width, 3))
@@ -118,8 +118,10 @@ def train():
 
     model.compile(
         loss='categorical_crossentropy',
-        optimizer=keras.optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True),
+        optimizer=keras.optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True),
         metrics=['accuracy'])
+
+    print(model.summary())
 
     xs, ts, paths = data_load('../Dataset/train/images', hf=True, vf=True)
 

@@ -20,11 +20,11 @@ from keras.models import Sequential, Model
 from keras.layers import Dense, Input, SimpleRNN, LSTM
 
 
-_chars = "あいうおえかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっー１２３４５６７８９０！？、。@#"
+_chars = "あいうおえかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォャュョッー、。「」1234567890!?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.@#"
 chars = [c for c in _chars]
 num_classes = len(chars)
 
-d_num = 256
+d_num = 1024
 
 def Encoder():
     enc_in = Input([None, num_classes], name='enc_in')
@@ -35,6 +35,7 @@ def Encoder():
 def Decoder(dec_sh, dec_sc):
     dec_in = Input([None, num_classes], name='dec_in')
     dec_out, dsh , dsc = LSTM(d_num, return_sequences=True, return_state=True, name='dec')(dec_in, initial_state=[dec_sh, dec_sc])
+    #dec_out = Dense(256, activation='sigmoid')(dec_out)
     dec_out = Dense(num_classes, activation='softmax', name='dec_out')(dec_out)
     return dec_in, dec_out, dsh, dsc
 
@@ -78,7 +79,7 @@ def train():
 
     model.compile(
         loss='categorical_crossentropy',
-        optimizer=keras.optimizers.Adam(lr=0.001),
+        optimizer=keras.optimizers.Adam(lr=0.01),
         metrics=['accuracy'])
 
     #model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
