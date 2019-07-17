@@ -69,6 +69,12 @@ AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convo
 - Keras [answers/convae_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_cifar10_keras.py)
 - Chainer [answers/convae_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_cifar10_chainer.py)
 
+## VAE
+
+答え
+### MNIST
+- Pytorch [answers/vae_mnist_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/vae_mnist_pytorch.py)
+
 ## Q. GAN
 
 論文 >> https://arxiv.org/abs/1406.2661
