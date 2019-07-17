@@ -26,7 +26,7 @@
 > [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
-- 2019.7.17 [Pytorch] VAEを追加　
+- 2019.7.17 [Pytorch] VAEを追加  [keras, tensorflow, chainer] CGAN(MNIST)を追加
 - 2019.7.5 [pytorch, keras]ResNet18, 34, 101, 152を追加
 - 2019.6.16 [pytorch, tensorflow, keras, chainer] ResNet50を追加
 - 2019.6.9 [tensorflow] DCGANを追加
@@ -212,7 +212,9 @@ $ pip install -r requirements.txt
 | [GAN cifar10](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-gan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_pytorch.py) | [✓ failed](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_tensorflow_slim.py)  | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_chainer.py) |
 | [DCGAN](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-dcgan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_tensorflow_slim.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_chainer.py)
 | [DCGAN cifar10](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-dcgan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_pytorch.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_tensorflow_slim.py)  | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_keras.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_chainer.py) |
-| [Conditional GAN mnist](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-conditional-gan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_pytorch.py) |
+| [Conditional GAN mnist](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#q-conditional-gan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_pytorch.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_tensorflow_slim.py)   | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_keras.py) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_chainer.py) |
+
+##
 | [Conditional GAN cifar10](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_imageGenerate#conditional-gan) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_pytorch.py) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_tensorflow_slim.py)   | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_keras.py) |  [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_chainer.py) |
 
 ### [画像処理編]()

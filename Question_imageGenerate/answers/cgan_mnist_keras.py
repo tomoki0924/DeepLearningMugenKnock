@@ -21,8 +21,8 @@ from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization, Reshape, UpSampling2D, LeakyReLU, Conv2DTranspose, concatenate, Lambda
 
 num_classes = 10
-img_height, img_width = 32, 32
-channel = 3
+img_height, img_width = 28, 28
+channel = 1
 
 from keras.regularizers import l1_l2
 from keras.initializers import RandomNormal as RN, Constant
@@ -41,8 +41,8 @@ def G_model():
 
     x = concatenate([inputs, con_x], axis=-1)
     
-    in_h = int(img_height / 16)
-    in_w = int(img_width / 16)
+    in_h = int(img_height / 4)
+    in_w = int(img_width / 4)
     d_dim = 256
     base = 128
     x = Dense(in_h * in_w * d_dim, name='g_dense1',
@@ -51,15 +51,15 @@ def G_model():
     x = Activation('relu')(x)
     x = BatchNormalization(momentum=0.9, epsilon=1e-5, name='g_dense1_bn')(x)
     # 1/8
-    x = Conv2DTranspose(base*4, (5, 5), name='g_conv1', padding='same', strides=(2,2),
-        kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
-    x = Activation('relu')(x)
-    x = BatchNormalization(momentum=0.9, epsilon=1e-5, name='g_conv1_bn')(x)
+    #x = Conv2DTranspose(base*4, (5, 5), name='g_conv1', padding='same', strides=(2,2),
+    #    kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
+    #x = Activation('relu')(x)
+    #x = BatchNormalization(momentum=0.9, epsilon=1e-5, name='g_conv1_bn')(x)
     # 1/4
-    x = Conv2DTranspose(base*2, (5, 5), name='g_conv2', padding='same', strides=(2,2),
-        kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
-    x = Activation('relu')(x)
-    x = BatchNormalization(momentum=0.9, epsilon=1e-5, name='g_conv2_bn')(x)
+    #x = Conv2DTranspose(base*2, (5, 5), name='g_conv2', padding='same', strides=(2,2),
+    #    kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
+    #x = Activation('relu')(x)
+    #x = BatchNormalization(momentum=0.9, epsilon=1e-5, name='g_conv2_bn')(x)
     # 1/2
     x = Conv2DTranspose(base, (5, 5), name='g_conv3', padding='same', strides=(2,2),
         kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
@@ -74,7 +74,7 @@ def G_model():
     #con_x[np.arange(len(_con_x)), _con_x] = 1
     x2 = concatenate([x, con_x2], axis=-1)
 
-    model = Model(inputs=[inputs, con_x, con_x2], outputs=[x], name='G')
+    model = Model(inputs=[inputs, con_x], outputs=[x], name='G')
     gan_g_model = Model(inputs=[inputs, con_x, con_x2], outputs=[x2], name='GAN_G')
     
     return model, gan_g_model
@@ -89,12 +89,12 @@ def D_model():
     x = Conv2D(base*2, (5, 5), padding='same', strides=(2,2), name='d_conv2',
         kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
     x = LeakyReLU(alpha=0.2)(x)
-    x = Conv2D(base*4, (5, 5), padding='same', strides=(2,2), name='d_conv3',
-        kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
-    x = LeakyReLU(alpha=0.2)(x)
-    x = Conv2D(base*8, (5, 5), padding='same', strides=(2,2), name='d_conv4',
-        kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
-    x = LeakyReLU(alpha=0.2)(x)
+    #x = Conv2D(base*4, (5, 5), padding='same', strides=(2,2), name='d_conv3',
+    #    kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
+    #x = LeakyReLU(alpha=0.2)(x)
+    #x = Conv2D(base*8, (5, 5), padding='same', strides=(2,2), name='d_conv4',
+    #    kernel_initializer=RN(mean=0.0, stddev=0.02), use_bias=False)(x)
+    #x = LeakyReLU(alpha=0.2)(x)
     x = Flatten()(x)
     x = Dense(1, activation='sigmoid', name='d_out',
         kernel_initializer=RN(mean=0.0, stddev=0.02), bias_initializer=Constant())(x)
@@ -118,47 +118,61 @@ def Combined_model(g, d):
 
 import pickle
 import os
+import gzip
     
-def load_cifar10():
+def load_mnist():
+    dir_path = "mnist_datas"
 
-    path = 'cifar-10-batches-py'
+    files = ["train-images-idx3-ubyte.gz",
+             "train-labels-idx1-ubyte.gz",
+             "t10k-images-idx3-ubyte.gz",
+             "t10k-labels-idx1-ubyte.gz"]
 
-    if not os.path.exists(path):
-        os.system("wget {}".format(path))
-        os.system("tar xvf {}".format(path))
+    # download mnist datas
+    if not os.path.exists(dir_path):
 
-    # train data
-    
-    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
-    train_y = np.ndarray([0, ], dtype=np.int)
-    
-    for i in range(1, 6):
-        data_path = path + '/data_batch_{}'.format(i)
-        with open(data_path, 'rb') as f:
-            datas = pickle.load(f, encoding='bytes')
-            print(data_path)
-            x = datas[b'data']
-            x = x.reshape(x.shape[0], 3, 32, 32)
-            x = x.transpose(0, 2, 3, 1)
-            train_x = np.vstack((train_x, x))
+        os.makedirs(dir_path)
+
+        data_url = "http://yann.lecun.com/exdb/mnist/"
+
+        for file_url in files:
+
+            after_file = file_url.split('.')[0]
+            
+            if os.path.exists(dir_path + '/' + after_file):
+                continue
+            
+            os.system("wget {}/{}".format(data_url, file_url))
+            os.system("mv {} {}".format(file_url, dir_path))
+
         
-            y = np.array(datas[b'labels'], dtype=np.int)
-            train_y = np.hstack((train_y, y))
+    # load mnist data
 
-    # test data
+    # load train data
+    with gzip.open(dir_path + '/' + files[0], 'rb') as f:
+        train_x = np.frombuffer(f.read(), np.uint8, offset=16)
+        train_x = train_x.astype(np.float32)
+        train_x = train_x.reshape((-1, 28, 28, 1))
+        print("train images >>", train_x.shape)
+
+    with gzip.open(dir_path + '/' + files[1], 'rb') as f:
+        train_y = np.frombuffer(f.read(), np.uint8, offset=8)
+        print("train labels >>", train_y.shape)
+
+    # load test data
+    with gzip.open(dir_path + '/' + files[2], 'rb') as f:
+        test_x = np.frombuffer(f.read(), np.uint8, offset=16)
+        test_x = test_x.astype(np.float32)
+        test_x = test_x.reshape((-1, 28, 28, 1))
+        print("test images >>", test_x.shape)
     
-    data_path = path + '/test_batch'
-    
-    with open(data_path, 'rb') as f:
-        datas = pickle.load(f, encoding='bytes')
-        print(data_path)
-        x = datas[b'data']
-        x = x.reshape(x.shape[0], 3, 32, 32)
-        test_x = x.transpose(0, 2, 3, 1)
-    
-        test_y = np.array(datas[b'labels'], dtype=np.int)
-/Users/yoshito/work_space/mypage/pages/deliverables.html
-    return train_x, train_y, test_x, test_y
+    with gzip.open(dir_path + '/' + files[3], 'rb') as f:
+        test_y = np.frombuffer(f.read(), np.uint8, offset=8)
+        print("test labels >>", test_y.shape)
+        
+
+    return train_x, train_y ,test_x, test_y
+
 
 
 # train
@@ -180,17 +194,17 @@ def train():
     gan = Combined_model(g=g, d=d)
     gan.compile(loss='binary_crossentropy', optimizer=g_opt)
 
-    train_x, train_y, test_x, test_y = load_cifar10()
+    train_x, train_y, test_x, test_y = load_mnist()
     xs = train_x / 127.5 - 1
 
     # training
-    mb = 128
+    mb = 64
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
-    for i in range(30000):
+    for i in range(5000):
         if mbi + mb > len(xs):
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
@@ -204,6 +218,7 @@ def train():
         con_x = train_y[mb_ind]
 
         # Disciminator training
+        
         input_noise = np.random.uniform(-1, 1, size=(mb, 100))
         _con_x = np.zeros([mb, num_classes], dtype=np.float32)
         _con_x[np.arange(mb), con_x] = 1
@@ -230,7 +245,6 @@ def train():
     
     g.save('cgan_cifar10_keras.h5')
 
-
 # test
 def test():
     # load trained model
@@ -238,9 +252,6 @@ def test():
     g.load_weights('cgan_cifar10_keras.h5', by_name=True)
 
     np.random.seed(100)
-    
-    labels = ["air¥nplane", "auto¥bmobile", "bird", "cat", "deer",
-              "dog", "frog", "horse", "ship", "truck"]
     
     con_x = np.zeros([10, num_classes])
     con_x[np.arange(10), np.arange(num_classes)] = 1
@@ -252,20 +263,19 @@ def test():
 
         for i in range(10):
             gen = g_output[i]
-
+            
             if channel == 1:
                 gen = gen[..., 0]
                 cmap = "gray"
             elif channel == 3:
                 cmap = None
-
+                
             plt.subplot(1,10,i+1)
-            plt.title(labels[i])
+            plt.title(str(i))
             plt.imshow(gen, cmap=cmap)
             plt.axis('off')
 
         plt.show()
-
 
     
 
@@ -275,6 +285,7 @@ def arg_parse():
     parser.add_argument('--test', dest='test', action='store_true')
     args = parser.parse_args()
     return args
+
 
 # main
 if __name__ == '__main__':
@@ -290,3 +301,5 @@ if __name__ == '__main__':
         print("train: python main.py --train")
         print("test:  python main.py --test")
         print("both:  python main.py --train --test")
+
+        

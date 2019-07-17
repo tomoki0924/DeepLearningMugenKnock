@@ -195,6 +195,10 @@ MNISTでの出力はこんな感じになります。
 ![](answers/answer_cgan_mnist_pytorch.png)
 
 - Pytorch [answers/cgan_mnist_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_pytorch.py)
+- Tensorflow [answers/cgan_mnist_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_tensorflow_slim.py)
+- Keras [answers/cgan_mnist_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_keras.py)
+- Chainer [answers/cgan_mnist_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_chainer.py)
+
 
 ### cifar10
 CIFAR10での出力はこんな感じになります。

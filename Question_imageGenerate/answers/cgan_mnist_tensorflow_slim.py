@@ -1,3 +1,6 @@
+from google.colab import drive
+drive.mount("/content/drive", force_remount=True)
+
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -12,29 +15,29 @@ import matplotlib.pyplot as plt
 
 
 num_classes = 10
-img_height, img_width = 32, 32
-channel = 3
+img_height, img_width = 28, 28
+channel = 1
 
 
 def Generator(x, y, y2=None):
-    in_h = int(img_height / 16)
-    in_w = int(img_width / 16)
+    in_h = int(img_height / 4)
+    in_w = int(img_width / 4)
     base = 128
 
     x = tf.concat([x, y], axis=-1)
     
-    x = slim.fully_connected(x, base * 4 * in_h * in_w, activation_fn=tf.nn.relu, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope='g_dense1')
-    x = tf.reshape(x, [-1, in_h, in_w, base * 4])
+    x = slim.fully_connected(x, base * 2 * in_h * in_w, activation_fn=tf.nn.relu, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope='g_dense1')
+    x = tf.reshape(x, [-1, in_h, in_w, base * 2])
     x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn")
 
     # 1/8
-    x = slim.conv2d_transpose(x, base * 4, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope="g_deconv1")
-    x = tf.nn.relu(x)
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn1")
+    #x = slim.conv2d_transpose(x, base * 4, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope="g_deconv1")
+    #x = tf.nn.relu(x)
+    #x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn1")
     # 1/4
-    x = slim.conv2d_transpose(x, base * 2, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope="g_deconv2")
-    x = tf.nn.relu(x)
-    x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn2")
+    #x = slim.conv2d_transpose(x, base * 2, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE, scope="g_deconv2")
+    #x = tf.nn.relu(x)
+    #x = slim.batch_norm(x, reuse=tf.AUTO_REUSE, decay=0.9, epsilon=1e-5, scope="g_bn2")
     # 1/2
     x = slim.conv2d_transpose(x, base, [5, 5], stride=[2,2], activation_fn=None, normalizer_fn=lambda x: x, reuse=tf.AUTO_REUSE,  scope="g_deconv3")
     x = tf.nn.relu(x)
@@ -54,8 +57,8 @@ def Discriminator(x):
     base = 64
     x = slim.conv2d(x, base, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE,  scope="d_conv1")
     x = slim.conv2d(x, base * 2, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv2")
-    x = slim.conv2d(x, base * 4, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv3")
-    x = slim.conv2d(x, base * 8, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv4")
+    #x = slim.conv2d(x, base * 4, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv3")
+    #x = slim.conv2d(x, base * 8, [5,5], stride=[2,2], activation_fn=tf.nn.leaky_relu, reuse=tf.AUTO_REUSE, scope="d_conv4")
     x = slim.flatten(x)
     x = slim.fully_connected(x, 1, activation_fn=None, reuse=tf.AUTO_REUSE, scope="d_dense")
 
@@ -65,47 +68,61 @@ def Discriminator(x):
     
 import pickle
 import os
+import gzip
     
-def load_cifar10():
+def load_mnist():
+    dir_path = "mnist_datas"
 
-    path = 'drive/My Drive/Colab Notebooks/' +  'cifar-10-batches-py'
+    files = ["train-images-idx3-ubyte.gz",
+             "train-labels-idx1-ubyte.gz",
+             "t10k-images-idx3-ubyte.gz",
+             "t10k-labels-idx1-ubyte.gz"]
 
-    if not os.path.exists(path):
-        os.system("wget {}".format(path))
-        os.system("tar xvf {}".format(path))
+    # download mnist datas
+    if not os.path.exists(dir_path):
 
-    # train data
-    
-    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
-    train_y = np.ndarray([0, ], dtype=np.int)
-    
-    for i in range(1, 6):
-        data_path = path + '/data_batch_{}'.format(i)
-        with open(data_path, 'rb') as f:
-            datas = pickle.load(f, encoding='bytes')
-            print(data_path)
-            x = datas[b'data']
-            x = x.reshape(x.shape[0], 3, 32, 32)
-            x = x.transpose(0, 2, 3, 1)
-            train_x = np.vstack((train_x, x))
+        os.makedirs(dir_path)
+
+        data_url = "http://yann.lecun.com/exdb/mnist/"
+
+        for file_url in files:
+
+            after_file = file_url.split('.')[0]
+            
+            if os.path.exists(dir_path + '/' + after_file):
+                continue
+            
+            os.system("wget {}/{}".format(data_url, file_url))
+            os.system("mv {} {}".format(file_url, dir_path))
+
         
-            y = np.array(datas[b'labels'], dtype=np.int)
-            train_y = np.hstack((train_y, y))
+    # load mnist data
 
-    # test data
-    
-    data_path = path + '/test_batch'
-    
-    with open(data_path, 'rb') as f:
-        datas = pickle.load(f, encoding='bytes')
-        print(data_path)
-        x = datas[b'data']
-        x = x.reshape(x.shape[0], 3, 32, 32)
-        test_x = x.transpose(0, 2, 3, 1)
-    
-        test_y = np.array(datas[b'labels'], dtype=np.int)
+    # load train data
+    with gzip.open(dir_path + '/' + files[0], 'rb') as f:
+        train_x = np.frombuffer(f.read(), np.uint8, offset=16)
+        train_x = train_x.astype(np.float32)
+        train_x = train_x.reshape((-1, 28, 28, 1))
+        print("train images >>", train_x.shape)
 
-    return train_x, train_y, test_x, test_y
+    with gzip.open(dir_path + '/' + files[1], 'rb') as f:
+        train_y = np.frombuffer(f.read(), np.uint8, offset=8)
+        print("train labels >>", train_y.shape)
+
+    # load test data
+    with gzip.open(dir_path + '/' + files[2], 'rb') as f:
+        test_x = np.frombuffer(f.read(), np.uint8, offset=16)
+        test_x = test_x.astype(np.float32)
+        test_x = test_x.reshape((-1, 28, 28, 1))
+        print("test images >>", test_x.shape)
+    
+    with gzip.open(dir_path + '/' + files[3], 'rb') as f:
+        test_y = np.frombuffer(f.read(), np.uint8, offset=8)
+        print("test labels >>", test_y.shape)
+        
+
+    return train_x, train_y ,test_x, test_y
+
 
 
 # train
@@ -139,11 +156,11 @@ def train():
     G_vars = [var for var in tvars if 'g_' in var.name]
     G_train = G_optimizer.minimize(G_loss, var_list=G_vars)
 
-    train_x, train_y, test_x, test_y = load_cifar10()
+    train_x, train_y, test_x, test_y = load_mnist()
     xs = train_x / 127.5 - 1
 
     # training
-    mb = 128
+    mb = 64
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
@@ -222,8 +239,6 @@ def test():
     
     np.random.seed(100)
     
-    labels = ["air¥nplane", "auto¥bmobile", "bird", "cat", "deer",
-              "dog", "frog", "horse", "ship", "truck"]
 
 
     config = tf.ConfigProto()
@@ -244,21 +259,21 @@ def test():
 
             for i in range(10):
                 gen = g_output[i]
-                
+
                 if channel == 1:
                     gen = gen[..., 0]
                     cmap = "gray"
                 elif channel == 3:
                     cmap = None
-                    
+
                 plt.subplot(1,10,i+1)
-                plt.imshow(gen)
-                plt.title(labels[i])
+                plt.imshow(gen, cmap=cmap)
+                plt.title(str(i))
                 plt.axis('off')
 
             plt.show()
-        
-    
+      
+
 
 def arg_parse():
     parser = argparse.ArgumentParser(description='CNN implemented with Keras')

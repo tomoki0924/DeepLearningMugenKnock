@@ -1,3 +1,6 @@
+from google.colab import drive
+drive.mount("/content/drive", force_remount=True)
+
 import chainer
 import chainer.links as L
 import chainer.functions as F
@@ -8,22 +11,22 @@ from glob import glob
 import matplotlib.pyplot as plt
 
 num_classes = 10
-img_height, img_width = 32, 32
-channel = 3
+img_height, img_width = 28, 28
+channel = 1
 
-GPU = -1
+GPU = 0
     
 class Generator(chainer.Chain):
     def __init__(self):
         super(Generator, self).__init__()
         base = 64
         with self.init_scope():
-            self.l1 = L.Deconvolution2D(None, base * 8, ksize=int(img_height/16), stride=1, nobias=True)
-            self.bn1 = L.BatchNormalization(base * 8)
-            self.l2 = L.Deconvolution2D(None, base * 4, ksize=4, stride=2, pad=1,  nobias=True)
-            self.bn2 = L.BatchNormalization(base * 4)
-            self.l3 = L.Deconvolution2D(None, base * 2, ksize=4, stride=2, pad=1,  nobias=True)
-            self.bn3 = L.BatchNormalization(base * 2)
+            self.l1 = L.Deconvolution2D(None, base, ksize=int(img_height/4), stride=1, nobias=True)
+            self.bn1 = L.BatchNormalization(base)
+            #self.l2 = L.Deconvolution2D(None, base * 4, ksize=4, stride=2, pad=1,  nobias=True)
+            #self.bn2 = L.BatchNormalization(base * 4)
+            #self.l3 = L.Deconvolution2D(None, base * 2, ksize=4, stride=2, pad=1,  nobias=True)
+            #self.bn3 = L.BatchNormalization(base * 2)
             self.l4 = L.Deconvolution2D(None, base, ksize=4, stride=2, pad=1,  nobias=True)
             self.bn4 = L.BatchNormalization(base)
             self.l5 = L.Deconvolution2D(None, channel, ksize=4,  stride=2, pad=1)
@@ -39,12 +42,12 @@ class Generator(chainer.Chain):
         x = self.l1(x)
         x = self.bn1(x)
         x = F.relu(x)
-        x = self.l2(x)
-        x = self.bn2(x)
-        x = F.relu(x)
-        x = self.l3(x)
-        x = self.bn3(x)
-        x = F.relu(x)
+        #x = self.l2(x)
+        #x = self.bn2(x)
+        #x = F.relu(x)
+        #x = self.l3(x)
+        #x = self.bn3(x)
+        #x = F.relu(x)
         x = self.l4(x)
         x = self.bn4(x)
         x = F.relu(x)
@@ -69,8 +72,8 @@ class Discriminator(chainer.Chain):
         with self.init_scope():
             self.l1 = L.Convolution2D(None, base, ksize=5, pad=2, stride=2)
             self.l2 = L.Convolution2D(None, base * 2, ksize=5, pad=2, stride=2)
-            self.l3 = L.Convolution2D(None, base * 4, ksize=5, pad=2, stride=2)
-            self.l4 = L.Convolution2D(None, base * 8, ksize=5, pad=2, stride=2)
+            #self.l3 = L.Convolution2D(None, base * 4, ksize=5, pad=2, stride=2)
+            #self.l4 = L.Convolution2D(None, base * 8, ksize=5, pad=2, stride=2)
             self.l5 = L.Linear(None, 1)
         
     def forward(self, x):
@@ -78,59 +81,72 @@ class Discriminator(chainer.Chain):
         x = F.leaky_relu(x, 0.2)
         x = self.l2(x)
         x = F.leaky_relu(x, 0.2)
-        x = self.l3(x)
-        x = F.leaky_relu(x, 0.2)
-        x = self.l4(x)
-        x = F.leaky_relu(x, 0.2)
+        #x = self.l3(x)
+        #x = F.leaky_relu(x, 0.2)
+        #x = self.l4(x)
+        #x = F.leaky_relu(x, 0.2)
         x = self.l5(x)
         #x = F.sigmoid(x)
         return x  
     
     
+
 import pickle
 import os
+import gzip
     
-def load_cifar10():
+def load_mnist():
+    dir_path = 'drive/My Drive/Colab Notebooks/'  + "mnist_datas"
 
-    path = 'cifar-10-batches-py'
+    files = ["train-images-idx3-ubyte.gz",
+             "train-labels-idx1-ubyte.gz",
+             "t10k-images-idx3-ubyte.gz",
+             "t10k-labels-idx1-ubyte.gz"]
 
-    if not os.path.exists(path):
-        os.system("wget {}".format(path))
-        os.system("tar xvf {}".format(path))
+    # download mnist datas
+    if not os.path.exists(dir_path):
 
-    # train data
-    
-    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
-    train_y = np.ndarray([0, ], dtype=np.int)
-    
-    for i in range(1, 6):
-        data_path = path + '/data_batch_{}'.format(i)
-        with open(data_path, 'rb') as f:
-            datas = pickle.load(f, encoding='bytes')
-            print(data_path)
-            x = datas[b'data']
-            x = x.reshape(x.shape[0], 3, 32, 32)
-            x = x.transpose(0, 2, 3, 1)
-            train_x = np.vstack((train_x, x))
+        os.makedirs(dir_path)
+
+        data_url = "http://yann.lecun.com/exdb/mnist/"
+
+        for file_url in files:
+
+            after_file = file_url.split('.')[0]
+            
+            if os.path.exists(dir_path + '/' + after_file):
+                continue
+            
+            os.system("wget {}/{}".format(data_url, file_url))
+            os.system("mv {} {}".format(file_url, dir_path))
+
         
-            y = np.array(datas[b'labels'], dtype=np.int)
-            train_y = np.hstack((train_y, y))
+    # load mnist data
 
-    # test data
-    
-    data_path = path + '/test_batch'
-    
-    with open(data_path, 'rb') as f:
-        datas = pickle.load(f, encoding='bytes')
-        print(data_path)
-        x = datas[b'data']
-        x = x.reshape(x.shape[0], 3, 32, 32)
-        test_x = x.transpose(0, 2, 3, 1)
-    
-        test_y = np.array(datas[b'labels'], dtype=np.int)
+    # load train data
+    with gzip.open(dir_path + '/' + files[0], 'rb') as f:
+        train_x = np.frombuffer(f.read(), np.uint8, offset=16)
+        train_x = train_x.astype(np.float32)
+        train_x = train_x.reshape((-1, 28, 28, 1))
+        print("train images >>", train_x.shape)
 
-    return train_x, train_y, test_x, test_y
+    with gzip.open(dir_path + '/' + files[1], 'rb') as f:
+        train_y = np.frombuffer(f.read(), np.uint8, offset=8)
+        print("train labels >>", train_y.shape)
 
+    # load test data
+    with gzip.open(dir_path + '/' + files[2], 'rb') as f:
+        test_x = np.frombuffer(f.read(), np.uint8, offset=16)
+        test_x = test_x.astype(np.float32)
+        test_x = test_x.reshape((-1, 28, 28, 1))
+        print("test images >>", test_x.shape)
+    
+    with gzip.open(dir_path + '/' + files[3], 'rb') as f:
+        test_y = np.frombuffer(f.read(), np.uint8, offset=8)
+        print("test labels >>", test_y.shape)
+        
+
+    return train_x, train_y ,test_x, test_y
 
 
 # train
@@ -151,7 +167,7 @@ def train():
     opt_g = chainer.optimizers.Adam(0.0002, beta1=0.5)
     opt_g.setup(gen)
     
-    train_x, train_y, test_x, test_y = load_cifar10()
+    train_x, train_y, test_x, test_y = load_mnist()
     xs = train_x / 127.5 - 1
     xs = xs.transpose(0, 3, 1, 2)
 
@@ -162,7 +178,7 @@ def train():
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
-    for i in range(30000):
+    for i in range(5000):
         if mbi + mb > len(xs):
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
@@ -222,9 +238,8 @@ def train():
         if (i+1) % 100 == 0:
             print("iter >>", i + 1, ',G:loss >>', loss_g.item(), ', D:loss >>', loss_d.item())
 
-    chainer.serializers.save_npz('cgan_cifar10_chainer.npz', gen)
+    chainer.serializers.save_npz('cnn.npz', gen)
 
-    
 # test
 def test():
     g = Generator()
@@ -234,14 +249,11 @@ def test():
         g.to_gpu()
 
     ## Load pretrained parameters
-    chainer.serializers.load_npz('cgan_cifar10_chainer.npz', g)
+    chainer.serializers.load_npz('cnn.npz', g)
 
     np.random.seed(100)
     
-    labels = ["air¥nplane", "auto¥bmobile", "bird", "cat", "deer",
-              "dog", "frog", "horse", "ship", "truck"]
     
-
     for i in range(3):
         mb = 10
         input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1)).astype(np.float32)
@@ -260,7 +272,7 @@ def test():
 
         for i in range(mb):
             gen = g_output[i]
-
+            
             if channel == 1:
                 gen = gen[..., 0]
                 cmap = "gray"
@@ -268,7 +280,7 @@ def test():
                 cmap = None
                 
             plt.subplot(1,mb,i+1)
-            plt.title(labels[i])
+            plt.title(str(i))
             plt.imshow(gen, cmap=cmap)
             plt.axis('off')
 
@@ -281,6 +293,7 @@ def arg_parse():
     parser.add_argument('--test', dest='test', action='store_true')
     args = parser.parse_args()
     return args
+
 
 # main
 if __name__ == '__main__':
