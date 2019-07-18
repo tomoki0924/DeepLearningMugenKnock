@@ -80,7 +80,7 @@ def Mynet(x, keep_prob, train=True):
 CLS = ['akahara', 'madara']
 
 # get train data
-def data_load(path, hf=False, vf=False, rot=None):
+def data_load(path, hf=False, vf=False, rot=False):
     xs = []
     ts = []
     paths = []
@@ -117,7 +117,7 @@ def data_load(path, hf=False, vf=False, rot=None):
                 ts.append(t)
                 paths.append(path)
 
-            if rot is not None:
+            if rot != False:
                 angle = rot
                 scale = 1
 
