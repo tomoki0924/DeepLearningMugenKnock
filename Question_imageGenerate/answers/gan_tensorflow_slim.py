@@ -51,7 +51,7 @@ CLS = {'background': [0,0,0],
 
     
 # get train data
-def data_load(path, hf=False, vf=False, rot=None):
+def data_load(path, hf=False, vf=False, rot=False):
     xs = []
     ts = []
     paths = []
@@ -98,7 +98,7 @@ def data_load(path, hf=False, vf=False, rot=None):
                 ts.append(t)
                 paths.append(path)
 
-            if rot is not None:
+            if rot != False:
                 angle = 0
                 scale = 1
                 while angle < 360:

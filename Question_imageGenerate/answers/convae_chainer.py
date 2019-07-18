@@ -39,7 +39,7 @@ CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
     
 # get train data
-def data_load(path, hf=False, vf=False, rot=None):
+def data_load(path, hf=False, vf=False, rot=False):
     xs = []
     paths = []
     
@@ -68,7 +68,7 @@ def data_load(path, hf=False, vf=False, rot=None):
                 xs.append(x[::-1, ::-1])
                 paths.append(path)
 
-            if rot is not None:
+            if rot != False:
                 angle = 0
                 scale = 1
                 while angle < 360:
