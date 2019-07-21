@@ -23,7 +23,7 @@ num_classes = 2
 img_height, img_width = 224, 224
 channel = 3
 
-def Mynet():
+def GoogLeNetv1():
 
     def inception_module(x, f_1, f_2_1, f_2_2, f_3_1, f_3_2, f_4_2):
         x1 = Conv2D(f_1, [1, 1], strides=1, padding='same', activation='relu')(x)
@@ -186,7 +186,7 @@ def data_load(path, hf=False, vf=False, rot=False):
 
 # train
 def train():
-    model = Mynet()
+    model = GoogLeNetv1()
 
     for layer in model.layers:
         layer.trainable = True
@@ -228,7 +228,7 @@ def train():
 # test
 def test():
     # load trained model
-    model = Mynet()
+    model = GoogLeNetv1()
     model.load_weights('model.h5')
 
     xs, ts, paths = data_load("../Dataset/test/images/")

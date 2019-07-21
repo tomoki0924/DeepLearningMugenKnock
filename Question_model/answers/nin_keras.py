@@ -22,7 +22,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling
 num_classes = 2
 img_height, img_width = 128, 128
 
-def Mynet():
+def NIN():
     inputs = Input((img_height, img_width, 3))
     x = Conv2D(192, (5, 5), padding='same', strides=1, activation='relu', name='conv1')(inputs)
     x = Conv2D(160, (1, 1), padding='same', strides=1, activation='relu', name='cccp1')(x)
@@ -89,7 +89,7 @@ def data_load(path, hf=False, vf=False):
 
 # train
 def train():
-    model = Mynet()
+    model = NIN()
 
     for layer in model.layers:
         layer.trainable = True
@@ -128,7 +128,7 @@ def train():
 # test
 def test():
     # load trained model
-    model = Mynet()
+    model = NIN()
     model.load_weights('model.h5')
 
     xs, ts, paths = data_load("../Dataset/test/images/")

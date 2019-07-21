@@ -12,7 +12,7 @@ img_height, img_width = 227, 227
 tf.set_random_seed(0)
 
 
-def Mynet(x, keep_prob):
+def AlexNet(x, keep_prob):
     x = tf.layers.conv2d(inputs=x, filters=96, kernel_size=[11, 11], strides=4, padding='valid', activation=tf.nn.relu, name='conv1')
     x = tf.nn.local_response_normalization(x)
     x = tf.layers.max_pooling2d(inputs=x, pool_size=[3, 3], strides=2)
@@ -88,7 +88,7 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits = Mynet(X, keep_prob)
+    logits = AlexNet(X, keep_prob)
     preds = tf.nn.softmax(logits)
     loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
     #loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
@@ -141,7 +141,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits = Mynet(X, keep_prob)
+    logits = AlexNet(X, keep_prob)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")

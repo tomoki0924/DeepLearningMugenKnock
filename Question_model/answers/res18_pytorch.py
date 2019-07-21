@@ -51,9 +51,9 @@ class ResBlock(torch.nn.Module):
 
         
 
-class Mynet(torch.nn.Module):
+class Res18(torch.nn.Module):
     def __init__(self):
-        super(Mynet, self).__init__()
+        super(Res18, self).__init__()
 
         self.conv1 = torch.nn.Conv2d(3, 64, kernel_size=7, padding=3, stride=2)
         self.bn1 = torch.nn.BatchNorm2d(64)
@@ -194,7 +194,7 @@ def train():
     device = torch.device("cuda" if GPU else "cpu")
 
     # model
-    model = Mynet().to(device)
+    model = Res18().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     model.train()
 
@@ -240,7 +240,7 @@ def train():
 # test
 def test():
     device = torch.device("cuda" if GPU else "cpu")
-    model = Mynet().to(device)
+    model = Res18().to(device)
     model.eval()
     model.load_state_dict(torch.load('cnn.pt'))
 

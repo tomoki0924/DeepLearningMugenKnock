@@ -43,9 +43,9 @@ class InceptionModule(torch.nn.Module):
 
         
 
-class Mynet(torch.nn.Module):
+class GoogLeNetv1(torch.nn.Module):
     def __init__(self):
-        super(Mynet, self).__init__()
+        super(GoogLeNetv1, self).__init__()
 
         self.conv1 = torch.nn.Conv2d(3, 64, kernel_size=7, padding=0, stride=2)
         self.conv2_1 = torch.nn.Conv2d(64, 64, kernel_size=1, padding=0, stride=1)
@@ -217,7 +217,7 @@ def train():
     device = torch.device("cuda" if GPU else "cpu")
 
     # model
-    model = Mynet().to(device)
+    model = GoogLeNetv1().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     model.train()
 
@@ -266,7 +266,7 @@ def train():
 # test
 def test():
     device = torch.device("cuda" if GPU else "cpu")
-    model = Mynet().to(device)
+    model = GoogLeNetv1().to(device)
     model.eval()
     model.load_state_dict(torch.load('cnn.pt'))
 

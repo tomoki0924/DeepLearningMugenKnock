@@ -38,7 +38,7 @@ def fc(x, in_num=100, out_num=100, bias=True, activ=None, name='fc'):
         x = activ(x)
     return x
 
-def Mynet(x, keep_prob):
+def LeNet(x, keep_prob):
     x = conv2d(x, k=5, in_num=3, out_num=6, padding='VALID', activ=None, name='conv1')
     x = tf.nn.sigmoid(maxpool2d(x, k=2))
     x = conv2d(x, k=5, in_num=6, out_num=16, padding='VALID', activ=None, name='conv2')
@@ -105,7 +105,7 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits = Mynet(X, keep_prob)
+    logits = LeNet(X, keep_prob)
     preds = tf.nn.softmax(logits)
     loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
     optimizer = tf.train.MomentumOptimizer(learning_rate=0.0001, momentum=0.9)
@@ -157,7 +157,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits = Mynet(X, keep_prob)
+    logits = LeNet(X, keep_prob)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")

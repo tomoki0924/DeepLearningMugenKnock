@@ -39,7 +39,7 @@ def fc(x, in_num=100, out_num=100, bias=True, activ=None, name='fc'):
     return x
 
 
-def Mynet(x, keep_prob):
+def AlexNet(x, keep_prob):
     x = conv2d(x, k=11, in_num=3, out_num=96, strides=4, padding='VALID', activ=tf.nn.relu, name='conv1')
     x = tf.nn.local_response_normalization(x)
     x = maxpool2d(x, k=3, s=2)
@@ -115,7 +115,7 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits = Mynet(X, keep_prob)
+    logits = AlexNet(X, keep_prob)
     preds = tf.nn.softmax(logits)
     loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=preds, onehot_labels=Y))
     #loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
@@ -168,7 +168,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits = Mynet(X, keep_prob)
+    logits = AlexNet(X, keep_prob)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")

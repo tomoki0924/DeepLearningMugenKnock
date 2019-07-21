@@ -22,7 +22,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling
 num_classes = 2
 img_height, img_width = 224, 224
 
-def Mynet():
+def ZFNet():
     inputs = Input((img_height, img_width, 3))
     x = Conv2D(96, (7, 7), padding='valid', strides=2, activation='relu', name='conv1')(inputs)
     x = MaxPooling2D((3, 3), strides=2,  padding='same')(x)
@@ -90,7 +90,7 @@ def data_load(path, hf=False, vf=False):
 
 # train
 def train():
-    model = Mynet()
+    model = ZFNet()
 
     for layer in model.layers:
         layer.trainable = True

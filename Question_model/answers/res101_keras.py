@@ -25,7 +25,7 @@ img_height, img_width = 96, 96
 channel = 3
 
 
-def Mynet():
+def Res101():
 
     def ResBlock(x, in_f, f_1, out_f, stride=1, name="res"):
         res_x = Conv2D(f_1, [1, 1], strides=stride, padding='same', activation=None, name=name+"_conv1")(x)
@@ -176,7 +176,7 @@ def data_load(path, hf=False, vf=False, rot=False):
 
 # train
 def train():
-    model = Mynet()
+    model = Res101()
 
     for layer in model.layers:
         layer.trainable = True
@@ -217,7 +217,7 @@ def train():
 # test
 def test():
     # load trained model
-    model = Mynet()
+    model = Res101()
     model.load_weights('model.h5')
 
     xs, ts, paths = data_load("../Dataset/test/images/")

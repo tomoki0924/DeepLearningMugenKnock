@@ -22,7 +22,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling
 num_classes = 2
 img_height, img_width = 224, 224
 
-def Mynet():
+def VGG16():
     inputs = Input((img_height, img_width, 3))
     x = Conv2D(64, (3, 3), padding='same', strides=1, activation='relu', name='conv1_1')(inputs)
     x = Conv2D(64, (3, 3), padding='same', strides=1, activation='relu', name='conv1_2')(x)
@@ -98,7 +98,7 @@ def data_load(path, hf=False, vf=False):
 
 # train
 def train():
-    model = Mynet()
+    model = VGG16()
 
     for layer in model.layers:
         layer.trainable = True
@@ -137,7 +137,7 @@ def train():
 # test
 def test():
     # load trained model
-    model = Mynet()
+    model = VGG16()
     model.load_weights('model.h5')
 
     xs, ts, paths = data_load("../Dataset/test/images/")

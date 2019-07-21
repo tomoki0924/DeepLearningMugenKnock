@@ -22,7 +22,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling
 num_classes = 2
 img_height, img_width = 32, 32
 
-def Mynet():
+def LeNet():
     inputs = Input((img_height, img_width, 3))
     x = Conv2D(6, (5, 5), padding='valid', activation=None, name='conv1')(inputs)
     x = MaxPooling2D((2,2), padding='same')(x)
@@ -85,7 +85,7 @@ def data_load(path, hf=False, vf=False):
 
 # train
 def train():
-    model = Mynet()
+    model = LeNet()
 
     for layer in model.layers:
         layer.trainable = True
@@ -124,7 +124,7 @@ def train():
 # test
 def test():
     # load trained model
-    model = Mynet()
+    model = LeNet()
     model.load_weights('model.h5')
 
     xs, ts, paths = data_load("../Dataset/test/images/")

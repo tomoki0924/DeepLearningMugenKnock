@@ -13,7 +13,7 @@ tf.set_random_seed(0)
 
 
 
-def Mynet(x, keep_prob):
+def LeNet(x, keep_prob):
     x = tf.layers.conv2d(inputs=x, filters=6, kernel_size=[5, 5], strides=1, padding='valid', activation=None, name='conv1')
     x = tf.nn.sigmoid(tf.layers.max_pooling2d(x, pool_size=[2,2], strides=2))
     x = tf.layers.conv2d(inputs=x, filters=16, kernel_size=[5, 5], strides=1, padding='valid', activation=None, name='conv2')
@@ -80,7 +80,7 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits = Mynet(X, keep_prob)
+    logits = LeNet(X, keep_prob)
     preds = tf.nn.softmax(logits)
     loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
     optimizer = tf.train.MomentumOptimizer(learning_rate=0.01, momentum=0.9)
@@ -132,7 +132,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits = Mynet(X, keep_prob)
+    logits = LeNet(X, keep_prob)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")

@@ -15,7 +15,7 @@ channel = 3
 tf.set_random_seed(0)
 
 
-def Mynet(x, keep_prob):
+def GoogLeNetv1(x, keep_prob):
 
     def inception_module(x, in_f, f_1, f_2_1, f_2_2, f_3_1, f_3_2, f_4_2):
         x1 = slim.conv2d(x, f_1, [1, 1], stride=1, padding='SAME', activation_fn=tf.nn.relu)
@@ -183,7 +183,7 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits, logits_aux1, logits_aux2 = Mynet(X, keep_prob)
+    logits, logits_aux1, logits_aux2 = GoogLeNetv1(X, keep_prob)
     preds = tf.nn.softmax(logits)
     preds_aux1 = tf.nn.softmax(logits_aux1)
     preds_aux2 = tf.nn.softmax(logits_aux2)
@@ -244,7 +244,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits, _, _ = Mynet(X, keep_prob)
+    logits, _, _ = GoogLeNetv1(X, keep_prob)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")

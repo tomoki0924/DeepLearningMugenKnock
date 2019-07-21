@@ -10,9 +10,9 @@ img_height, img_width = 224, 224
 GPU = False
 torch.manual_seed(0)
 
-class Mynet(torch.nn.Module):
+class VGG19(torch.nn.Module):
     def __init__(self):
-        super(Mynet, self).__init__()
+        super(VGG19, self).__init__()
         self.conv1_1 = torch.nn.Conv2d(3, 64, kernel_size=3, padding=1, stride=1)
         self.conv1_2 = torch.nn.Conv2d(64, 64, kernel_size=3, padding=1, stride=1)
         self.conv2_1 = torch.nn.Conv2d(64, 128, kernel_size=3, padding=1, stride=1)
@@ -118,7 +118,7 @@ def train():
     device = torch.device("cuda" if GPU else "cpu")
 
     # model
-    model = Mynet().to(device)
+    model = VGG19().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
     model.train()
 
@@ -160,7 +160,7 @@ def train():
 # test
 def test():
     device = torch.device("cuda" if GPU else "cpu")
-    model = Mynet().to(device)
+    model = VGG19().to(device)
     model.eval()
     model.load_state_dict(torch.load('cnn.pt'))
 

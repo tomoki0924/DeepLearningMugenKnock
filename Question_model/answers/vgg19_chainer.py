@@ -10,10 +10,10 @@ num_classes = 2
 img_height, img_width = 224, 224
 GPU = -1
 
-class Mynet(chainer.Chain):
+class VGG19(chainer.Chain):
     def __init__(self, train=True):
         self.train = train
-        super(Mynet, self).__init__()
+        super(VGG19, self).__init__()
         with self.init_scope():
             self.conv1_1 = L.Convolution2D(None, 64, ksize=3, pad=1, stride=1, nobias=False)
             self.conv1_2 = L.Convolution2D(None, 64, ksize=3, pad=1, stride=1, nobias=False)
@@ -115,7 +115,7 @@ def data_load(path, hf=False, vf=False):
 # train
 def train():
     # model
-    model = Mynet(train=True)
+    model = VGG19(train=True)
 
     if GPU >= 0:
         chainer.cuda.get_device(GPU).use()
@@ -175,7 +175,7 @@ def train():
 
 # test
 def test():
-    model = Mynet(train=False)
+    model = VGG19(train=False)
 
     if GPU >= 0:
         chainer.cuda.get_device_from_id(cf.GPU).use()

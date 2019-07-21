@@ -10,10 +10,10 @@ num_classes = 2
 img_height, img_width = 32, 32
 GPU = -1
 
-class Mynet(chainer.Chain):
+class LeNet(chainer.Chain):
     def __init__(self, train=True):
         self.train = train
-        super(Mynet, self).__init__()
+        super(LeNet, self).__init__()
         with self.init_scope():
             self.conv1 = L.Convolution2D(None, 6, ksize=5, pad=0, nobias=False)
             self.conv2 = L.Convolution2D(None, 16, ksize=5, pad=0, nobias=False)
@@ -84,7 +84,7 @@ def data_load(path, hf=False, vf=False):
 # train
 def train():
     # model
-    model = Mynet(train=True)
+    model = LeNet(train=True)
 
     if GPU >= 0:
         chainer.cuda.get_device(GPU).use()
@@ -144,7 +144,7 @@ def train():
 
 # test
 def test():
-    model = Mynet(train=False)
+    model = LeNet(train=False)
 
     if GPU >= 0:
         chainer.cuda.get_device_from_id(cf.GPU).use()

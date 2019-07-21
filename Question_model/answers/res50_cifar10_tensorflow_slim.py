@@ -16,7 +16,7 @@ channel = 3
 tf.set_random_seed(0)
 
 
-def Mynet(x, keep_prob):
+def Res50(x, keep_prob):
 
     def ResBlock(x, in_f, f_1, out_f, stride=1):
         res_x = slim.conv2d(x, f_1, [1, 1], stride=stride, padding="SAME", activation_fn=None)
@@ -140,7 +140,7 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits = Mynet(X, keep_prob)
+    logits = Res50(X, keep_prob)
     preds = tf.nn.softmax(logits)
     
     #loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
@@ -201,7 +201,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits = Mynet(X, keep_prob)
+    logits = Res50(X, keep_prob)
     out = tf.nn.softmax(logits)
 
     #xs, ts, paths = data_load("../Dataset/test/images/")

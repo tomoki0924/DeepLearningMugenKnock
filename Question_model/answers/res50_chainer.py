@@ -56,10 +56,10 @@ class ResBlock(chainer.Chain):
         return x
 
 
-class Mynet(chainer.Chain):
-    def __init__(self, train=True):
+class Res50(chainer.Chain):
+    def __init__(self):
         self.train = train
-        super(Mynet, self).__init__()
+        super(Res50, self).__init__()
 
         with self.init_scope():
             self.conv1 = L.Convolution2D(None, 64, ksize=7, pad=3, stride=2)
@@ -211,7 +211,7 @@ def data_load(path, hf=False, vf=False, rot=False):
 # train
 def train():
     # model
-    model = Mynet(train=True)
+    model = Res50()
 
     if GPU >= 0:
         chainer.cuda.get_device(GPU).use()
@@ -274,7 +274,7 @@ def train():
     
 # test
 def test():
-    model = Mynet(train=False)
+    model = Res50()
 
     if GPU >= 0:
         chainer.cuda.get_device_from_id(GPU).use()

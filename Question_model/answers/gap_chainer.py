@@ -10,10 +10,9 @@ num_classes = 2
 img_height, img_width = 224, 224
 GPU = -1
 
-class Mynet(chainer.Chain):
-    def __init__(self, train=True):
-        self.train = train
-        super(Mynet, self).__init__()
+class GAP(chainer.Chain):
+    def __init__(self):
+        super(GAP, self).__init__()
         with self.init_scope():
             self.conv1 = L.Convolution2D(None, 96, ksize=7, pad=0, stride=2, nobias=False)
             self.conv2 = L.Convolution2D(None, 256, ksize=5, pad=1, stride=2, nobias=False)
@@ -89,7 +88,7 @@ def data_load(path, hf=False, vf=False):
 # train
 def train():
     # model
-    model = Mynet(train=True)
+    model = GAP()
 
     if GPU >= 0:
         chainer.cuda.get_device(GPU).use()
@@ -149,7 +148,7 @@ def train():
 
 # test
 def test():
-    model = Mynet(train=False)
+    model = GAP()
 
     if GPU >= 0:
         chainer.cuda.get_device_from_id(cf.GPU).use()

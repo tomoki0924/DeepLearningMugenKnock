@@ -44,10 +44,10 @@ class InceptionModule(chainer.Chain):
         return x
 
 
-class Mynet(chainer.Chain):
-    def __init__(self, train=True):
+class GoogLeNetv1(chainer.Chain):
+    def __init__(self):
         self.train = train
-        super(Mynet, self).__init__()
+        super(GoogLeNetv1, self).__init__()
 
         with self.init_scope():
             self.conv1 = L.Convolution2D(None, 64, ksize=7, pad=0, stride=1)
@@ -208,7 +208,7 @@ def data_load(path, hf=False, vf=False, rot=False):
 # train
 def train():
     # model
-    model = Mynet(train=True)
+    model = GoogLeNetv1()
 
     if GPU >= 0:
         chainer.cuda.get_device(GPU).use()
@@ -275,7 +275,7 @@ def train():
     
 # test
 def test():
-    model = Mynet(train=False)
+    model = GoogLeNetv1()
 
     if GPU >= 0:
         chainer.cuda.get_device_from_id(GPU).use()
