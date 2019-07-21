@@ -155,7 +155,7 @@ def data_load(path, hf=False, vf=False, rot=False):
                     M = cv2.getRotationMatrix2D((max_side/2, max_side/2), angle, scale)
                     _x = cv2.warpAffine(tmp, M, (max_side, max_side))
                     _x = _x[tx:tx+_w, ty:ty+_h]
-                    xs.append(x)
+                    xs.append(_x)
                     ts.append(t)
                     paths.append(path)
 
