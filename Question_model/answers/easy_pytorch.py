@@ -7,6 +7,7 @@ from glob import glob
 
 num_classes = 2
 img_height, img_width = 224, 224
+channel = 3
 GPU = False
 torch.manual_seed(0)
 
@@ -15,7 +16,7 @@ class Mynet(torch.nn.Module):
         super(Mynet, self).__init__()
         conv1 = []
         for i in range(2):
-            f = 3 if i == 0 else 64
+            f = channel if i == 0 else 64
             conv1.append(torch.nn.Conv2d(f, 64, kernel_size=3, padding=1, stride=1))
             conv1.append(torch.nn.ReLU())
         self.conv1 = torch.nn.Sequential(*conv1)

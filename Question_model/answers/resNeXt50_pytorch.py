@@ -7,34 +7,33 @@ from glob import glob
 import copy
 
 num_classes = 2
-img_height, img_width = 224, 224
+img_height, img_width = 96, 96
 channel = 3
 GPU = False
 torch.manual_seed(0)
 
 
-class ResBlock(torch.nn.Module):
-    def __init__(self, in_f, f_1, out_f, stride=1):
-        super(ResBlock, self).__init__()
+class ResNeXtBlock(torch.nn.Module):
+    def __init__(self, in_f, f_1, out_f, stride=1, cardinality=32):
+        super(ResNeXtBlock, self).__init__()
 
         self.stride = stride
         self.fit_dim = False
-
+        
         self.block = torch.nn.Sequential(
             torch.nn.Conv2d(in_f, f_1, kernel_size=1, padding=0, stride=stride),
             torch.nn.BatchNorm2d(f_1),
             torch.nn.ReLU(),
-            torch.nn.Conv2d(f_1, f_1, kernel_size=3, padding=1, stride=1),
+            torch.nn.Conv2d(f_1, f_1, kernel_size=3, padding=1, stride=1, groups=cardinality),
             torch.nn.BatchNorm2d(f_1),
             torch.nn.ReLU(),
             torch.nn.Conv2d(f_1, out_f, kernel_size=1, padding=0, stride=1),
             torch.nn.BatchNorm2d(out_f),
-            torch.nn.ReLU()
+            torch.nn.ReLU(),
         )
 
         if in_f != out_f:
             self.fit_conv = torch.nn.Conv2d(in_f, out_f, kernel_size=1, padding=0, stride=1)
-            self.fit_bn = torch.nn.BatchNorm2d(out_f)
             self.fit_dim = True
             
             
@@ -44,8 +43,6 @@ class ResBlock(torch.nn.Module):
         
         if self.fit_dim:
             x = self.fit_conv(x)
-            x = self.fit_bn(x)
-            x = F.relu(x)
         
         if self.stride == 2:
             x = F.max_pool2d(x, 2, stride=2)
@@ -56,31 +53,33 @@ class ResBlock(torch.nn.Module):
 
         
 
-class Res50(torch.nn.Module):
+class ResNeXt50(torch.nn.Module):
     def __init__(self):
-        super(Res50, self).__init__()
+        super(ResNeXt50, self).__init__()
 
-        self.conv1 = torch.nn.Conv2d(channel, 64, kernel_size=7, padding=3, stride=2)
+        self.conv1 = torch.nn.Conv2d(3, 64, kernel_size=7, padding=3, stride=2)
         self.bn1 = torch.nn.BatchNorm2d(64)
-        self.resblock2_1 = ResBlock(64, 64, 256)
-        self.resblock2_2 = ResBlock(256, 64, 256)
-        self.resblock2_3 = ResBlock(256, 64, 256)
+        
+        
+        self.block2_1 = ResNeXtBlock(64, 64, 256)
+        self.block2_2 = ResNeXtBlock(256, 64, 256)
+        self.block2_3 = ResNeXtBlock(256, 64, 256)
 
-        self.resblock3_1 = ResBlock(256, 128, 512, stride=2)
-        self.resblock3_2 = ResBlock(512, 128, 512)
-        self.resblock3_3 = ResBlock(512, 128, 512)
-        self.resblock3_4 = ResBlock(512, 128, 512)
+        self.block3_1 = ResNeXtBlock(256, 128, 512, stride=2)
+        self.block3_2 = ResNeXtBlock(512, 128, 512)
+        self.block3_3 = ResNeXtBlock(512, 128, 512)
+        self.block3_4 = ResNeXtBlock(512, 128, 512)
 
-        self.resblock4_1 = ResBlock(512, 256, 1024, stride=2)
-        self.resblock4_2 = ResBlock(1024, 256, 1024)
-        self.resblock4_3 = ResBlock(1024, 256, 1024)
-        self.resblock4_4 = ResBlock(1024, 256, 1024)
-        self.resblock4_5 = ResBlock(1024, 256, 1024)
-        self.resblock4_6 = ResBlock(1024, 256, 1024)
+        self.block4_1 = ResNeXtBlock(512, 256, 1024, stride=2)
+        self.block4_2 = ResNeXtBlock(1024, 256, 1024)
+        self.block4_3 = ResNeXtBlock(1024, 256, 1024)
+        self.block4_4 = ResNeXtBlock(1024, 256, 1024)
+        self.block4_5 = ResNeXtBlock(1024, 256, 1024)
+        self.block4_6 = ResNeXtBlock(1024, 256, 1024)
 
-        self.resblock5_1 = ResBlock(1024, 512, 2048, stride=2)
-        self.resblock5_2 = ResBlock(2048, 512, 2048)
-        self.resblock5_3 = ResBlock(2048, 512, 2048)
+        self.block5_1 = ResNeXtBlock(1024, 512, 2048, stride=2)
+        self.block5_2 = ResNeXtBlock(2048, 512, 2048)
+        self.block5_3 = ResNeXtBlock(2048, 512, 2048)
         
         self.linear = torch.nn.Linear(2048, num_classes)
         
@@ -91,25 +90,25 @@ class Res50(torch.nn.Module):
         x = F.relu(x)
         x = F.max_pool2d(x, 3, padding=1, stride=2)
 
-        x = self.resblock2_1(x)
-        x = self.resblock2_2(x)
-        x = self.resblock2_3(x)
+        x = self.block2_1(x)
+        x = self.block2_2(x)
+        x = self.block2_3(x)
 
-        x = self.resblock3_1(x)
-        x = self.resblock3_2(x)
-        x = self.resblock3_3(x)
-        x = self.resblock3_4(x)
+        x = self.block3_1(x)
+        x = self.block3_2(x)
+        x = self.block3_3(x)
+        x = self.block3_4(x)
 
-        x = self.resblock4_1(x)
-        x = self.resblock4_2(x)
-        x = self.resblock4_3(x)
-        x = self.resblock4_4(x)
-        x = self.resblock4_5(x)
-        x = self.resblock4_6(x)
+        x = self.block4_1(x)
+        x = self.block4_2(x)
+        x = self.block4_3(x)
+        x = self.block4_4(x)
+        x = self.block4_5(x)
+        x = self.block4_6(x)
 
-        x = self.resblock5_1(x)
-        x = self.resblock5_2(x)
-        x = self.resblock5_3(x)
+        x = self.block5_1(x)
+        x = self.block5_2(x)
+        x = self.block5_3(x)
 
         x = F.avg_pool2d(x, [img_height//32, img_width//32], padding=0, stride=1)
         x = x.view(list(x.size())[0], -1)
@@ -215,7 +214,7 @@ def train():
 
     # model
     model = Res50().to(device)
-    opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    opt = torch.optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
     model.train()
 
     xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=10)

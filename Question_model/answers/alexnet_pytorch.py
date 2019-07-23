@@ -7,13 +7,14 @@ from glob import glob
 
 num_classes = 2
 img_height, img_width = 227, 227
+channel = 3
 GPU = False
 torch.manual_seed(0)
 
 class AlexNet(torch.nn.Module):
     def __init__(self):
         super(AlexNet, self).__init__()
-        self.conv1 = torch.nn.Conv2d(3, 96, kernel_size=11, padding=0, stride=4)
+        self.conv1 = torch.nn.Conv2d(channel, 96, kernel_size=11, padding=0, stride=4)
         self.conv2 = torch.nn.Conv2d(96, 256, kernel_size=5, padding=1)
         self.conv3 = torch.nn.Conv2d(256, 384, kernel_size=3, padding=1)
         self.conv4 = torch.nn.Conv2d(384, 384, kernel_size=3, padding=1)

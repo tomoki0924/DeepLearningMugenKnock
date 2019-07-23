@@ -7,13 +7,14 @@ from glob import glob
 
 num_classes = 2
 img_height, img_width = 224, 224
+channel = 3
 GPU = False
 torch.manual_seed(0)
 
 class GAP(torch.nn.Module):
     def __init__(self):
         super(GAP, self).__init__()
-        self.conv1 = torch.nn.Conv2d(3, 96, kernel_size=7, padding=1, stride=2)
+        self.conv1 = torch.nn.Conv2d(channel, 96, kernel_size=7, padding=1, stride=2)
         self.conv2 = torch.nn.Conv2d(96, 256, kernel_size=5, padding=1, stride=2)
         self.conv3 = torch.nn.Conv2d(256, 384, kernel_size=3, padding=1)
         self.conv4 = torch.nn.Conv2d(384, 384, kernel_size=3, padding=1)

@@ -7,13 +7,14 @@ from glob import glob
 
 num_classes = 2
 img_height, img_width = 224, 224
+channel = 3
 GPU = False
 torch.manual_seed(0)
 
 class VGG19(torch.nn.Module):
     def __init__(self):
         super(VGG19, self).__init__()
-        self.conv1_1 = torch.nn.Conv2d(3, 64, kernel_size=3, padding=1, stride=1)
+        self.conv1_1 = torch.nn.Conv2d(channel, 64, kernel_size=3, padding=1, stride=1)
         self.conv1_2 = torch.nn.Conv2d(64, 64, kernel_size=3, padding=1, stride=1)
         self.conv2_1 = torch.nn.Conv2d(64, 128, kernel_size=3, padding=1, stride=1)
         self.conv2_2 = torch.nn.Conv2d(128, 128, kernel_size=3, padding=1, stride=1)
@@ -63,6 +64,8 @@ class VGG19(torch.nn.Module):
         x = F.relu(self.fc2(x))
         x = torch.nn.Dropout()(x)
         x = self.fc_out(x)
+        x = F.softmax(x, dim=1)
+        
         return x
 
 
@@ -130,6 +133,8 @@ def train():
     train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
+
+    loss_func = torch.nn.CrossEntropyLoss()
     
     for i in range(500):
         if mbi + mb > len(xs):
@@ -146,7 +151,7 @@ def train():
         opt.zero_grad()
         y = model(x)
         y = F.log_softmax(y, dim=1)
-        loss = torch.nn.CrossEntropyLoss()(y, t)
+        loss = loss_func(y, t)
         loss.backward()
         opt.step()
     
@@ -175,7 +180,7 @@ def test():
         x = torch.tensor(x, dtype=torch.float).to(device)
         
         pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+        pred = pred.detach().cpu().numpy()[0]
     
         print("in {}, predicted probabilities >> {}".format(path, pred))
     

@@ -7,13 +7,14 @@ from glob import glob
 
 num_classes = 2
 img_height, img_width = 128, 128
+channel = 3
 GPU = False
 torch.manual_seed(0)
 
 class NIN(torch.nn.Module):
     def __init__(self):
         super(NIN, self).__init__()
-        self.conv1 = torch.nn.Conv2d(3, 192, kernel_size=5, padding=2, stride=1)
+        self.conv1 = torch.nn.Conv2d(channel, 192, kernel_size=5, padding=2, stride=1)
         self.cccp1 = torch.nn.Conv2d(192, 160, kernel_size=1, padding=0, stride=1)
         self.cccp2 = torch.nn.Conv2d(160, 96, kernel_size=1, padding=0, stride=1)
         self.conv2 = torch.nn.Conv2d(96, 192, kernel_size=5, padding=2, stride=1)

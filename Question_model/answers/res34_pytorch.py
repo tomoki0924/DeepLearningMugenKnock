@@ -55,7 +55,7 @@ class Res34(torch.nn.Module):
     def __init__(self):
         super(Res34, self).__init__()
 
-        self.conv1 = torch.nn.Conv2d(3, 64, kernel_size=7, padding=3, stride=2)
+        self.conv1 = torch.nn.Conv2d(channel, 64, kernel_size=7, padding=3, stride=2)
         self.bn1 = torch.nn.BatchNorm2d(64)
         self.resblock2_1 = ResBlock(64, 64)
         self.resblock2_2 = ResBlock(64, 64)

@@ -26,6 +26,7 @@
 > [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
+- 2019.7.23 [Pytorch] ResNeXt-50, 101を追加
 - 2019.7.17 [Pytorch] VAEを追加  [keras, tensorflow, chainer] CGAN(MNIST)を追加
 - 2019.7.5 [pytorch, keras]ResNet18, 34, 101, 152を追加
 - 2019.6.16 [pytorch, tensorflow, keras, chainer] ResNet50を追加
@@ -181,6 +182,8 @@ $ pip install -r requirements.txt
 | [ResNet-50](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-resnet) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res50_pytorch.py) | [✓(not good)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res50_tensorflow_layers.py) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res50_keras.py) | [✓(not good)](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res50_chainer.py) | 
 | [ResNet-101](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-resnet) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res101_pytorch.py) | | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res101_keras.py) | |
 | [ResNet-152](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-resnet) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res152_pytorch.py) | | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res152_keras.py) | | 
+| [ResNeXt-50](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-resnext) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/resNeXt50_pytorch.py) |
+| [ResNeXt-101](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_model#q-resnext) | [✓](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/resNeXt101_pytorch.py) | |
 
 
 ### [Semantic Segmentation編](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/tree/master/Question_semaseg)

@@ -370,6 +370,12 @@ pytorchでは*torch.nn.BatchNorm2d()*, tensorflowでは*tf.layers.batch_normaliz
 
 論文 >> https://arxiv.org/abs/1512.03385
 
+Skip connectionによって、Lossのback propagationの効率化を行った。
+
+![](assets/resnet_block.jpg)
+
+
+
 答え
 
 #### Res18
@@ -398,3 +404,20 @@ pytorchでは*torch.nn.BatchNorm2d()*, tensorflowでは*tf.layers.batch_normaliz
 
 - Pytorch [answers/res152_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res152_pytorch.py)
 - Keras [answers/res152_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/res152_keras.py)
+
+## Q. ResNeXt
+
+元論文 >> https://arxiv.org/abs/1611.05431
+
+ResNetのblockを内を細かく分けて、それらの和をとることでネットワーク内にネットワークを複数作成するモジュールを実現している。
+パラメータ数を減らしながらも精度向上を実現した。
+
+![](assets/resnext_block.jpg)
+
+#### Res50
+
+- Pytorch [answers/resNeXt50_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/resNeXt50_pytorch.py)
+
+#### Res101
+
+- Pytorch [answers/resNeXt101_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/resNeXt101_pytorch.py)

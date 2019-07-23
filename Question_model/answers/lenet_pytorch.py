@@ -7,13 +7,14 @@ from glob import glob
 
 num_classes = 2
 img_height, img_width = 32, 32
+channel = 3
 GPU = False
 torch.manual_seed(0)
 
 class LeNet(torch.nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
-        self.conv1 = torch.nn.Conv2d(3, 6, kernel_size=5, padding=0)
+        self.conv1 = torch.nn.Conv2d(channel, 6, kernel_size=5, padding=0)
         self.conv2 = torch.nn.Conv2d(6, 16, kernel_size=5, padding=0)
         self.fc1 = torch.nn.Linear(5*5*16, 120)
         self.fc2 = torch.nn.Linear(120, 64)
