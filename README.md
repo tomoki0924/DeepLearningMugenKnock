@@ -29,6 +29,7 @@
 
 更新情報は https://twitter.com/curry_yoyoyo で発信
 
+- 2019.7.28 [Keras] ResNeXt-50, 101を追加
 - 2019.7.23 [Pytorch] ResNeXt-50, 101を追加
 - 2019.7.17 [Pytorch] VAEを追加  [keras, tensorflow, chainer] CGAN(MNIST)を追加
 - 2019.7.5 [pytorch, keras]ResNet18, 34, 101, 152を追加
