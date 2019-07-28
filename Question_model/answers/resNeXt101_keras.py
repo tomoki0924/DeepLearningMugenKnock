@@ -18,20 +18,21 @@ K.set_session(sess)
 
 # network
 from keras.models import Sequential, Model
-from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization, concatenate, AveragePooling2D, Add
+from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Input, BatchNormalization, concatenate, AveragePooling2D, Add, SeparableConv2D
 
 num_classes = 2
-img_height, img_width = 224, 224
+img_height, img_width = 128, 128
 channel = 3
 
 def Res50():
 
-    def ResBlock(x, in_f, f_1, out_f, stride=1):
+    def Block(x, in_f, f_1, out_f, stride=1, cardinality):
         res_x = Conv2D(f_1, [1, 1], strides=stride, padding='same', activation=None)(x)
         res_x = BatchNormalization()(res_x)
         res_x = Activation("relu")(res_x)
 
-        res_x = Conv2D(f_1, [3, 3], strides=1, padding='same', activation=None)(res_x)
+        multiplier = f_1 // cardinality
+        res_x = SeparableConv2D(f_1, [3, 3], strides=1, padding='same', depth_multiplier=multiplier, activation=None)(res_x)
         res_x = BatchNormalization()(res_x)
         res_x = Activation("relu")(res_x)
 
@@ -60,25 +61,22 @@ def Res50():
     x = Activation("relu")(x)
     x = MaxPooling2D([3, 3], strides=2, padding='same')(x)
 
-    x = ResBlock(x, 64, 64, 256)
-    x = ResBlock(x, 256, 64, 256)
-    x = ResBlock(x, 256, 64, 256)
+    x = Block(x, 64, 64, 256)
+    x = Block(x, 256, 64, 256)
+    x = Block(x, 256, 64, 256)
 
-    x = ResBlock(x, 256, 128, 512, stride=2)
-    x = ResBlock(x, 512, 128, 512)
-    x = ResBlock(x, 512, 128, 512)
-    x = ResBlock(x, 512, 128, 512)
+    x = Block(x, 256, 128, 512, stride=2)
+    x = Block(x, 512, 128, 512)
+    x = Block(x, 512, 128, 512)
+    x = Block(x, 512, 128, 512)
 
-    x = ResBlock(x, 512, 256, 1024, stride=2)
-    x = ResBlock(x, 1024, 256, 1024)
-    x = ResBlock(x, 1024, 256, 1024)
-    x = ResBlock(x, 1024, 256, 1024)
-    x = ResBlock(x, 1024, 256, 1024)
-    x = ResBlock(x, 1024, 256, 1024)
+    x = Block(x, 512, 256, 1024, stride=2)
+    for i in range(22):
+        x = Block(x, 1024, 256, 1024)
 
-    x = ResBlock(x, 1024, 512, 2048, stride=2)
-    x = ResBlock(x, 2048, 256, 2048)
-    x = ResBlock(x, 2048, 256, 2048)
+    x = Block(x, 1024, 512, 2048, stride=2)
+    x = Block(x, 2048, 256, 2048)
+    x = Block(x, 2048, 256, 2048)
 
     x = AveragePooling2D([img_height // 32, img_width // 32], strides=1, padding='valid')(x)
     x = Flatten()(x)
