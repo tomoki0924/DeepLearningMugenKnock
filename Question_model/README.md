@@ -414,13 +414,20 @@ ResNetのblockを内を細かく分けて、それらの和をとることでネ
 
 ![](assets/resnext_block.jpg)
 
-#### Res50
+#### ResNeXt50
 
 - Pytorch [answers/resNeXt50_pytorch.py](Question_model/answers/resNeXt50_pytorch.py)
 - Keras [answers/resNeXt50_keras.py](Question_model/answers/resNeXt50_keras.py)
 
-#### Res101
+#### ResNeXt101
 
 - Pytorch [answers/resNeXt101_pytorch.py](Question_model/answers/resNeXt101_pytorch.py)
 - Keras [answers/resNeXt101_keras.py](Question_model/answers/resNeXt101_keras.py)
 
+
+## Q. Xception
+
+元論文 >> https://arxiv.org/abs/1611.05431
+
+- Pytorch [answers/xception_pytorch.py](Question_model/answers/xception_pytorch.py)
+- Keras [answers/xception_keras.py](Question_model/answers/xception_keras.py)

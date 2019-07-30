@@ -24,65 +24,89 @@ num_classes = 2
 img_height, img_width = 128, 128
 channel = 3
 
-def ResNeXt101():
 
-    def Block(x, in_f, f_1, out_f, stride=1, cardinality):
-        res_x = Conv2D(f_1, [1, 1], strides=stride, padding='same', activation=None)(x)
-        res_x = BatchNormalization()(res_x)
-        res_x = Activation("relu")(res_x)
-
-        multiplier = f_1 // cardinality
-        res_x = SeparableConv2D(f_1, [3, 3], strides=1, padding='same', depth_multiplier=multiplier, activation=None)(res_x)
-        res_x = BatchNormalization()(res_x)
-        res_x = Activation("relu")(res_x)
-
-        res_x = Conv2D(out_f, [1, 1], strides=1, padding='same', activation=None)(res_x)
-        res_x = BatchNormalization()(res_x)
-        res_x = Activation("relu")(res_x)
-
-        if in_f != out_f:
-            x = Conv2D(out_f, [1, 1], strides=1, padding="same", activation=None)(x)
-            x = BatchNormalization()(x)
-            x = Activation("relu")(x)
-
-        if stride == 2:
-            x = MaxPooling2D([2, 2], strides=2, padding="same")(x)
-        
-        x = Add()([res_x, x])
-
+def Xception():
+    
+    def Entry_flow(x, dim):
+        x = SeparableConv2D(dim, [3, 3], strides=1, padding='same', depth_multiplier=1, activation=None)(x)
+        x = BatchNormalization()(x)
+        x = Activation("relu")(x)
+        x = SeparableConv2D(dim, [3, 3], strides=1, padding='same', depth_multiplier=1, activation=None)(x)
+        x = BatchNormalization()(x)
+        x = MaxPooling2D([3, 3], strides=2, padding='same')(x)
         return x
         
-    
+
+    def Middle_flow(x, dim=728):
+        x_sc = x
+        
+        for _ in range(3):
+            x = Activation("relu")(x)
+            x = SeparableConv2D(dim, [3, 3], strides=1, padding='same', depth_multiplier=1, activation=None)(x)
+            x = BatchNormalization()(x)
+            
+        x = Add()([x, x_sc])
+        
+        return x
+
     inputs = Input((img_height, img_width, channel))
     x = inputs
     
-    x = Conv2D(64, [7, 7], strides=2, padding='same', activation=None)(x)
+    # Entry flow
+    x = Conv2D(32, [3, 3], strides=2, padding='same', activation=None)(x)
     x = BatchNormalization()(x)
     x = Activation("relu")(x)
+    x = Conv2D(64, [3, 3], padding='same', activation=None)(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    
+    x_sc = Conv2D(128, [1,1], strides=2, padding="same", activation=None)(x)
+    x_sc = BatchNormalization()(x_sc)
+    x = Entry_flow(x, 128)
+    x = Add()([x, x_sc])
+    
+    x_sc = Conv2D(256, [1,1], strides=2, padding="same", activation=None)(x_sc)
+    x_sc = BatchNormalization()(x_sc)
+    x = Activation("relu")(x)
+    x = Entry_flow(x, 256)
+    x = Add()([x, x_sc])
+    x = Activation("relu")(x)
+    
+    x_sc = Conv2D(728, [1,1], strides=2, padding="same", activation=None)(x)
+    x_sc = BatchNormalization()(x_sc)
+    x = Activation("relu")(x)
+    x = Entry_flow(x, 728)
+    x = Add()([x, x_sc])
+    
+    # Middle flow
+    for _ in range(8):
+        x = Middle_flow(x)
+    
+    # Exit flow
+    x_sc = Conv2D(1024, [1, 1], strides=2, padding="same", activation=None)(x)
+    x_sc = BatchNormalization()(x_sc)
+    x = Activation("relu")(x)
+    x = SeparableConv2D(728, [3, 3], strides=1, padding='same', depth_multiplier=1, activation=None)(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = SeparableConv2D(1024, [3, 3], strides=1, padding='same', depth_multiplier=1, activation=None)(x)
+    x = BatchNormalization()(x)
     x = MaxPooling2D([3, 3], strides=2, padding='same')(x)
-
-    x = Block(x, 64, 64, 256)
-    x = Block(x, 256, 64, 256)
-    x = Block(x, 256, 64, 256)
-
-    x = Block(x, 256, 128, 512, stride=2)
-    x = Block(x, 512, 128, 512)
-    x = Block(x, 512, 128, 512)
-    x = Block(x, 512, 128, 512)
-
-    x = Block(x, 512, 256, 1024, stride=2)
-    for i in range(22):
-        x = Block(x, 1024, 256, 1024)
-
-    x = Block(x, 1024, 512, 2048, stride=2)
-    x = Block(x, 2048, 256, 2048)
-    x = Block(x, 2048, 256, 2048)
+    x = Add()([x, x_sc])
+    
+    x = SeparableConv2D(1536, [3, 3], strides=1, padding='same', depth_multiplier=1, activation=None)(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    
+    x = SeparableConv2D(2048, [3, 3], strides=1, padding='same', depth_multiplier=1, activation=None)(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
 
     x = AveragePooling2D([img_height // 32, img_width // 32], strides=1, padding='valid')(x)
     x = Flatten()(x)
-    x = Dense(num_classes, activation='softmax', name='out')(x)
+    x = Dense(num_classes, activation='softmax')(x)
 
-    model = Model(inputs=inputs, outputs=[x])
+    model = Model(inputs=inputs, outputs=x)
 
     return model
     
@@ -176,20 +200,20 @@ def data_load(path, hf=False, vf=False, rot=False):
 
 # train
 def train():
-    model = ResNeXt101()
+    model = Xception()
 
     for layer in model.layers:
         layer.trainable = True
 
     model.compile(
         loss='categorical_crossentropy',
-        optimizer=keras.optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True),
+        optimizer=keras.optimizers.SGD(lr=0.0001, decay=1e-6, momentum=0.9, nesterov=True),
         metrics=['accuracy'])
 
     xs, ts, paths = data_load('../Dataset/train/images', hf=True, vf=True, rot=1)
 
     # training
-    mb = 16
+    mb = 32
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
@@ -217,7 +241,7 @@ def train():
 # test
 def test():
     # load trained model
-    model = ResNeXt101()
+    model = Xception()
     model.load_weights('model.h5')
 
     xs, ts, paths = data_load("../Dataset/test/images/")

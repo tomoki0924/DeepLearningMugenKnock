@@ -27,8 +27,7 @@
 
 ## Recent
 
-更新情報は https://twitter.com/curry_yoyoyo で発信
-
+- 2019.7.30 [PyTorch, Keras] Xceptionを追加
 - 2019.7.28 [Keras] ResNeXt-50, 101を追加
 - 2019.7.23 [Pytorch] ResNeXt-50, 101を追加
 - 2019.7.17 [Pytorch] VAEを追加  [keras, tensorflow, chainer] CGAN(MNIST)を追加
@@ -188,7 +187,7 @@ $ pip install -r requirements.txt
 | [ResNet-152](Question_model#q-resnet) | [✓](Question_model/answers/res152_pytorch.py) | | [✓](Question_model/answers/res152_keras.py) | | 
 | [ResNeXt-50](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt50_pytorch.py) | | [✓](Question_model/answers/resNeXt50_keras.py) |
 | [ResNeXt-101](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt101_pytorch.py) | | [✓](Question_model/answers/resNeXt101_keras.py) |
-
+| [Xception](Question_model#q-xception) | [✓](Question_model/answers/xception_pytorch.py) | | [✓](Question_model/answers/xception_keras.py) |
 
 ### [Semantic Segmentation編](Question_semaseg)
 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |

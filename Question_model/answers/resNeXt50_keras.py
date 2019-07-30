@@ -24,7 +24,7 @@ num_classes = 2
 img_height, img_width = 128, 128
 channel = 3
 
-def Res50():
+def ResNeXt50():
 
     def Block(x, in_f, f_1, out_f, stride=1, cardinality):
         res_x = Conv2D(f_1, [1, 1], strides=stride, padding='same', activation=None)(x)
@@ -179,7 +179,7 @@ def data_load(path, hf=False, vf=False, rot=False):
 
 # train
 def train():
-    model = Res50()
+    model = ResNeXt50()
 
     for layer in model.layers:
         layer.trainable = True
@@ -220,7 +220,7 @@ def train():
 # test
 def test():
     # load trained model
-    model = Res50()
+    model = ResNeXt50()
     model.load_weights('model.h5')
 
     xs, ts, paths = data_load("../Dataset/test/images/")
