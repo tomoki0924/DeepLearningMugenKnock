@@ -427,7 +427,7 @@ ResNetのblockを内を細かく分けて、それらの和をとることでネ
 
 ## Q. Xception
 
-元論文 >> https://arxiv.org/abs/1611.05431
+元論文 >> https://arxiv.org/abs/1610.02357
 
 - Pytorch [answers/xception_pytorch.py](Question_model/answers/xception_pytorch.py)
 - Keras [answers/xception_keras.py](Question_model/answers/xception_keras.py)
