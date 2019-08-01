@@ -12,7 +12,7 @@ img_height, img_width = 224, 224
 tf.set_random_seed(0)
 
 
-def Mynet(x, keep_prob, train=False):
+def VGG16(x, keep_prob, train=False):
     # block conv1
     for i in range(2):
         x = tf.layers.conv2d(inputs=x, filters=64, kernel_size=[3, 3], strides=1, padding='same', activation=tf.nn.relu, name='conv1_{}'.format(i+1))
@@ -108,7 +108,7 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits = Mynet(X, keep_prob, train=True)
+    logits = VGG16(X, keep_prob, train=True)
     preds = tf.nn.softmax(logits)
     loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
     #loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
@@ -161,7 +161,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits = Mynet(X, keep_prob)
+    logits = VGG16(X, keep_prob)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")

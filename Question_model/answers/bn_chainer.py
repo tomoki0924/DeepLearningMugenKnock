@@ -10,10 +10,10 @@ num_classes = 2
 img_height, img_width = 224, 224
 GPU = -1
 
-class Mynet(chainer.Chain):
+class VGG16(chainer.Chain):
     def __init__(self, train=True):
         self.train = train
-        super(Mynet, self).__init__()
+        super(VGG16, self).__init__()
         with self.init_scope():
             # block conv1
             self.conv1 = chainer.Sequential()
@@ -131,7 +131,7 @@ def data_load(path, hf=False, vf=False):
 # train
 def train():
     # model
-    model = Mynet(train=True)
+    model = VGG16(train=True)
 
     if GPU >= 0:
         chainer.cuda.get_device(GPU).use()
@@ -191,7 +191,7 @@ def train():
 
 # test
 def test():
-    model = Mynet(train=False)
+    model = VGG16(train=False)
 
     if GPU >= 0:
         chainer.cuda.get_device_from_id(cf.GPU).use()
