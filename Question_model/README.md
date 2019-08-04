@@ -438,4 +438,20 @@ ResNetのblockを内を細かく分けて、それらの和をとることでネ
 
 ResNetのshortcut connectionは勾配を直接的に前のLayerに伝えられるけども、shorcut connectionをLayerを通した出力に足して(sum)いるのは情報のフローを妨げる可能性があるらしい。
 
+そこでconcatをするのだが、DenseBLockというconvolutionの塊の全てのLayerをconcatにする。
 
+#### DenseNet121
+
+- Pytorch [answers/DenseNet121_pytorch.py](answers/DenseNet121_pytorch.py)
+
+#### ResNeXt169
+
+- Pytorch [answers/DenseNet169_pytorch.py](answers/DenseNet169_pytorch.py)
+
+#### ResNeXt201
+
+- Pytorch [answers/DenseNet201_pytorch.py](answers/DenseNet201_pytorch.py)
+
+#### ResNeXt264
+
+- Pytorch [answers/DenseNet264_pytorch.py](answers/DenseNet264_pytorch.py)

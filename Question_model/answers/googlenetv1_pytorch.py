@@ -230,7 +230,7 @@ def train():
     np.random.seed(0)
     np.random.shuffle(train_ind)
 
-    loss_fn = torch.nn.CrossEntropyLoss()
+    loss_fn = torch.nn.NLLLoss()
     
     for i in range(500):
         if mbi + mb > len(xs):
@@ -247,9 +247,9 @@ def train():
         opt.zero_grad()
         y, y_aux1, y_aux2 = model(x)
         #y = F.log_softmax(y, dim=1)
-        loss = loss_fn(y, t)
-        loss_aux1 = loss_fn(y_aux1, t)
-        loss_aux2 = loss_fn(y_aux2, t)
+        loss = loss_fn(torch.log(y), t)
+        loss_aux1 = loss_fn(torch.log(y_aux1), t)
+        loss_aux2 = loss_fn(torch.log(y_aux2), t)
 
         loss = loss + loss_aux1 + loss_aux2
         
@@ -281,7 +281,7 @@ def test():
         x = torch.tensor(x, dtype=torch.float).to(device)
         
         pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+        pred = pred.detach().cpu().numpy()[0]
     
         print("in {}, predicted probabilities >> {}".format(path, pred))
     

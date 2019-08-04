@@ -37,6 +37,7 @@ class GAP(torch.nn.Module):
         x = self.conv_out(x)
         x = self.gap(x)
         x = x.view((x.shape[0], -1))
+        x = F.softmax(x, dim=1)
         return x
 
 
@@ -144,6 +145,8 @@ def train():
     train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
+
+    loss_fn = torch.nn.NLLLoss()
     
     for i in range(500):
         if mbi + mb > len(xs):
@@ -159,8 +162,7 @@ def train():
 
         opt.zero_grad()
         y = model(x)
-        y = F.log_softmax(y, dim=1)
-        loss = torch.nn.CrossEntropyLoss()(y, t)
+        loss = loss_fn(torch.log(y), t)
         loss.backward()
         opt.step()
     
@@ -189,7 +191,7 @@ def test():
         x = torch.tensor(x, dtype=torch.float).to(device)
         
         pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+        pred = pred.detach().cpu().numpy()[0]
     
         print("in {}, predicted probabilities >> {}".format(path, pred))
     

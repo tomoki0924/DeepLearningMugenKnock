@@ -134,7 +134,7 @@ def train():
     np.random.seed(0)
     np.random.shuffle(train_ind)
 
-    loss_func = torch.nn.CrossEntropyLoss()
+    loss_fn = torch.nn.NLLLoss() #torch.nn.CrossEntropyLoss()
     
     for i in range(500):
         if mbi + mb > len(xs):
@@ -150,8 +150,7 @@ def train():
 
         opt.zero_grad()
         y = model(x)
-        y = F.log_softmax(y, dim=1)
-        loss = loss_func(y, t)
+        loss = loss_fn(torch.log(y), t)
         loss.backward()
         opt.step()
     

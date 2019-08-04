@@ -39,6 +39,7 @@ class ZFNet(torch.nn.Module):
         x = F.relu(self.fc2(x))
         x = torch.nn.Dropout()(x)
         x = self.fc_out(x)
+        x = F.softmax(x, dim=1)
         return x
 
 
@@ -146,6 +147,8 @@ def train():
     train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
+
+    loss_fn = torch.nn.NLLLoss()
     
     for i in range(500):
         if mbi + mb > len(xs):
@@ -161,8 +164,7 @@ def train():
 
         opt.zero_grad()
         y = model(x)
-        y = F.log_softmax(y, dim=1)
-        loss = torch.nn.CrossEntropyLoss()(y, t)
+        loss = loss_fn(torch.log(y), t)
         loss.backward()
         opt.step()
     

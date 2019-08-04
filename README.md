@@ -29,6 +29,7 @@
 
 ## Recent
 
+- 2019.8.4 [Pytorch] DenseNet121, 169, 201, 264を追加
 - 2019.7.30 [PyTorch, Keras] Xceptionを追加
 - 2019.7.28 [Keras] ResNeXt-50, 101を追加
 - 2019.7.23 [Pytorch] ResNeXt-50, 101を追加
@@ -190,6 +191,10 @@ $ pip install -r requirements.txt
 | [ResNeXt-50](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt50_pytorch.py) | | [✓](Question_model/answers/resNeXt50_keras.py) |
 | [ResNeXt-101](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt101_pytorch.py) | | [✓](Question_model/answers/resNeXt101_keras.py) |
 | [Xception](Question_model#q-xception) | [✓](Question_model/answers/xception_pytorch.py) | | [✓](Question_model/answers/xception_keras.py) |
+| [DenseNet121](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet121_pytorch.py) | 
+| [DenseNet169](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet169_pytorch.py) | 
+| [DenseNet201](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet201_pytorch.py) | 
+| [DenseNet264](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet264_pytorch.py) | 
 
 ### [Semantic Segmentation編](Question_semaseg)
 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |
