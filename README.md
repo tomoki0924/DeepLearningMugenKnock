@@ -170,8 +170,9 @@ $ pip install -r requirements.txt
 
 ### [画像認識編](Question_model)
 
-| 問題 |  PyTorch | TensorFlow | Keras | Chainer |
+| 問題 |  PyTorch | TensorFlow | Keras | Chainer | paper year |
 |:---:|:---:|:---:|:---:|:---:|
+| [モデルの書き方の簡潔化](Question_model#q-vgg19) | [✓](Question_model/answers/easy_pytorch.py) | [✓](Question_model/answers/easy_tensorflow_layers.py) | [✓](Question_model/answers/easy_keras.py) | [✓](Question_model/answers/easy_chainer.py) | 
 | [ API ](Question_model#api) | [✓](Question_model/answers/api_pytorch.py) | 
 | [LeNet](Question_model#q-lenet) | [✓](Question_model/answers/lenet_pytorch.py) | [✓](Question_model/answers/lenet_tensorflow_layers.py) | [✓](Question_model/answers/lenet_keras.py) | [✓](Question_model/answers/lenet_chainer.py) | 
 | [AlexNet](Question_model#q-alexnet) | [✓](Question_model/answers/alexnet_pytorch.py) | [✓](Question_model/answers/alexnet_tensorflow_layers.py) | [✓](Question_model/answers/alexnet_keras.py) | [✓](Question_model/answers/alexnet_chainer.py) | 
@@ -180,7 +181,6 @@ $ pip install -r requirements.txt
 | [Network in network](Question_model#q-network-in-network) | [✓](Question_model/answers/nin_pytorch.py) | [✓](Question_model/answers/nin_tensorflow_layers.py) | [✓](Question_model/answers/nin_keras.py) | [✓](Question_model/answers/nin_chainer.py) | 
 | [VGG16](Question_model#q-vgg16) | [✓](Question_model/answers/vgg16_pytorch.py) | [✓](Question_model/answers/vgg16_tensorflow_layers.py) | [✓](Question_model/answers/vgg16_keras.py) | [✓](Question_model/answers/vgg16_chainer.py) | 
 | [VGG19](Question_model#q-vgg19) | [✓](Question_model/answers/vgg19_pytorch.py) | [✓](Question_model/answers/vgg19_tensorflow_layers.py) | [✓](Question_model/answers/vgg19_keras.py) | [✓](Question_model/answers/vgg19_chainer.py) | 
-| [モデルの書き方の簡潔化](Question_model#q-vgg19) | [✓](Question_model/answers/easy_pytorch.py) | [✓](Question_model/answers/easy_tensorflow_layers.py) | [✓](Question_model/answers/easy_keras.py) | [✓](Question_model/answers/easy_chainer.py) | 
 | [GoogLeNet-v1(Inception)](Question_model#q-googlenet-v1) | [✓](Question_model/answers/googletnetv1_pytorch.py) | [✓](Question_model/answers/googlenetv1_tensorflow_slim.py) | [✓](Question_model/answers/googlenetv1_keras.py) | [✓](Question_model/answers/googlenetv1_chainer.py) | 
 | [Batch Normalization](Question_model#q-vgg19) | [✓](Question_model/answers/bn_pytorch.py) | [✓](Question_model/answers/bn_tensorflow_layers.py) | [✓](Question_model/answers/bn_keras.py) | [✓](Question_model/answers/bn_chainer.py) |
 | [ResNet-18](Question_model#q-resnet) | [✓](Question_model/answers/res18_pytorch.py) | | [✓](Question_model/answers/res18_keras.py) | |
