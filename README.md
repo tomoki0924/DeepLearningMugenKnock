@@ -170,7 +170,7 @@ $ pip install -r requirements.txt
 
 ### [画像認識編](Question_model)
 
-| 問題 |  PyTorch | TensorFlow | Keras | Chainer | paper year |
+| 問題 |  PyTorch | TensorFlow | Keras | Chainer |
 |:---:|:---:|:---:|:---:|:---:|
 | [モデルの書き方の簡潔化](Question_model#q-vgg19) | [✓](Question_model/answers/easy_pytorch.py) | [✓](Question_model/answers/easy_tensorflow_layers.py) | [✓](Question_model/answers/easy_keras.py) | [✓](Question_model/answers/easy_chainer.py) | 
 | [ API ](Question_model#api) | [✓](Question_model/answers/api_pytorch.py) | 
