@@ -378,6 +378,9 @@ def train():
     np.random.shuffle(train_ind)
                           
     loss_fn = torch.nn.BCELoss()
+    loss_l1 = torch.nn.L1Loss()
+    
+    Lambda = 1.
     
     for i in range(5000):
         if mbi + mb > train_num:
@@ -399,27 +402,28 @@ def train():
 
         Gx= G(x)
                           
-        fake_x = torch.cat([Gx, x], dim=1)
-                          
+        fake_x = torch.cat([Gx, x], dim=1)                    
         loss_D_fake = loss_fn(D(fake_x), torch.ones(mb, dtype=torch.float).to(device))
-        loss_D_fake.backward(retain_graph=True)
         
-        real_x = torch.cat([y, x], dim=1)
-        
+        real_x = torch.cat([y, x], dim=1)      
         loss_D_real = loss_fn(D(real_x), torch.zeros(mb, dtype=torch.float).to(device))
-        loss_D_real.backward()
+
+        oss_D = loss_D_real + loss_D_fake
+        loss_D.backward(retain_graph=True)
         
         opt_D.step()
                           
             
         # UNet training
         loss_G_fake = loss_fn(D(fake_x), torch.zeros(mb, dtype=torch.float).to(device))
-        loss_G_fake.backward()
+        loss_G_l1 = Lambda * loss_l1(Gx, x)
+        loss_G = loss_G_fake + loss_G_l1
+        loss_G.backward()
         
         opt_G.step()
         
         if (i+1) % 10 == 0:
-            print("iter : ", i+1, ", loss G : ", (loss_D_fake + loss_D_real).item(), ", loss D :", loss_G_fake.item())
+            print("iter : ", i+1, ", loss D : ", loss_D.item(), ", loss G :", loss_G.item())
 
     torch.save(G.state_dict(), 'cnn.pt')
 
