@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
-
+       
 class_num = len(CLS)
 img_height, img_width = 64, 64 #572, 572
 out_height, out_width = 64, 64 #388, 388
@@ -16,59 +16,87 @@ GPU = False
 torch.manual_seed(0)
 
     
-class UNet_block(torch.nn.Module):
-    def __init__(self, dim1, dim2):
-        super(UNet_block, self).__init__()
-
-        _module = []
-
-        for i in range(2):
-            f = dim1 if i == 0 else dim2
-            _module.append(torch.nn.Conv2d(f, dim2, kernel_size=3, padding=1, stride=1))
-            _module.append(torch.nn.BatchNorm2d(dim2))
-            _module.append(torch.nn.ReLU())
-
-        self.module = torch.nn.Sequential(*_module)
-
-    def forward(self, x):
-        x = self.module(x)
-        return x
-
-class UNet_deconv_block(torch.nn.Module):
-    def __init__(self, dim1, dim2):
-        super(UNet_deconv_block, self).__init__()
-
-        self.module = torch.nn.Sequential(
-            torch.nn.ConvTranspose2d(dim1, dim2, kernel_size=2, stride=2),
-            torch.nn.BatchNorm2d(dim2)
-        )
-
-    def forward(self, x):
-        x = self.module(x)
-        return x
-
-
 class UNet(torch.nn.Module):
     def __init__(self):
         super(UNet, self).__init__()
 
         base = 16
         
-        self.enc1 = UNet_block(3, base)
-        self.enc2 = UNet_block(base, base * 2)
-        self.enc3 = UNet_block(base * 2, base * 4)
-        self.enc4 = UNet_block(base * 4, base * 8)
-        self.enc5 = UNet_block(base * 8, base * 16)
+        self.enc1 = torch.nn.Sequential()
+        for i in range(2):
+            f = 3 if i == 0 else base
+            self.enc1.add_module("enc1_{}".format(i+1), torch.nn.Conv2d(f, base, kernel_size=3, padding=1, stride=1))
+            self.enc1.add_module("enc1_relu_{}".format(i+1), torch.nn.ReLU())
+            self.enc1.add_module("enc1_bn_{}".format(i+1), torch.nn.BatchNorm2d(base))
 
-        self.tconv4 = UNet_deconv_block(base * 16, base * 8)
-        self.tconv3 = UNet_deconv_block(base * 8, base * 4)
-        self.tconv2 = UNet_deconv_block(base * 4, base * 2)
-        self.tconv1 = UNet_deconv_block(base * 2, base)
+        self.enc2 = torch.nn.Sequential()
+        for i in range(2):
+            f = base if i == 0 else base * 2
+            self.enc2.add_module("enc2_{}".format(i+1), torch.nn.Conv2d(f, base*2, kernel_size=3, padding=1, stride=1))
+            self.enc2.add_module("enc2_relu_{}".format(i+1), torch.nn.ReLU())
+            self.enc2.add_module("enc2_bn_{}".format(i+1), torch.nn.BatchNorm2d(base*2))
 
-        self.dec4 = UNet_block(base * 16, base * 8)
-        self.dec3 = UNet_block(base * 8, base * 4)
-        self.dec2 = UNet_block(base * 4, base * 2)
-        self.dec1 = UNet_block(base * 2, base)
+        self.enc3 = torch.nn.Sequential()
+        for i in range(2):
+            f = base*2 if i == 0 else base*4
+            self.enc3.add_module("enc3_{}".format(i+1), torch.nn.Conv2d(f, base*4, kernel_size=3, padding=1, stride=1))
+            self.enc3.add_module("enc3_relu_{}".format(i+1), torch.nn.ReLU())
+            self.enc3.add_module("enc3_bn_{}".format(i+1), torch.nn.BatchNorm2d(base*4))
+
+        self.enc4 = torch.nn.Sequential()
+        for i in range(2):
+            f = base*4 if i == 0 else base*8
+            self.enc4.add_module("enc4_{}".format(i+1), torch.nn.Conv2d(f, base*8, kernel_size=3, padding=1, stride=1))
+            self.enc4.add_module("enc4_relu_{}".format(i+1), torch.nn.ReLU())
+            self.enc4.add_module("enc4_bn_{}".format(i+1), torch.nn.BatchNorm2d(base*8))
+
+        self.enc5 = torch.nn.Sequential()
+        for i in range(2):
+            f = base*8 if i == 0 else base*16
+            self.enc5.add_module("enc5_{}".format(i+1), torch.nn.Conv2d(f, base*16, kernel_size=3, padding=1, stride=1))
+            self.enc5.add_module("enc5_relu_{}".format(i+1), torch.nn.ReLU())
+            self.enc5.add_module("enc5_bn_{}".format(i+1), torch.nn.BatchNorm2d(base*16))
+
+        self.tconv4 = torch.nn.ConvTranspose2d(base*16, base*8, kernel_size=2, stride=2)
+        self.tconv4_bn = torch.nn.BatchNorm2d(base*8)
+
+        self.dec4 = torch.nn.Sequential()
+        for i in range(2):
+            f = base*16 if i == 0 else base*8
+            self.dec4.add_module("dec4_{}".format(i+1), torch.nn.Conv2d(f, base*8, kernel_size=3, padding=1, stride=1))
+            self.dec4.add_module("dec4_relu_{}".format(i+1), torch.nn.ReLU())
+            self.dec4.add_module("dec4_bn_{}".format(i+1), torch.nn.BatchNorm2d(base*8))
+        
+
+        self.tconv3 = torch.nn.ConvTranspose2d(base*8, base*4, kernel_size=2, stride=2)
+        self.tconv3_bn = torch.nn.BatchNorm2d(base*4)
+
+        self.dec3 = torch.nn.Sequential()
+        for i in range(2):
+            f = base*8 if i == 0 else base*4
+            self.dec3.add_module("dec3_{}".format(i+1), torch.nn.Conv2d(f, base*4, kernel_size=3, padding=1, stride=1))
+            self.dec3.add_module("dec3_relu_{}".format(i+1), torch.nn.ReLU())
+            self.dec3.add_module("dec3_bn_{}".format(i+1), torch.nn.BatchNorm2d(base*4))
+
+        self.tconv2 = torch.nn.ConvTranspose2d(base*4, base*2, kernel_size=2, stride=2)
+        self.tconv2_bn = torch.nn.BatchNorm2d(base*2)
+
+        self.dec2 = torch.nn.Sequential()
+        for i in range(2):
+            f = base*4 if i == 0 else base*2
+            self.dec2.add_module("dec2_{}".format(i+1), torch.nn.Conv2d(f, base*2, kernel_size=3, padding=1, stride=1))
+            self.dec2.add_module("dec2_relu_{}".format(i+1), torch.nn.ReLU())
+            self.dec2.add_module("dec2_bn_{}".format(i+1), torch.nn.BatchNorm2d(base*2))
+
+        self.tconv1 = torch.nn.ConvTranspose2d(base*2, base, kernel_size=2, stride=2)
+        self.tconv1_bn = torch.nn.BatchNorm2d(base)
+
+        self.dec1 = torch.nn.Sequential()
+        for i in range(2):
+            f = base*2 if i == 0 else base
+            self.dec1.add_module("dec1_{}".format(i+1), torch.nn.Conv2d(f, base, kernel_size=3, padding=1, stride=1))
+            self.dec1.add_module("dec1_relu_{}".format(i+1), torch.nn.ReLU())
+            self.dec1.add_module("dec1_bn_{}".format(i+1), torch.nn.BatchNorm2d(base))
 
         self.out = torch.nn.Conv2d(base, class_num+1, kernel_size=1, padding=0, stride=1)
         
@@ -93,28 +121,28 @@ class UNet(torch.nn.Module):
         # block conv5
         x = self.enc5(x)
 
-        x = self.tconv4(x)
+        x = self.tconv4_bn(self.tconv4(x))
 
         x = torch.cat((x, x_enc4), dim=1)
         x = self.dec4(x)
 
-        x = self.tconv3(x)
+        x = self.tconv3_bn(self.tconv3(x))
 
         x = torch.cat((x, x_enc3), dim=1)
         x = self.dec3(x)
 
-        x = self.tconv2(x)
+        x = self.tconv2_bn(self.tconv2(x))
         x = torch.cat((x, x_enc2), dim=1)
         x = self.dec2(x)
 
-        x = self.tconv1(x)
+        x = self.tconv1_bn(self.tconv1(x))
         x = torch.cat((x, x_enc1), dim=1)
         x = self.dec1(x)
 
         x = self.out(x)
-        x = F.softmax(x, dim=1)
         
         return x
+
 
     
 # get train data
@@ -178,7 +206,7 @@ def train():
     device = torch.device("cuda" if GPU else "cpu")
 
     # model
-    model = UNet().to(device)
+    model = Mynet().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     model.train()
 
@@ -190,8 +218,6 @@ def train():
     train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
-
-    loss_fn = torch.nn.NLLLoss()
     
     for i in range(1000):
         if mbi + mb > len(xs):
@@ -213,7 +239,8 @@ def train():
         y = y.view(-1, class_num+1)
         t = t.view(-1)
         
-        loss = loss_fn(torch.log(y), t)
+        y = F.log_softmax(y, dim=1)
+        loss = torch.nn.CrossEntropyLoss()(y, t)
         loss.backward()
         opt.step()
     
@@ -227,7 +254,7 @@ def train():
 # test
 def test():
     device = torch.device("cuda" if GPU else "cpu")
-    model = UNet().to(device)
+    model = Mynet().to(device)
     model.eval()
     model.load_state_dict(torch.load('cnn.pt'))
 
@@ -243,9 +270,11 @@ def test():
         
         pred = model(x)
     
-        #pred = pred.permute(0,2,3,1).reshape(-1, class_num+1)
+        pred = pred.permute(0,2,3,1).reshape(-1, class_num+1)
+        pred = F.softmax(pred, dim=1)
+        pred = pred.reshape(-1, out_height, out_width, class_num+1)
         pred = pred.detach().cpu().numpy()[0]
-        pred = pred.argmax(axis=0)
+        pred = pred.argmax(axis=-1)
 
         # visualize
         out = np.zeros((out_height, out_width, 3), dtype=np.uint8)

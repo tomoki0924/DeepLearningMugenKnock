@@ -28,16 +28,16 @@ input=64, width=64, channel=3 とする。
 
 答え
 ### imori
-- Pytorch [answers/ae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_pytorch.py)
-- Tensorflow [answers/ae_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_tensorflow_slim.py)
-- Keras [answers/ae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_keras.py)
-- Chainer [answers/ae_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_chainer.py)
+- Pytorch [answers/ae_pytorch.py](answers/ae_pytorch.py)
+- Tensorflow [answers/ae_tensorflow_slim.py](answers/ae_tensorflow_slim.py)
+- Keras [answers/ae_keras.py](answers/ae_keras.py)
+- Chainer [answers/ae_chainer.py](answers/ae_chainer.py)
 
 ### Cifar10
-- Pytorch [answers/ae_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_pytorch.py)
-- Tensorflow [answers/ae_cifar10_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_tensorflow_slim.py)
-- Keras [answers/ae_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_keras.py)
-- Chainer [answers/ae_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_chainer.py)
+- Pytorch [answers/ae_cifar10_pytorch.py](answers/ae_cifar10_pytorch.py)
+- Tensorflow [answers/ae_cifar10_tensorflow_slim.py](answers/ae_cifar10_tensorflow_slim.py)
+- Keras [answers/ae_cifar10_keras.py](answers/ae_cifar10_keras.py)
+- Chainer [answers/ae_cifar10_chainer.py](answers/ae_cifar10_chainer.py)
 
 ## Q. Convolutional Auto Encoder
 
@@ -58,22 +58,22 @@ AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convo
 
 答え
 ### imori
-- Pytorch [answers/convae_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_pytorch.py)
-- Tensorflow [answers/convae_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_tensorflow_slim.py)
-- Keras [answers/convae_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_keras.py)
-- Chainer [answers/convae_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_chainer.py)
+- Pytorch [answers/convae_pytorch.py](answers/convae_pytorch.py)
+- Tensorflow [answers/convae_tensorflow_slim.py](answers/ae_tensorflow_slim.py)
+- Keras [answers/convae_keras.py](answers/convae_keras.py)
+- Chainer [answers/convae_chainer.py](answers/convae_chainer.py)
 
 ### Cifar10
-- Pytorch [answers/convae_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_cifar10_pytorch.py)
-- Tensorflow [answers/convae_cifar10_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/ae_cifar10_tensorflow_slim.py)
-- Keras [answers/convae_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_cifar10_keras.py)
-- Chainer [answers/convae_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/convae_cifar10_chainer.py)
+- Pytorch [answers/convae_cifar10_pytorch.py](answers/convae_cifar10_pytorch.py)
+- Tensorflow [answers/convae_cifar10_tensorflow_slim.py](answers/ae_cifar10_tensorflow_slim.py)
+- Keras [answers/convae_cifar10_keras.py](answers/convae_cifar10_keras.py)
+- Chainer [answers/convae_cifar10_chainer.py](answers/convae_cifar10_chainer.py)
 
 ## VAE
 
 答え
 ### MNIST
-- Pytorch [answers/vae_mnist_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/vae_mnist_pytorch.py)
+- Pytorch [answers/vae_mnist_pytorch.py](answers/vae_mnist_pytorch.py)
 
 ## Q. GAN
 
@@ -119,14 +119,14 @@ GANの出力
 
 答え
 ### imori
-- PyTorch [answers/gan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_pytorch.py)
-- Keras [answers/gan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_keras.py)
-- Chainer [answers/gan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_chainer.py)
+- PyTorch [answers/gan_pytorch.py](answers/gan_pytorch.py)
+- Keras [answers/gan_keras.py](answers/gan_keras.py)
+- Chainer [answers/gan_chainer.py](answers/gan_chainer.py)
 
 ### cifar10
-- PyTorch [answers/gan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_pytorch.py)
-- Keras [answers/gan_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_keras.py)
-- Chainer [answers/gan_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/gan_cifar10_chainer.py)
+- PyTorch [answers/gan_cifar10_pytorch.py](answers/gan_cifar10_pytorch.py)
+- Keras [answers/gan_cifar10_keras.py](answers/gan_cifar10_keras.py)
+- Chainer [answers/gan_cifar10_chainer.py](answers/gan_cifar10_chainer.py)
 
 ## DCGAN
 
@@ -162,16 +162,16 @@ DCGANの出力
 
 答え
 ### imori
-- Pytorch [answers/dcgan_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_pytorch.py)
-- tensorflow [answers/dcgan_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_tensorflow_slim.py)
-- Keras [answers/dcgan_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_keras.py)
-- Chainer [answers/dcgan_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_chainer.py)
+- Pytorch [answers/dcgan_pytorch.py](answers/dcgan_pytorch.py)
+- tensorflow [answers/dcgan_tensorflow_slim.py](answers/dcgan_tensorflow_slim.py)
+- Keras [answers/dcgan_keras.py](answers/dcgan_keras.py)
+- Chainer [answers/dcgan_chainer.py](answers/dcgan_chainer.py)
 
 ### cifar10
-- Pytorch [answers/dcgan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_pytorch.py)
-- Tensorflow [answers/dcgan_cifar10_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_tensorflow_slim.py)
-- Keras [answers/dcgan_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_keras.py)
-- Chainer [answers/dcgan_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/dcgan_cifar10_chainer.py)
+- Pytorch [answers/dcgan_cifar10_pytorch.py](answers/dcgan_cifar10_pytorch.py)
+- Tensorflow [answers/dcgan_cifar10_tensorflow_slim.py](answers/dcgan_cifar10_tensorflow_slim.py)
+- Keras [answers/dcgan_cifar10_keras.py](answers/dcgan_cifar10_keras.py)
+- Chainer [answers/dcgan_cifar10_chainer.py](answers/dcgan_cifar10_chainer.py)
 
 
 ## Conditional GAN
@@ -194,10 +194,10 @@ MNISTでの出力はこんな感じになります。
 
 ![](answers/answer_cgan_mnist_pytorch.png)
 
-- Pytorch [answers/cgan_mnist_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_pytorch.py)
-- Tensorflow [answers/cgan_mnist_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_tensorflow_slim.py)
-- Keras [answers/cgan_mnist_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_keras.py)
-- Chainer [answers/cgan_mnist_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_mnist_chainer.py)
+- Pytorch [answers/cgan_mnist_pytorch.py](answers/cgan_mnist_pytorch.py)
+- Tensorflow [answers/cgan_mnist_tensorflow_slim.py](answers/cgan_mnist_tensorflow_slim.py)
+- Keras [answers/cgan_mnist_keras.py](answers/cgan_mnist_keras.py)
+- Chainer [answers/cgan_mnist_chainer.py](answers/cgan_mnist_chainer.py)
 
 
 ### cifar10
@@ -205,8 +205,25 @@ CIFAR10での出力はこんな感じになります。
 
 ![](answers/answer_cgan_cifar10_pytorch.png)
 
-- Pytorch [answers/cgan_cifar10_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_pytorch.py)
-- Tensorflow [answers/cgan_cifar10_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_tensorflow_slim.py)
-- Keras [answers/cgan_cifar10_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_keras.py)
-- Chainer [answers/cgan_cifar10_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_imageGenerate/answers/cgan_cifar10_chainer.py)
+- Pytorch [answers/cgan_cifar10_pytorch.py](answers/cgan_cifar10_pytorch.py)
+- Tensorflow [answers/cgan_cifar10_tensorflow_slim.py](answers/cgan_cifar10_tensorflow_slim.py)
+- Keras [answers/cgan_cifar10_keras.py](answers/cgan_cifar10_keras.py)
+- Chainer [answers/cgan_cifar10_chainer.py](answers/cgan_cifar10_chainer.py)
+
+## WGAN
+
+論文 https://arxiv.org/abs/1701.07875
+
+
+
+## pix2pix
+
+元論文 https://arxiv.org/abs/1611.07004
+
+
+<img src="assets/pix2pix_fig1.png" width="400">
+<img src="assets/pix2pix_fig2.png" width="300">
+
+答え
+- Pytorch [answers/pix2pix_segment_pytorch.py](answers/pix2pix_segment_pytorch.py)
 

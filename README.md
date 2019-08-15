@@ -29,6 +29,7 @@
 
 ## Recent
 
+- 2019.8.15 [Pytorch] pix2pixを追加
 - 2019.8.4 [Pytorch] DenseNet121, 169, 201, 264を追加
 - 2019.7.30 [PyTorch, Keras] Xceptionを追加
 - 2019.7.28 [Keras] ResNeXt-50, 101を追加
@@ -227,6 +228,7 @@ $ pip install -r requirements.txt
 | [DCGAN cifar10](Question_imageGenerate#q-dcgan) | [✓](Question_imageGenerate/answers/dcgan_cifar10_pytorch.py) | [✓](Question_imageGenerate/answers/dcgan_cifar10_tensorflow_slim.py)  | [✓](Question_imageGenerate/answers/dcgan_cifar10_keras.py) | [✓](Question_imageGenerate/answers/dcgan_cifar10_chainer.py) |
 | [Conditional GAN mnist](Question_imageGenerate#q-conditional-gan) | [✓](Question_imageGenerate/answers/cgan_mnist_pytorch.py) | [✓](Question_imageGenerate/answers/cgan_mnist_tensorflow_slim.py)   | [✓](Question_imageGenerate/answers/cgan_mnist_keras.py) |  [✓](Question_imageGenerate/answers/cgan_mnist_chainer.py) |
 | [Conditional GAN cifar10](Question_imageGenerate#conditional-gan) | [✓](Question_imageGenerate/answers/cgan_cifar10_pytorch.py) |  [✓](Question_imageGenerate/answers/cgan_cifar10_tensorflow_slim.py)   | [✓](Question_imageGenerate/answers/cgan_cifar10_keras.py) |  [✓](Question_imageGenerate/answers/cgan_cifar10_chainer.py) |
+| [pix2pix](Question_imageGenerate#pix2pix) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) | 
 
 ### [画像処理編]()
 

@@ -296,7 +296,7 @@ EncoderはConvolutionやPoolingによってダウンサンプリングする操�
 
 各FWでのクラッピングの例は以下の通り。
 
-### Pytorch, Chainer
+### Pytorch
 
 ```python
 def crop_layer(layer, size):
@@ -309,7 +309,7 @@ def crop_layer(layer, size):
 _x = crop_layer(x_enc3, x.size())
 ```
 
-### Tensorflow, Keras
+### Tensorflow
 
 ```python
 def crop_layer(layer, size):
@@ -382,4 +382,8 @@ UNetからの変更点は２つ。１つはconvolutionのpaddingを1にしたこ
 -  Tensorflow [answers/unetlike_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_tensorflow_slim.py)
 - Keras [answers/unetlike_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_keras.py)
 - chainer [answers/unetlike_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_chainer.py)
+
+## SegNet
+
+元論文  https://arxiv.org/abs/1511.00561
 

@@ -444,14 +444,14 @@ ResNetのshortcut connectionは勾配を直接的に前のLayerに伝えられ�
 
 - Pytorch [answers/DenseNet121_pytorch.py](answers/DenseNet121_pytorch.py)
 
-#### ResNeXt169
+#### DenseNet169
 
 - Pytorch [answers/DenseNet169_pytorch.py](answers/DenseNet169_pytorch.py)
 
-#### ResNeXt201
+#### DenseNet201
 
 - Pytorch [answers/DenseNet201_pytorch.py](answers/DenseNet201_pytorch.py)
 
-#### ResNeXt264
+#### DenseNet264
 
 - Pytorch [answers/DenseNet264_pytorch.py](answers/DenseNet264_pytorch.py)
