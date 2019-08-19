@@ -244,7 +244,7 @@ $ pip install -r requirements.txt
 | [GRU (Many-to-one)](Question_nlp#q-gru-many-to-one) |  [✓](Question_nlp/answers/gru_pytorch.py) | [✓](Question_nlp/answers/gru_tensorflow_slim.py) | [✓](Question_nlp/answers/gru_keras.py) | [✓](Question_nlp/answers/gru_chainer.py) |
 | [Seq2seq (Many-to-many)](Question_nlp#q-seq2seq-many-to-many) | [✓](Question_nlp/answers/seq2seq_pytorch.py) | |  | [✓](Question_nlp/answers/seq2seq_keras.py) |
 | [Seq2seq + Attention](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_pytorch.py) |
-| [Seq2seq (Many-to-many)](Question_nlp#q-word2vec) | [✓](Question_nlp/answers/word2vec_pytorch.py) |
+| [Word2Vec (Skip-gram)](Question_nlp#q-word2vec) | [✓](Question_nlp/answers/word2vec_pytorch.py) |
 
 
 ## Citation

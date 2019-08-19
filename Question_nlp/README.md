@@ -193,7 +193,7 @@ GRU (Gated Recurrent Unit) にしましょう。
 答え
 - PyTorch [answers/seq2seq_attention_pytorch.py](answers/seq2seq_attention_pytorch.py)
 
-## Q. Word2Vec
+## Q. Word2Vec (Skip-gram)
 
 答え
 - PyTorch [answers/word2vec_pytorch.py](answers/word2vec_pytorch.py)
