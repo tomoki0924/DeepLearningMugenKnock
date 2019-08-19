@@ -29,6 +29,7 @@
 
 ## Recent
 
+- 2019.8.19 [Pytorch] NLP: Seq2seq+Attention, word2vecを追加
 - 2019.8.15 [Pytorch] pix2pixを追加
 - 2019.8.4 [Pytorch] DenseNet121, 169, 201, 264を追加
 - 2019.7.30 [PyTorch, Keras] Xceptionを追加
