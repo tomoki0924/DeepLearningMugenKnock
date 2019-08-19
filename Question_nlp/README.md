@@ -19,7 +19,7 @@ chars = [c for c in chars]
 ```
 
 答え
-- [answers/onehot.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/onehot.py)
+- [answers/onehot.py](answers/onehot.py)
 
 ## Q. RNN (Many-to-one) Step.1. 学習 
 
@@ -45,9 +45,9 @@ chars = [c for c in _chars]
 | TensorFlow | tf.keras.layers.SimpleRNN | | Chainer | ? |
 
 答え
-- Pytorch [answers/rnn_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py)
-- Tensorflow [answers/rnn_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_tensorflow_slim.py)
-- Keras [answers/rnn_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_keras.py)
+- Pytorch [answers/rnn_pytorch.py](answers/rnn_pytorch.py)
+- Tensorflow [answers/rnn_tensorflow_slim.py](answers/rnn_tensorflow_slim.py)
+- Keras [answers/rnn_keras.py](answers/rnn_keras.py)
 
 ## Q. RNN (Many-to-one) Step.2. テスト
 
@@ -75,9 +75,9 @@ RNNへの最初の入力はin_text='@@@@@@@@@@'です。学習時にテキスト
 ```
 
 答え
-- Pytorch [answers/rnn_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_pytorch.py)
-- Tensorflow [answers/rnn_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_tensorflow_slim.py)
-- Keras [answers/rnn_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/rnn_keras.py)
+- Pytorch [answers/rnn_pytorch.py](answers/rnn_pytorch.py)
+- Tensorflow [answers/rnn_tensorflow_slim.py](answers/rnn_tensorflow_slim.py)
+- Keras [answers/rnn_keras.py](answers/rnn_keras.py)
 
 ## Q. LSTM (Many-to-one)
 
@@ -103,10 +103,10 @@ RNNをLSTMに変えてみましょう。
 ```
 
 答え
-- Pytorch [answers/lstm_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_pytorch.py)
-- Tensorflow [answers/lstm_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_tensorflow_slim.py)
-- Keras [answers/lstm_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_keras.py)
-- Chainer [answers/lstm_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_chainer.py)
+- Pytorch [answers/lstm_pytorch.py](answers/lstm_pytorch.py)
+- Tensorflow [answers/lstm_tensorflow_slim.py](answers/lstm_tensorflow_slim.py)
+- Keras [answers/lstm_keras.py](answers/lstm_keras.py)
+- Chainer [answers/lstm_chainer.py](answers/lstm_chainer.py)
 
 ## Q. Bi-directional LSTM (Many-to-one)
 
@@ -129,10 +129,10 @@ LSTMをBi-directionalにしましょう。
 ```
 
 答え
-- Pytorch [answers/lstm_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_pytorch.py)
-- Tensorflow [answers/lstm_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_tensorflow_slim.py)
-- Keras [answers/bdlstm_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/lstm_keras.py)
-- Chainer [answers/bdlstm_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/bdlstm_chainer.py)
+- Pytorch [answers/lstm_pytorch.py](answers/lstm_pytorch.py)
+- Tensorflow [answers/lstm_tensorflow_slim.py](answers/lstm_tensorflow_slim.py)
+- Keras [answers/bdlstm_keras.py](answers/lstm_keras.py)
+- Chainer [answers/bdlstm_chainer.py](answers/bdlstm_chainer.py)
 
 ## Q. GRU (Many-to-one)
 
@@ -154,10 +154,10 @@ GRU (Gated Recurrent Unit) にしましょう。
 ```
 
 答え
-- Pytorch [answers/gru_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/gru_pytorch.py)
-- Tensorflow [answers/gru_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/gru_tensorflow_slim.py)
-- Keras [answers/gru_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/gru_keras.py)
-- Chainer [answers/gru_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/gru_chainer.py)
+- Pytorch [answers/gru_pytorch.py](answers/gru_pytorch.py)
+- Tensorflow [answers/gru_tensorflow_slim.py](answers/gru_tensorflow_slim.py)
+- Keras [answers/gru_keras.py](answers/gru_keras.py)
+- Chainer [answers/gru_chainer.py](answers/gru_chainer.py)
 
 ## Q. Seq2seq (Many-to-many)
 
@@ -176,7 +176,7 @@ GRU (Gated Recurrent Unit) にしましょう。
 
 | FW | function | | FW | function |
 |:---:|:---:|:---:|:---:|:---:|
-| pytorch |  | | Keras | https://github.com/keras-team/keras/blob/master/examples/lstm_seq2seq.py |
+| pytorch | https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html | | Keras | https://github.com/keras-team/keras/blob/master/examples/lstm_seq2seq.py |
 | TensorFlow |  | | Chainer |  |
 
 ```bash
@@ -185,4 +185,15 @@ GRU (Gated Recurrent Unit) にしましょう。
 ```
 
 答え
-- Keras [answers/gru_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_nlp/answers/seq2seq_keras.py)
+- PyTorch [answers/seq2seq_pytorch.py](answers/seq2seq_pytorch.py)
+- Keras [answers/gru_keras.py](answers/seq2seq_keras.py)
+
+## Q. Seq2Seq + Attention
+
+答え
+- PyTorch [answers/seq2seq_attention_pytorch.py](answers/seq2seq_attention_pytorch.py)
+
+## Q. Word2Vec
+
+答え
+- PyTorch [answers/word2vec_pytorch.py](answers/word2vec_pytorch.py)

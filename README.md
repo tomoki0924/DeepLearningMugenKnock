@@ -242,6 +242,9 @@ $ pip install -r requirements.txt
 | [Bi-directional LSTM (Many-to-one)](Question_nlp#q-bi-directional-lstm-many-to-one) |  [✓](Question_nlp/answers/bdlstm_pytorch.py) | [✓](Question_nlp/answers/bdlstm_tensorflow_slim.py) | [✓](Question_nlp/answers/bdlstm_keras.py) | [✓?](Question_nlp/answers/bdlstm_chainer.py) |
 | [GRU (Many-to-one)](Question_nlp#q-gru-many-to-one) |  [✓](Question_nlp/answers/gru_pytorch.py) | [✓](Question_nlp/answers/gru_tensorflow_slim.py) | [✓](Question_nlp/answers/gru_keras.py) | [✓](Question_nlp/answers/gru_chainer.py) |
 | [Seq2seq (Many-to-many)](Question_nlp#q-seq2seq-many-to-many) |  |  | [✓](Question_nlp/answers/seq2seq_keras.py) |
+| [Seq2seq + Attention](Question_nlp#q-seq2seq-many-to-many+attention) |
+| [Seq2seq (Many-to-many)](Question_nlp#q-word2vec) |
+
 
 ## Citation
 
