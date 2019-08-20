@@ -1,6 +1,16 @@
 # PyTorchを使ったった
 
-## 1. インポート
+- [インポート](#import)
+- [モデル](#model)
+- [GPU設定](#gpu)
+- [最適化の設定](#optimize)
+- [学習データセットの準備](#dataset)
+- [学習](#train)
+- [学習済みモデルの保存](#save)
+- [テスト](#test)
+- [コード](#code)
+
+## <a id="import">1. インポート</a>
 
 最初は必要なものをpipでインストールする。
 
@@ -37,7 +47,7 @@ GPU = False
 torch.manual_seed(0)
 ```
 
-## 2. モデル定義
+## <a id="model">2. モデル定義</a>
 
 モデル定義はtorch.nn.Moduleのラッパーとしてクラスで定義する。initには学習するパラメータが必要なlayerを書く。forwardには実際のネットワークの流れを書く。forwardの最後はsoftmaxを適用していないが、これは実際の学習の時にこうする理由がある。
 ここではimg_height, img_widthで入力画像のサイズを設定している。
@@ -88,7 +98,7 @@ class Mynet(torch.nn.Module):
         return x
 ```
 
-## 3. GPUの設定
+## <a id="gpu">3. GPUの設定</a>
 
 pytorchはGPUを使うかをコードで制御する。これで使うデバイスをGPUかCPUかを決定できる。
 
@@ -97,7 +107,7 @@ GPU = True
 device = torch.device("cuda" if GPU else "cpu")
 ```
 
-## 4. Optimizerの設定
+## <a id="optimize">4. Optimizerの設定</a>
 
 モデルを書いたら次に最適化optimizerを設定する。
 まずは定義したモデルのインスタンスを作成。
@@ -125,7 +135,7 @@ model.train()
 opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 ```
 
-## 5. データセット用意
+## <a id="dataset">5. データセット用意</a>
 
 あとは学習させるだけなのでデータセットを用意する。一応再掲。詳しくはディープラーニング準備編を要参照。
 
@@ -177,7 +187,7 @@ def data_load(path, hf=False, vf=False):
 xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True)
 ```
 
-## 6. 学習
+## <a id="train">6. 学習</a>
 
 ここからミニバッチを使って学習させる。100イテレーションを想定して、こんな感じでミニバッチを作成する。ミニバッチの作成の詳細はディープラーニング準備編を要参照。これで、xとtに学習データの入力画像、教師ラベルが格納される。
 
@@ -261,7 +271,7 @@ for i in range(100):
     print("iter >>", i+1, "loss >>", loss.item(), "accuracy >>", acc)
 ```
 
-## 7. 学習済みモデルの保存
+## <a id="save">7. 学習済みモデルの保存</a>
 
 モデルを学習したらそのパラメータを保存しなきゃいけない。それは*torch.save()*を使う。保存名は*cnn.pt*とする。
 ここで、model.state_dict()としているのはモデルのパラメータのみを保存するため。これをしないとGPUを使うかなども全て保存してしまい、あとあとめんどくさくなる。
@@ -272,7 +282,7 @@ torch.save(model.state_dict(), "cnn.pt")
 
 以上で学習が終了!!
 
-## 8. 学習済みモデルでテスト
+## <a id="test">8. 学習済みモデルでテスト</a>
 
 次に学習したモデルを使ってテスト画像でテストする。
 
@@ -311,7 +321,7 @@ for i in range(len(paths)):
 以上でPyTorchの使い方は一通り終了です。おつです。
 
 
-## 9. まとめたコード
+## <a id="code">9. まとめたコード</a>
 
 以上をまとめたコードは *main_pytorch.py*　です。使いやすさのために少し整形してます。
 
