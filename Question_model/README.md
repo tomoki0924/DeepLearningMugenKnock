@@ -29,7 +29,7 @@ pytorchの参考サイト >> https://github.com/creafz/pytorch-cnn-finetune
 
 ## Q. LeNet
 
-論文 >> http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf
+元論文 >> http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf
 
 これが原初のモデル。MNISTと呼ばれる0から9までの手書き数字の判別で使われたCNNモデル。これを実装してください。LeNetはMNIST用に入力サイズが32x32となっているが、ここで用意しているデータセットは128x128サイズです。**よって学習時のデータの入力サイズを32x32にリサイズする必要があります。**
 
@@ -56,7 +56,7 @@ pytorchの参考サイト >> https://github.com/creafz/pytorch-cnn-finetune
 
 ## Q. AlexNet
 
-論文 >> https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
+元論文 >> https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
 
 ディープラーニングを流行らせた張本人モデル。ImageNetという画像認識のコンペILSVRC2012で圧倒的一位で優勝したことから現在のディープラーニングブームが起こりました。これを実装してくさい。
 AlexNetでは*Local Response Normalization* という特別な正規化Layerがあります。
@@ -97,7 +97,7 @@ LRNは効果が薄いことから最近ではほとんど使われてません�
 
 ## Q. ZFNet
 
-論文 >> https://arxiv.org/abs/1311.2901
+元論文 >> https://arxiv.org/abs/1311.2901
 
 ILSVRC2013で一位をとったモデル。AlexNetと構造が似てます。
 Alexnetの最初のconvlutionを7x7のカーネルにして、ストライドを2に変更してます。そのかわりに２つ目のconvolutionのストライドを2にしてます。こうすることで、大きなカーネルサイズによる画像の周波数取得を変えてます。論文ではCNNが画像認識を行うまでの解析を主張してｍす。
@@ -186,6 +186,8 @@ Convolution | 3 x 3 | 192 | 1 | 1 | ReLU |
 - chainer [answers/nin_chainer.py](answers/nin_chainer.py)
 
 ## Q. VGG16
+
+元論文 >> https://arxiv.org/abs/1409.1556
 
 VGG16とはOxfort大学の研究グループが提案したモデルであり、けっこう色んな手法のベースに使われているモデルです。VGG16では3x3のカーネルを持ったConvoutionを重ねることでモデルが取得する特徴の非線形性を増大させてます。16というのはconvolutionとMLPを合わせて16という意味らしいっす。
 
@@ -342,6 +344,8 @@ x = F.max_pooling_2d(x, ksize=2, stride=2)
 
 ## Q. GoogLeNet-v1
 
+元論文 >> https://arxiv.org/abs/1409.4842
+
 - Pytorch [answers/googlenetv1_pytorch.py](answers/googlenetv1_pytorch.py)
 - Tensorflow [answers/googlenetv1_tensorflow_slim.py](answers/googlenetv1_tensorflow_slim.py)
 - Keras [answers/googlenetv1_keras.py](answers/googlenetv1_keras.py)
@@ -350,7 +354,7 @@ x = F.max_pooling_2d(x, ksize=2, stride=2)
 
 ##  Q. Batch Normalization
 
-論文 >> https://arxiv.org/abs/1502.03167
+元論文 >> https://arxiv.org/abs/1502.03167
 
 Batch normalizationとは学習をめちゃくちゃ効率化するための手法です。今ではどのディープラーニングでもBNはかかせない存在となっています。
 
@@ -368,7 +372,7 @@ pytorchでは*torch.nn.BatchNorm2d()*, tensorflowでは*tf.layers.batch_normaliz
 
 ## Q. ResNet
 
-論文 >> https://arxiv.org/abs/1512.03385
+元論文 >> https://arxiv.org/abs/1512.03385
 
 Skip connectionによって、Lossのback propagationの効率化を行った。
 
@@ -455,3 +459,31 @@ ResNetのshortcut connectionは勾配を直接的に前のLayerに伝えられ�
 #### DenseNet264
 
 - Pytorch [answers/DenseNet264_pytorch.py](answers/DenseNet264_pytorch.py)
+
+## Q. MobileNet-v1
+
+元論文 >> https://arxiv.org/abs/1704.04861?source=post_page---------------------------
+
+普通のConvolutionは、カーネルサイズ Dk x Dkを持っていて、出力のチャネルNだけ用意される。
+これに入力のチャネルM、かつ入力の特徴マップDf x Dfに対して適用されるので、全計算量は Dk Dk M N Df Df となる。
+
+MobileNetではConvolutionを二つのconvolution操作(Depth-wise convとPoint-wise conv)に分解している。
+
+<img src="assets/mobilenet-v1.png" width="300">
+
+Depth-wise convでは入力の特徴マップの各チャネルにdepth=1のカーネル（Dk x Dk)を適用する。Point-wise convでは(1 x 1 x M)のconvolutionを適用してチャネル方向の線形和を計算する。
+
+これにより得られる計算量は、
+
+- Depth-wise Convは Dk Dk M Df Df
+- Point-wise Convは M N Df Df
+
+なので、合計して、Dk Dk M Df Df + M N Df Df = M Df Df (Dk Dk + N)
+
+普通のConvとの比を取ると、
+
+M Df Df (Dk Dk + N) / Dk Dk M N Df Df = (Dk Dk + N) / Dk Dk N = 1 / N + 1 / Dk^2
+
+となる。普通はConvのカーネルサイズはDk=3となることが多いので、MobileNetでは計算量を 1 / 9 に減らすことができる。
+
+- Pytorch [answers/MobileNet_v1_pytorch.py](answers/MobileNet_v1_pytorch.py)
