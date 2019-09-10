@@ -469,7 +469,7 @@ ResNetのshortcut connectionは勾配を直接的に前のLayerに伝えられ�
 
 MobileNetではConvolutionを二つのconvolution操作(Depth-wise convとPoint-wise conv)に分解している。
 
-<img src="assets/mobilenet-v1.png" width="300">
+<img src="assets/mobilenet-v1.png" width="400">
 
 Depth-wise convでは入力の特徴マップの各チャネルにdepth=1のカーネル（Dk x Dk)を適用する。Point-wise convでは(1 x 1 x M)のconvolutionを適用してチャネル方向の線形和を計算する。
 
@@ -485,5 +485,7 @@ Depth-wise convでは入力の特徴マップの各チャネルにdepth=1のカ�
 M Df Df (Dk Dk + N) / Dk Dk M N Df Df = (Dk Dk + N) / Dk Dk N = 1 / N + 1 / Dk^2
 
 となる。普通はConvのカーネルサイズはDk=3となることが多いので、MobileNetでは計算量を 1 / 9 に減らすことができる。
+
+この仕組みでMobileNetではモデルの性能（精度）の損失をほとんど行わずに、パラメータ削減に成功している。
 
 - Pytorch [answers/MobileNet_v1_pytorch.py](answers/MobileNet_v1_pytorch.py)
