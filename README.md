@@ -172,31 +172,32 @@ $ pip install -r requirements.txt
 
 ### [画像認識編](Question_model)
 
-| 問題 |  PyTorch | TensorFlow | Keras | Chainer |
-|:---:|:---:|:---:|:---:|:---:|
-| [モデルの書き方の簡潔化](Question_model#q-vgg19) | [✓](Question_model/answers/easy_pytorch.py) | [✓](Question_model/answers/easy_tensorflow_layers.py) | [✓](Question_model/answers/easy_keras.py) | [✓](Question_model/answers/easy_chainer.py) | 
+| 問題 |  PyTorch | TensorFlow | Keras | Chainer | Published year |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| [モデルの書き方の簡潔化](Question_model#q-vgg19) | [✓](Question_model/answers/easy_pytorch.py) | [✓](Question_model/answers/easy_tensorflow_layers.py) | [✓](Question_model/answers/easy_keras.py) | [✓](Question_model/answers/easy_chainer.py) |
 | [ API ](Question_model#api) | [✓](Question_model/answers/api_pytorch.py) | 
 | [LeNet](Question_model#q-lenet) | [✓](Question_model/answers/lenet_pytorch.py) | [✓](Question_model/answers/lenet_tensorflow_layers.py) | [✓](Question_model/answers/lenet_keras.py) | [✓](Question_model/answers/lenet_chainer.py) | 
-| [AlexNet](Question_model#q-alexnet) | [✓](Question_model/answers/alexnet_pytorch.py) | [✓](Question_model/answers/alexnet_tensorflow_layers.py) | [✓](Question_model/answers/alexnet_keras.py) | [✓](Question_model/answers/alexnet_chainer.py) | 
-| [ZFNet](Question_model#q-zfnet) | [✓](Question_model/answers/zfnet_pytorch.py) | [✓](Question_model/answers/zfnet_tensorflow_layers.py) | [✓](Question_model/answers/zfnet_keras.py) | [✓](Question_model/answers/zfnet_chainer.py) | 
-| [Global Average Pooling](Question_model#q-zfnet) | [✓](Question_model/answers/gap_pytorch.py) | [✓](Question_model/answers/gap_tensorflow_layers.py) | [✓](Question_model/answers/gap_keras.py) | [✓](Question_model/answers/gap_chainer.py) | 
-| [Network in network](Question_model#q-network-in-network) | [✓](Question_model/answers/nin_pytorch.py) | [✓](Question_model/answers/nin_tensorflow_layers.py) | [✓](Question_model/answers/nin_keras.py) | [✓](Question_model/answers/nin_chainer.py) | 
-| [VGG16](Question_model#q-vgg16) | [✓](Question_model/answers/vgg16_pytorch.py) | [✓](Question_model/answers/vgg16_tensorflow_layers.py) | [✓](Question_model/answers/vgg16_keras.py) | [✓](Question_model/answers/vgg16_chainer.py) | 
-| [VGG19](Question_model#q-vgg19) | [✓](Question_model/answers/vgg19_pytorch.py) | [✓](Question_model/answers/vgg19_tensorflow_layers.py) | [✓](Question_model/answers/vgg19_keras.py) | [✓](Question_model/answers/vgg19_chainer.py) | 
-| [GoogLeNet-v1(Inception)](Question_model#q-googlenet-v1) | [✓](Question_model/answers/googletnetv1_pytorch.py) | [✓](Question_model/answers/googlenetv1_tensorflow_slim.py) | [✓](Question_model/answers/googlenetv1_keras.py) | [✓](Question_model/answers/googlenetv1_chainer.py) | 
-| [Batch Normalization](Question_model#q-vgg19) | [✓](Question_model/answers/bn_pytorch.py) | [✓](Question_model/answers/bn_tensorflow_layers.py) | [✓](Question_model/answers/bn_keras.py) | [✓](Question_model/answers/bn_chainer.py) |
-| [ResNet-18](Question_model#q-resnet) | [✓](Question_model/answers/res18_pytorch.py) | | [✓](Question_model/answers/res18_keras.py) | |
-| [ResNet-34](Question_model#q-resnet) | [✓](Question_model/answers/res34_pytorch.py) | | [✓](Question_model/answers/res34_keras.py) | | 
-| [ResNet-50](Question_model#q-resnet) | [✓](Question_model/answers/res50_pytorch.py) | [✓(not good)](Question_model/answers/res50_tensorflow_layers.py) | [✓](Question_model/answers/res50_keras.py) | [✓(not good)](Question_model/answers/res50_chainer.py) | 
-| [ResNet-101](Question_model#q-resnet) | [✓](Question_model/answers/res101_pytorch.py) | | [✓](Question_model/answers/res101_keras.py) | |
-| [ResNet-152](Question_model#q-resnet) | [✓](Question_model/answers/res152_pytorch.py) | | [✓](Question_model/answers/res152_keras.py) | | 
-| [ResNeXt-50](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt50_pytorch.py) | | [✓](Question_model/answers/resNeXt50_keras.py) |
-| [ResNeXt-101](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt101_pytorch.py) | | [✓](Question_model/answers/resNeXt101_keras.py) |
-| [Xception](Question_model#q-xception) | [✓](Question_model/answers/xception_pytorch.py) | | [✓](Question_model/answers/xception_keras.py) |
-| [DenseNet121](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet121_pytorch.py) | 
-| [DenseNet169](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet169_pytorch.py) | 
-| [DenseNet201](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet201_pytorch.py) | 
-| [DenseNet264](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet264_pytorch.py) | 
+| [AlexNet](Question_model#q-alexnet) | [✓](Question_model/answers/alexnet_pytorch.py) | [✓](Question_model/answers/alexnet_tensorflow_layers.py) | [✓](Question_model/answers/alexnet_keras.py) | [✓](Question_model/answers/alexnet_chainer.py) | 2012 |
+| [ZFNet](Question_model#q-zfnet) | [✓](Question_model/answers/zfnet_pytorch.py) | [✓](Question_model/answers/zfnet_tensorflow_layers.py) | [✓](Question_model/answers/zfnet_keras.py) | [✓](Question_model/answers/zfnet_chainer.py) | 2013 |
+| [Global Average Pooling](Question_model#q-zfnet) | [✓](Question_model/answers/gap_pytorch.py) | [✓](Question_model/answers/gap_tensorflow_layers.py) | [✓](Question_model/answers/gap_keras.py) | [✓](Question_model/answers/gap_chainer.py) | 2013 |
+| [Network in network](Question_model#q-network-in-network) | [✓](Question_model/answers/nin_pytorch.py) | [✓](Question_model/answers/nin_tensorflow_layers.py) | [✓](Question_model/answers/nin_keras.py) | [✓](Question_model/answers/nin_chainer.py) | 2013 |
+| [VGG16](Question_model#q-vgg16) | [✓](Question_model/answers/vgg16_pytorch.py) | [✓](Question_model/answers/vgg16_tensorflow_layers.py) | [✓](Question_model/answers/vgg16_keras.py) | [✓](Question_model/answers/vgg16_chainer.py) | 2014 |
+| [VGG19](Question_model#q-vgg19) | [✓](Question_model/answers/vgg19_pytorch.py) | [✓](Question_model/answers/vgg19_tensorflow_layers.py) | [✓](Question_model/answers/vgg19_keras.py) | [✓](Question_model/answers/vgg19_chainer.py) | 2014 |
+| [GoogLeNet-v1(Inception)](Question_model#q-googlenet-v1) | [✓](Question_model/answers/googletnetv1_pytorch.py) | [✓](Question_model/answers/googlenetv1_tensorflow_slim.py) | [✓](Question_model/answers/googlenetv1_keras.py) | [✓](Question_model/answers/googlenetv1_chainer.py) | 2014 |
+| [Batch Normalization](Question_model#q-vgg19) | [✓](Question_model/answers/bn_pytorch.py) | [✓](Question_model/answers/bn_tensorflow_layers.py) | [✓](Question_model/answers/bn_keras.py) | [✓](Question_model/answers/bn_chainer.py) | 2015 |
+| [ResNet-18](Question_model#q-resnet) | [✓](Question_model/answers/res18_pytorch.py) | | [✓](Question_model/answers/res18_keras.py) | | 2015 |
+| [ResNet-34](Question_model#q-resnet) | [✓](Question_model/answers/res34_pytorch.py) | | [✓](Question_model/answers/res34_keras.py) | |  2015 |
+| [ResNet-50](Question_model#q-resnet) | [✓](Question_model/answers/res50_pytorch.py) | [✓(not good)](Question_model/answers/res50_tensorflow_layers.py) | [✓](Question_model/answers/res50_keras.py) | [✓(not good)](Question_model/answers/res50_chainer.py) |  2015 |
+| [ResNet-101](Question_model#q-resnet) | [✓](Question_model/answers/res101_pytorch.py) | | [✓](Question_model/answers/res101_keras.py) | | 2015 |
+| [ResNet-152](Question_model#q-resnet) | [✓](Question_model/answers/res152_pytorch.py) | | [✓](Question_model/answers/res152_keras.py) | |  2015 |
+| [ResNeXt-50](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt50_pytorch.py) | | [✓](Question_model/answers/resNeXt50_keras.py) | | 2016 |
+| [ResNeXt-101](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt101_pytorch.py) | | [✓](Question_model/answers/resNeXt101_keras.py) | | 2016 |
+| [Xception](Question_model#q-xception) | [✓](Question_model/answers/xception_pytorch.py) | | [✓](Question_model/answers/xception_keras.py) | | 2016 |
+| [DenseNet121](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet121_pytorch.py) | | | | 2016 |
+| [DenseNet169](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet169_pytorch.py) | | | | 2016 | 
+| [DenseNet201](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet201_pytorch.py) | | | | 2016 |
+| [DenseNet264](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet264_pytorch.py) | | | | 2016 |
+| [MobileNet-v1](Question_model#q-mobilenet-v1) | [✓](Question_model/answers/MobileNet_v1_pytorch.py) | | | | 2017 |
 
 ### [Semantic Segmentation編](Question_semaseg)
 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |
