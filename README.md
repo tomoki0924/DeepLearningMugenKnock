@@ -29,6 +29,7 @@
 
 ## Recent
 
+- 2019.9.16 [TensorFlow] ResNet 18, 34, 50, 101, 152 を追加
 - 2019.8.19 [Pytorch] NLP: Seq2seq+Attention, word2vecを追加
 - 2019.8.15 [Pytorch] pix2pixを追加
 - 2019.8.4 [Pytorch] DenseNet121, 169, 201, 264を追加
@@ -185,11 +186,11 @@ $ pip install -r requirements.txt
 | [VGG19](Question_model#q-vgg19) | [✓](Question_model/answers/vgg19_pytorch.py) | [✓](Question_model/answers/vgg19_tensorflow_layers.py) | [✓](Question_model/answers/vgg19_keras.py) | [✓](Question_model/answers/vgg19_chainer.py) | 2014 |
 | [GoogLeNet-v1(Inception)](Question_model#q-googlenet-v1) | [✓](Question_model/answers/googletnetv1_pytorch.py) | [✓](Question_model/answers/googlenetv1_tensorflow_slim.py) | [✓](Question_model/answers/googlenetv1_keras.py) | [✓](Question_model/answers/googlenetv1_chainer.py) | 2014 |
 | [Batch Normalization](Question_model#q-vgg19) | [✓](Question_model/answers/bn_pytorch.py) | [✓](Question_model/answers/bn_tensorflow_layers.py) | [✓](Question_model/answers/bn_keras.py) | [✓](Question_model/answers/bn_chainer.py) | 2015 |
-| [ResNet-18](Question_model#q-resnet) | [✓](Question_model/answers/res18_pytorch.py) | | [✓](Question_model/answers/res18_keras.py) | | 2015 |
-| [ResNet-34](Question_model#q-resnet) | [✓](Question_model/answers/res34_pytorch.py) | | [✓](Question_model/answers/res34_keras.py) | |  2015 |
-| [ResNet-50](Question_model#q-resnet) | [✓](Question_model/answers/res50_pytorch.py) | [✓(not good)](Question_model/answers/res50_tensorflow_layers.py) | [✓](Question_model/answers/res50_keras.py) | [✓(not good)](Question_model/answers/res50_chainer.py) |  2015 |
-| [ResNet-101](Question_model#q-resnet) | [✓](Question_model/answers/res101_pytorch.py) | | [✓](Question_model/answers/res101_keras.py) | | 2015 |
-| [ResNet-152](Question_model#q-resnet) | [✓](Question_model/answers/res152_pytorch.py) | | [✓](Question_model/answers/res152_keras.py) | |  2015 |
+| [ResNet-18](Question_model#q-resnet) | [✓](Question_model/answers/res18_pytorch.py) | [✓](Question_model/answers/res18_tensorflow_layers.py) | [✓](Question_model/answers/res18_keras.py) | | 2015 |
+| [ResNet-34](Question_model#q-resnet) | [✓](Question_model/answers/res34_pytorch.py) | [✓](Question_model/answers/res34_tensorflow_layers.py)  | [✓](Question_model/answers/res34_keras.py) | |  2015 |
+| [ResNet-50](Question_model#q-resnet) | [✓](Question_model/answers/res50_pytorch.py) | [✓](Question_model/answers/res50_tensorflow_layers.py) | [✓](Question_model/answers/res50_keras.py) | [✓(not good)](Question_model/answers/res50_chainer.py) |  2015 |
+| [ResNet-101](Question_model#q-resnet) | [✓](Question_model/answers/res101_pytorch.py) | [✓](Question_model/answers/res101_tensorflow_layers.py)  | [✓](Question_model/answers/res101_keras.py) | | 2015 |
+| [ResNet-152](Question_model#q-resnet) | [✓](Question_model/answers/res152_pytorch.py) | [✓](Question_model/answers/res152_tensorflow_layers.py)  | [✓](Question_model/answers/res152_keras.py) | |  2015 |
 | [ResNeXt-50](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt50_pytorch.py) | | [✓](Question_model/answers/resNeXt50_keras.py) | | 2016 |
 | [ResNeXt-101](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt101_pytorch.py) | | [✓](Question_model/answers/resNeXt101_keras.py) | | 2016 |
 | [Xception](Question_model#q-xception) | [✓](Question_model/answers/xception_pytorch.py) | | [✓](Question_model/answers/xception_keras.py) | | 2016 |

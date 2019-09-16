@@ -16,7 +16,7 @@ channel = 3
 tf.set_random_seed(0)
 
 
-def Res50(x, keep_prob, train=False):
+def Res101(x, keep_prob, train=True):
 
     def ResBlock(x, in_f, f_1, out_f, stride=1):
         res_x = tf.layers.conv2d(x, f_1, [1, 1], strides=stride, padding='same', activation=None)
@@ -37,44 +37,42 @@ def Res50(x, keep_prob, train=False):
             x = tf.nn.relu(x)
 
         if stride != 1:
-            x = tf.layers.max_pooling2d(x, [2, 2], stride=stride, padding='same')
+            x = tf.layers.max_pooling2d(x, [2, 2], strides=stride, padding='same')
 
         x = tf.add(res_x, x)
         x = tf.nn.relu(x)
-
+        
         return x
 
     
-    x = tf.layers.conv2d(x, 64, [7, 7], strides=2, padding="same", activation_fn=None)
+    x = tf.layers.conv2d(x, 64, [7, 7], strides=2, padding="same", activation=None)
     x = tf.layers.batch_normalization(x, training=train)
     x = tf.nn.relu(x)
     
-    x = tf.layers.max_pooling2d(x, [3, 3], strides=2, padding='same')
+    x = tf.layers.max_pooling2d(x, [3, 3], strides=2, padding='SAME')
 
+    # Res block 2
     x = ResBlock(x, 64, 64, 256)
     x = ResBlock(x, 256, 64, 256)
     x = ResBlock(x, 256, 64, 256)
 
+    # Res block 3
     x = ResBlock(x, 256, 128, 512, stride=2)
     x = ResBlock(x, 512, 128, 512)
     x = ResBlock(x, 512, 128, 512)
     x = ResBlock(x, 512, 128, 512)
 
+    # Res block 4
     x = ResBlock(x, 512, 256, 1024, stride=2)
-    x = ResBlock(x, 1024, 256, 1024)
-    x = ResBlock(x, 1024, 256, 1024)
-    x = ResBlock(x, 1024, 256, 1024)
-    x = ResBlock(x, 1024, 256, 1024)
-    x = ResBlock(x, 1024, 256, 1024)
+    for _ in range(22):
+        x = ResBlock(x, 1024, 256, 1024)
 
+    # Res block 5
     x = ResBlock(x, 1024, 512, 2048, stride=2)
     x = ResBlock(x, 2048, 256, 2048)
     x = ResBlock(x, 2048, 256, 2048)
 
-    #x = tf.layers.average_pooling2d(x, [img_height // 32, img_width // 32], strides=1, padding='VALID')
-    #mb, h, w, c = x.get_shape().as_list()
-    #x = tf.reshape(x, [-1, h * w * c])
-    x = tf.reduce_mean(x, axis=[1,2])
+    x = tf.reduce_mean(x, axis=[1, 2])
     x = tf.layers.dense(x, num_classes)
     
     return x
@@ -173,7 +171,7 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits = Res50(X, keep_pro, train=False)
+    logits = Res101(X, keep_pro, train=False)
     preds = tf.nn.softmax(logits)
     
     #loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
@@ -233,7 +231,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits = Res50(X, keep_prob, train=False)
+    logits = Res101(X, keep_prob, train=False)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")

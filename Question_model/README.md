@@ -385,28 +385,33 @@ Skip connectionによって、Lossのback propagationの効率化を行った。
 #### Res18
 
 - Pytorch [answers/res18_pytorch.py](answers/res18_pytorch.py)
+- TensorFlow [answers/res18_tensorflow_layers.py](answers/res18_tensorflow_layers.py)
 - Keras [answers/res18_keras.py](answers/res18_keras.py)
 
 #### Res34
 
 - Pytorch [answers/res34_pytorch.py](answers/res34_pytorch.py)
+- TensorFlow [answers/res34_tensorflow_layers.py](answers/res34_tensorflow_layers.py)
 - Keras [answers/res34_keras.py](answers/res34_keras.py)
 
 #### Res50
 
 - Pytorch [answers/res50_pytorch.py](answers/res50_pytorch.py)
-- Tensorflow(not good) [answers/res50_tensorflow_slim.py](answers/res50_tensorflow_slim.py)
+- TensorFlow [answers/res50_tensorflow_layers.py](answers/res50_tensorflow_layers.py)
+- Tensorflow[answers/res50_tensorflow_slim.py](answers/res50_tensorflow_slim.py)
 - Keras [answers/res50_keras.py](answers/res50_keras.py)
 - chainer(not good) [answers/res50_chainer.py](answers/res50_chainer.py)
 
 #### Res101
 
 - Pytorch [answers/res101_pytorch.py](answers/res101_pytorch.py)
+- TensorFlow [answers/res101_tensorflow_layers.py](answers/res101_tensorflow_layers.py)
 - Keras [answers/res101_keras.py](answers/res101_keras.py)
 
 #### Res152
 
 - Pytorch [answers/res152_pytorch.py](answers/res152_pytorch.py)
+- TensorFlow [answers/res152_tensorflow_layers.py](answers/res152_tensorflow_layers.py)
 - Keras [answers/res152_keras.py](answers/res152_keras.py)
 
 ## Q. ResNeXt
