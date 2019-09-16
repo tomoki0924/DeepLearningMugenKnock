@@ -191,7 +191,7 @@ $ pip install -r requirements.txt
 | [ResNet-50](Question_model#q-resnet) | [✓](Question_model/answers/res50_pytorch.py) | [✓](Question_model/answers/res50_tensorflow_layers.py) | [✓](Question_model/answers/res50_keras.py) | [✓(not good)](Question_model/answers/res50_chainer.py) |  2015 |
 | [ResNet-101](Question_model#q-resnet) | [✓](Question_model/answers/res101_pytorch.py) | [✓](Question_model/answers/res101_tensorflow_layers.py)  | [✓](Question_model/answers/res101_keras.py) | | 2015 |
 | [ResNet-152](Question_model#q-resnet) | [✓](Question_model/answers/res152_pytorch.py) | [✓](Question_model/answers/res152_tensorflow_layers.py)  | [✓](Question_model/answers/res152_keras.py) | |  2015 |
-| [ResNeXt-50](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt50_pytorch.py) | | [✓](Question_model/answers/resNeXt50_keras.py) | | 2016 |
+| [ResNeXt-50](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt50_pytorch.py) |  [✓](Question_model/answers/resNeXt50_tensorflow_layers.py) | [✓](Question_model/answers/resNeXt50_keras.py) | | 2016 |
 | [ResNeXt-101](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt101_pytorch.py) | | [✓](Question_model/answers/resNeXt101_keras.py) | | 2016 |
 | [Xception](Question_model#q-xception) | [✓](Question_model/answers/xception_pytorch.py) | | [✓](Question_model/answers/xception_keras.py) | | 2016 |
 | [DenseNet121](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet121_pytorch.py) | | | | 2016 |

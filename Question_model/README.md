@@ -426,6 +426,7 @@ ResNetのblockを内を細かく分けて、それらの和をとることでネ
 #### ResNeXt50
 
 - Pytorch [answers/resNeXt50_pytorch.py](answers/resNeXt50_pytorch.py)
+- Tensorflow [answers/resNeXt50_tensorflow_layers.py](answers/resNeXt50_tensorflow_layers.py)
 - Keras [answers/resNeXt50_keras.py](answers/resNeXt50_keras.py)
 
 #### ResNeXt101
