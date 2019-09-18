@@ -440,6 +440,7 @@ ResNetのblockを内を細かく分けて、それらの和をとることでネ
 元論文 >> https://arxiv.org/abs/1610.02357
 
 - Pytorch [answers/xception_pytorch.py](answers/xception_pytorch.py)
+- TensorFlow [answers/xception_tensorflow_layers.py](answers/xception_tensorflow_layers.py)
 - Keras [answers/xception_keras.py](answers/xception_keras.py)
 
 ## Q. DenseNet
@@ -495,3 +496,4 @@ M Df Df (Dk Dk + N) / Dk Dk M N Df Df = (Dk Dk + N) / Dk Dk N = 1 / N + 1 / Dk^2
 この仕組みでMobileNetではモデルの性能（精度）の損失をほとんど行わずに、パラメータ削減に成功している。
 
 - Pytorch [answers/MobileNet_v1_pytorch.py](answers/MobileNet_v1_pytorch.py)
+- TensorFlow [answers/MobileNet_v1_tensorflow_layers.py](answers/MobileNet_v1_tensorflow_layers.py)

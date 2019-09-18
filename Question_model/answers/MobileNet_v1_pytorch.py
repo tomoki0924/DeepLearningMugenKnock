@@ -43,29 +43,45 @@ class MobileNet_v1(torch.nn.Module):
         super(MobileNet_v1, self).__init__()
         
         self.module = torch.nn.Sequential(
-            # 224 x 224 x 3
+            #-----
+            # 1/1 x 1/1 x 3
+            #-----
             torch.nn.Conv2d(channel, 32, kernel_size=3, padding=1, stride=2),
             torch.nn.BatchNorm2d(32),
             torch.nn.ReLU(),
-            # 112 x 112 x 32
+
+            #-----
+            # 1/2 x 1/2 x 32
+            #-----
             MobileNetBlock(32, 64),
+
+            #-----
+            # 1/4 x 1/4 x 64
+            #-----
             MobileNetBlock(64, 128, stride=2),
-            # 56 x 56 x 64
             MobileNetBlock(128, 128),
+
+            #-----
+            # 1/8 x 1/8 x 128
+            #-----
             MobileNetBlock(128, 256, stride=2),
-            # 28 x 28 x 128
             MobileNetBlock(256, 256),
+
+            #-----
+            # 1/16 x 1/16 x 256
+            #-----
             MobileNetBlock(256, 512, stride=2),
-            # 14 x 14 x 256
             MobileNetBlock(512, 512, repeat=5),
+            
+            #-----
+            # 1/32 x 1/32 x 1024
+            #-----
             MobileNetBlock(512, 1024, stride=2),
-            # 7 x 7 x 1024
             MobileNetBlock(1024, 1024),
             #torch.nn.AvgPool2d([img_height // 32, img_width // 32], stride=1, padding=0),
             torch.nn.AdaptiveAvgPool2d([1,1]),
             Flatten(),
             torch.nn.Linear(1024, class_N),
-            torch.nn.ReLU(),
             torch.nn.Softmax(dim=1)
         )
 

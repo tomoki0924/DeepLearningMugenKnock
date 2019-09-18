@@ -29,6 +29,7 @@
 
 ## Recent
 
+- 2019.9.19 [TensorFlow] Xception, MobileNet_v1 を追加
 - 2019.9.16 [TensorFlow] ResNet 18, 34, 50, 101, 152 を追加
 - 2019.8.19 [Pytorch] NLP: Seq2seq+Attention, word2vecを追加
 - 2019.8.15 [Pytorch] pix2pixを追加
@@ -193,12 +194,12 @@ $ pip install -r requirements.txt
 | [ResNet-152](Question_model#q-resnet) | [✓](Question_model/answers/res152_pytorch.py) | [✓](Question_model/answers/res152_tensorflow_layers.py)  | [✓](Question_model/answers/res152_keras.py) | |  2015 |
 | [ResNeXt-50](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt50_pytorch.py) |  [✓](Question_model/answers/resNeXt50_tensorflow_layers.py) | [✓](Question_model/answers/resNeXt50_keras.py) | | 2016 |
 | [ResNeXt-101](Question_model#q-resnext) | [✓](Question_model/answers/resNeXt101_pytorch.py) | | [✓](Question_model/answers/resNeXt101_keras.py) | | 2016 |
-| [Xception](Question_model#q-xception) | [✓](Question_model/answers/xception_pytorch.py) | | [✓](Question_model/answers/xception_keras.py) | | 2016 |
+| [Xception](Question_model#q-xception) | [✓](Question_model/answers/xception_pytorch.py) | [✓](Question_model/answers/xception_tensorflow_layers.py) | [✓](Question_model/answers/xception_keras.py) | | 2016 |
 | [DenseNet121](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet121_pytorch.py) | | | | 2016 |
 | [DenseNet169](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet169_pytorch.py) | | | | 2016 | 
 | [DenseNet201](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet201_pytorch.py) | | | | 2016 |
 | [DenseNet264](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet264_pytorch.py) | | | | 2016 |
-| [MobileNet-v1](Question_model#q-mobilenet-v1) | [✓](Question_model/answers/MobileNet_v1_pytorch.py) | | | | 2017 |
+| [MobileNet-v1](Question_model#q-mobilenet-v1) | [✓](Question_model/answers/MobileNet_v1_pytorch.py) | [✓](Question_model/answers/MobileNet_v1_tensorflow_layers.py) | | | 2017 |
 
 ### [Semantic Segmentation編](Question_semaseg)
 | 問題 |  PyTorch | TensorFlow | Keras | Chainer |
