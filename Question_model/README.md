@@ -478,6 +478,12 @@ MobileNetではConvolutionを二つのconvolution操作(Depth-wise convとPoint-
 
 <img src="assets/mobilenet-v1.png" width="400">
 
+この分解により以下のようなConvolutionの操作になる。
+
+| Standard Conv | Separable Conv |
+|:---:|:---:|
+| <img src="assets/standard_conv.png" width=350> | <img src="assets/separable_conv.png" width=400> |
+
 Depth-wise convでは入力の特徴マップの各チャネルにdepth=1のカーネル（Dk x Dk)を適用する。Point-wise convでは(1 x 1 x M)のconvolutionを適用してチャネル方向の線形和を計算する。
 
 これにより得られる計算量は、
@@ -497,3 +503,29 @@ M Df Df (Dk Dk + N) / Dk Dk M N Df Df = (Dk Dk + N) / Dk Dk N = 1 / N + 1 / Dk^2
 
 - Pytorch [answers/MobileNet_v1_pytorch.py](answers/MobileNet_v1_pytorch.py)
 - TensorFlow [answers/MobileNet_v1_tensorflow_layers.py](answers/MobileNet_v1_tensorflow_layers.py)
+
+## Q. MobileNet-v2
+
+元論文 >> https://arxiv.org/abs/1801.04381
+
+MobileNetを改良したMobileNet-v2では、Convolutionのやり方がさらに変更になっている。
+
+v2ではこのようなconvolutionのブロックを重ねていく。
+入力の特徴マップのチャネルをkとする。
+tは拡大率で、論文ではt=6としている。
+
+1. Conv(kernel:1x1, channel:tk) + BatchNormalization + ReLU6
+2. Depth wise Conv(kernel:1x1, channel:t, stride:(1 or 2)) + BatchNormalization + ReLU6
+3. Conv(kernel:1x1, channel:k') + BatchNormalization + ReLU6
+4. もし、strideが1なら、skip connectionを加える
+
+
+<img src="assets/mobilenet-v2.png" width=500>
+
+ちなみにReLU6とは
+
+y = min(max(0, x), 6)
+
+となった活性化関数を表す。
+
+- Pytorch [answers/MobileNet_v2_pytorch.py](answers/MobileNet_v2_pytorch.py)

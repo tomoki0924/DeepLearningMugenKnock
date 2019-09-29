@@ -174,7 +174,7 @@ $ pip install -r requirements.txt
 
 ### [画像認識編](Question_model)
 
-| 問題 |  PyTorch |  | TensorFlow || Keras | Chainer | Published year
+| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published year
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | 
 | [モデルの書き方の簡潔化](Question_model#q-vgg19) | [✓](Question_model/answers/easy_pytorch.py) | [✓](Question_model/answers/easy_tensorflow_layers.py) | ||[✓](Question_model/answers/easy_keras.py) | [✓](Question_model/answers/easy_chainer.py) |
@@ -201,9 +201,10 @@ $ pip install -r requirements.txt
 | [DenseNet201](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet201_pytorch.py) | | | ||| 2016 |
 | [DenseNet264](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet264_pytorch.py) | | ||| | 2016 |
 | [MobileNet-v1](Question_model#q-mobilenet-v1) | [✓](Question_model/answers/MobileNet_v1_pytorch.py) | [✓](Question_model/answers/MobileNet_v1_tensorflow_layers.py) ||| | | 2017 |
+| [MobileNet-v2](Question_model#q-mobilenet-v2) | [✓](Question_model/answers/MobileNet_v2_pytorch.py) |||| | | 2019 |
 
 ### [Semantic Segmentation編](Question_semaseg)
-| 問題 |  PyTorch |  | TensorFlow || Keras | Chainer |
+| 問題 |  PyTorch | TensorFlow | || Keras | Chainer |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | 
 | [SemanticSegmentationとは?](Question_semaseg#semanticsegmentation%E3%81%A8%E3%81%AF) |
@@ -221,7 +222,7 @@ $ pip install -r requirements.txt
 
 
 ### [画像生成編](Question_imageGenerate)
-| 問題 |  PyTorch |  | TensorFlow || Keras | Chainer |
+| 問題 |  PyTorch | TensorFlow | || Keras | Chainer |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | 
 | [AutoEncoder](Question_imageGenerate#q-auto-encoder) |  [✓](Question_semaseg/answers/ae_pytorch.py) | | [✓?](Question_imageGenerate/answers/ae_tensorflow_slim.py) | | [✓](Question_imageGenerate/answers/ae_keras.py) |  [✓](Question_imageGenerate/answers/ae_chainer.py) |
@@ -240,8 +241,8 @@ $ pip install -r requirements.txt
 ### [画像処理編]()
 
 ### [言語処理編](Question_nlp)
-| 問題 |  PyTorch |  | TensorFlow || Keras | Chainer |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published year | 
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer |
 | [1 hotベクトル化](Question_nlp#q-1hot%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%8C%96) |  [✓](Question_nlp/answers/onehot.py) 
 | [RNN (Many-to-one) Step.1. 学習 ](Question_nlp#q-rnn-many-to-one-step1-%E5%AD%A6%E7%BF%92) |  [✓](Question_nlp/answers/rnn_pytorch.py) | | | [✓](Question_nlp/answers/rnn_tensorflow_slim.py) | [✓](Question_nlp/answers/rnn_keras.py) | |
@@ -250,7 +251,7 @@ $ pip install -r requirements.txt
 | [Bi-directional LSTM (Many-to-one)](Question_nlp#q-bi-directional-lstm-many-to-one) |  [✓](Question_nlp/answers/bdlstm_pytorch.py) | | | [✓](Question_nlp/answers/bdlstm_tensorflow_slim.py) | [✓](Question_nlp/answers/bdlstm_keras.py) | [✓?](Question_nlp/answers/bdlstm_chainer.py) |
 | [GRU (Many-to-one)](Question_nlp#q-gru-many-to-one) |  [✓](Question_nlp/answers/gru_pytorch.py) | | | [✓](Question_nlp/answers/gru_tensorflow_slim.py) | [✓](Question_nlp/answers/gru_keras.py) | [✓](Question_nlp/answers/gru_chainer.py) |
 | [Seq2seq (Many-to-many)](Question_nlp#q-seq2seq-many-to-many) | [✓](Question_nlp/answers/seq2seq_pytorch.py) | |  | [✓](Question_nlp/answers/seq2seq_keras.py) |
-| [Seq2seq + Attention](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_pytorch.py) |
+| [Seq2seq + Attention](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_pytorch.py) ||||||2017|
 | [Word2Vec (Skip-gram)](Question_nlp#q-word2vec) | [✓](Question_nlp/answers/word2vec_pytorch.py) |
 
 
