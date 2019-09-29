@@ -28,7 +28,7 @@
 > [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
 ## Recent
-
+- 2019.9.30 [Pytorch] MobileNet v2 を追加
 - 2019.9.19 [TensorFlow] Xception, MobileNet_v1 を追加
 - 2019.9.16 [TensorFlow] ResNet 18, 34, 50, 101, 152 を追加
 - 2019.8.19 [Pytorch] NLP: Seq2seq+Attention, word2vecを追加
