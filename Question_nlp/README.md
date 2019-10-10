@@ -202,7 +202,7 @@ Attentionには２つの入力(InputとMemory)が必要となる。
 QueryとKeyの要素毎の積(MatMul)をとり、Dense, Softmaxを適用することで、Attentionのマスクを作成する。
 AttentionマスクとValueの要素毎の積を取ることで、注目すべき特徴を抜き出す。
 
-<img src="assets/attention.png" width=350>
+<img src="assets/attention.png" width=400>
 
 <img src="assets/attention_mask.png" width=250>
 
@@ -211,12 +211,12 @@ AttentionマスクとValueの要素毎の積を取ることで、注目すべき
 
 ちなみにQとKのドット積(MatMul)QKの後に、Keyの次元数d_kの平方根で除算を行っている。d_kが小さい時は問題にならないが、d_kが大きい時はQKの値が大きくなってしまい、Softmaxを適用した時に勾配が急激に小さくなってしまう。そこでsqrt(q_k)で除算を行うことで、スケール調整をしている。
 
-<img src="assets/attention_matmul.png" width=200>
+<img src="assets/attention_matmul.png" width=250>
 
 
 Source Target Attentionでは、InputはTarget(Decoder)内部の入力(シンプルにFeed Forwardして得られる特徴)、MemoryはSourceからの出力された特徴となる。
 
-<img src="assets/source_target_attention.png" width=200>
+<img src="assets/source_target_attention.png" width=250>
 
 答え
 - PyTorch [answers/seq2seq_attention_sourceTargetAttention_pytorch.py](answers/seq2seq_attention_sourceTargetAttention_pytorch.py)
@@ -229,7 +229,7 @@ Self Attention は自身から自身への Attention を作成するアルゴリ
 
 Self Attentionでは入力ベクトルをInputとMemoryにすることで、自己に対するAttentionマスクを作成する。
 
-<img src="assets/self_attention.png" width=100>
+<img src="assets/self_attention.png" width=150>
 
 論文によれば Self Attention の次に Source Target Attention を繋げるらしい。
 
@@ -247,7 +247,7 @@ Multi head AttentionではAttentionにおいて、チャネルを分割するこ
 2. チャネル方向へのConcatを行う
 3. DenseLayerに入力して、Attentionの出力とする。
 
-<img src="assets/multi_head_attention.png" width=200>
+<img src="assets/multi_head_attention.png" width=250>
 
 ここでの実装では、チャネル分割を行ってから特徴のshapeを [1, C / N]から [N, C]に変更することでMulti headを実現した。
 
@@ -261,12 +261,12 @@ Multi head AttentionではAttentionにおいて、チャネルを分割するこ
 EncoderにもDecoderにもFeed Forward Networkが使われている。
 Feed Forward NetworkはAttentionの直後に毎回使われ。
 
-<img src="assets/feed_forward_network.png" width=200>
+<img src="assets/feed_forward_network.png" width=250>
 
 論文ではこの数式で表されているが、要はDense Layerを2つ繋げたシンプルな構造だ。
 １個目のDense Layerで2048次元にした後、2個目のDense Layerで512次元に削減されている。
 
-<img src="assets/feed_forward_network2.png" width=200>
+<img src="assets/feed_forward_network2.png" width=250>
 
 答え
 - PyTorch [answers/seq2seq_attention_FFN_pytorch.py](answers/seq2seq_attention_FFN_pytorch.py)
@@ -281,7 +281,7 @@ Sequenceデータに時間的な位置の情報を加えるために、Positiona
 
 posが時間的な位置、iが次元での位置、d_modelが特徴量の全次元数になる。
 
-<img src="assets/positional_encoding.png" width=200>
+<img src="assets/positional_encoding.png" width=250>
 
 AttentionでSinusoid(Sin)関数をを使っているのは、学習時にSequenceの長さをモデルに学習させることが可能であるためだという。
 
