@@ -15,35 +15,32 @@ torch.manual_seed(0)
 GPU = False
 device = torch.device("cuda" if GPU else "cpu")
 
+hidden_dim = 128
+MAX_LENGTH = 100
+teacher_forcing_ratio = 0.5
 mb = 1
-
-opt = "Adam" # SGD, Adam
+Attention = True
+opt = "SGD" # SGD, Adam
 
 # lr, iteration
-train_factors = [[0.001, 4000]] 
+train_factors = [[0.001, 2000]] 
 
 next_word_mode = "prob" # prob, argmax
 
 import MeCab
 mecab = MeCab.Tagger("-Owakati")
 
-hidden_dim = 512
-MAX_LENGTH = 100
-teacher_forcing_ratio = 0.5
 use_Bidirectional = False # Bi-directional
-dropout_p = 0.1 # Dropout ratio
+dropout_p = 0.2 # Dropout ratio
 num_layers = 1
 
-Attention = True
-Attention_dkv = 64
-Encoder_attention_time = 6  # Transformer technique 3 : Hopping if > 1
-Decoder_attention_time = 6  # Transformer technique 3 : Hopping if > 1
+Encoder_attention_time = 1  # Transformer technique 3 : Hopping if > 1
+Decoder_attention_time = 1  # Transformer technique 3 : Hopping if > 1
 use_Source_Target_Attention = True # use source target attention
 use_Encoder_Self_Attention = True # self attention of Encoder
 use_Decoder_Self_Attention = True # self attention of Decoder
 MultiHead_Attention_N = 8 # Multi head attention Transformer technique 1
 use_FeedForwardNetwork = True # Transformer technique 4
-FeedForwardNetwork_dff = 2048
 use_PositionalEncoding = True # Transformer technique 5
 
 
@@ -53,14 +50,13 @@ tensor_dim = num_layers * 2 if use_Bidirectional else num_layers
 
 
 class Encoder(torch.nn.Module):
-    def __init__(self, input_size, hidden_dim, attention_dkv=64, max_length=MAX_LENGTH, 
+    def __init__(self, input_size, hidden_dim, max_length=MAX_LENGTH, 
         dropout_p=0.1, num_layers=1,
         attention_time=1,
         use_Source_Target_Attention=False,
         use_Self_Attention=False,
         MultiHead_Attention_N=2,
         use_FFNetwork=False,
-        FeedForwardNetwork_dff=2048,
         use_PositionalEncoding=False):
     
         super(Encoder, self).__init__()
@@ -82,9 +78,7 @@ class Encoder(torch.nn.Module):
                 if use_Self_Attention:
                     _attentions.append(Attention(
                         hidden_dim=hidden_dim, 
-                        memory_dim=hidden_dim,
-                        attention_dkv=Attention_dkv,
-                        output_dim=hidden_dim,
+                        memory_dim=hidden_dim, 
                         dropout_p=dropout_p, 
                         max_length=max_length, 
                         #self_Attention_Decoder=True, 
@@ -94,8 +88,7 @@ class Encoder(torch.nn.Module):
                 # Feed Forward Network
                 if use_FFNetwork:
                     _attentions.append(FeedForwardNetwork(
-                        d_ff=FeedForwardNetwork_dff,
-                        d_model=hidden_dim,
+                        hidden_dim=hidden_dim, 
                         dropout_p=dropout_p))
 
             self.attentions = _attentions
@@ -130,14 +123,13 @@ class Encoder(torch.nn.Module):
 
 
 class Decoder(torch.nn.Module):
-    def __init__(self, hidden_dim, output_dim, RNN_dim, attention_dkv=64, dropout_p=0.1, num_layers=1,
+    def __init__(self, hidden_dim, output_dim, RNN_dim, dropout_p=0.1, num_layers=1,
         attention_time=1,
         max_length=MAX_LENGTH,
         use_Source_Target_Attention=False,
         use_Self_Attention=False,
         MultiHead_Attention_N=2,
         use_FFNetwork=False,
-        FeedForwardNetwork_dff=2048,
         use_PositionalEncoding=False):
 
         super(Decoder, self).__init__()
@@ -165,8 +157,6 @@ class Decoder(torch.nn.Module):
                     _attentions.append(Attention(
                         hidden_dim=hidden_dim, 
                         memory_dim=hidden_dim, 
-                        attention_dkv=Attention_dkv,
-                        output_dim=hidden_dim,
                         dropout_p=dropout_p, 
                         max_length=max_length, 
                         self_Attention_Decoder=True,
@@ -177,9 +167,7 @@ class Decoder(torch.nn.Module):
                 if use_Source_Target_Attention:
                     _attentions.append(Attention(
                         hidden_dim=hidden_dim, 
-                        memory_dim=RNN_dim,
-                        attention_dkv=Attention_dkv,
-                        output_dim=hidden_dim,
+                        memory_dim=RNN_dim, 
                         dropout_p=dropout_p, 
                         max_length=max_length,
                         head_N=MultiHead_Attention_N
@@ -188,8 +176,7 @@ class Decoder(torch.nn.Module):
                 # Feed Forward Network
                 if use_FFNetwork:
                     _attentions.append(FeedForwardNetwork(
-                        d_ff=FeedForwardNetwork_dff,
-                        d_model=hidden_dim,
+                        hidden_dim=hidden_dim, 
                         dropout_p=dropout_p))
         
             self.attentions = _attentions
@@ -225,10 +212,9 @@ class Decoder(torch.nn.Module):
 
 
 class Attention(torch.nn.Module):
-    def __init__(self, hidden_dim, memory_dim, attention_dkv, output_dim, dropout_p=0.1, max_length=MAX_LENGTH, head_N=1, self_Attention_Decoder=False):
+    def __init__(self, hidden_dim, memory_dim, dropout_p=0.1, max_length=MAX_LENGTH, head_N=1, self_Attention_Decoder=False):
         super(Attention, self).__init__()
         self.hidden_dim = hidden_dim
-        self.attention_dkv = attention_dkv
         self.dropout_p = dropout_p
         self.max_length = max_length
         self.head_N = head_N
@@ -237,27 +223,25 @@ class Attention(torch.nn.Module):
         # Attention Query
         #self.Q_embedding = torch.nn.Embedding(self.output_size, hidden_dim)
         #self.Q_dropout = torch.nn.Dropout(self.dropout_p)
-        self.Q_dense = torch.nn.Linear(hidden_dim, attention_dkv)
+        self.Q_dense = torch.nn.Linear(hidden_dim, hidden_dim)
         self.Q_dense_dropout = torch.nn.Dropout(dropout_p)
         #self.Q_BN = torch.nn.BatchNorm1d(hidden_dim)
         
         # Attention Key
-        self.K_dense = torch.nn.Linear(memory_dim, attention_dkv)
+        self.K_dense = torch.nn.Linear(memory_dim, hidden_dim)
         self.K_dense_dropout = torch.nn.Dropout(dropout_p)
         #self.K_BN = torch.nn.BatchNorm1d(hidden_dim)
         
         # Attetion Value
-        self.V_dense = torch.nn.Linear(memory_dim, attention_dkv)
+        self.V_dense = torch.nn.Linear(memory_dim, hidden_dim)
         self.V_dense_dropout = torch.nn.Dropout(dropout_p)
         #self.V_BN = torch.nn.BatchNorm1d(hidden_dim)
         
         # Attention mask
         #self.attention = torch.nn.Linear(hidden_dim * 2, self.max_length)
-        #self.attention_dropout = torch.nn.Dropout(dropout_p)
-
-        self.dense_output = torch.nn.Linear(attention_dkv, output_dim)
-        self.dropout_output = torch.nn.Dropout(dropout_p)
-
+        self.attention_dense = torch.nn.Linear(hidden_dim * 2, hidden_dim)
+        self.attention_dropout = torch.nn.Dropout(dropout_p)
+        #self.attention_BN = torch.nn.BatchNorm1d(hidden_dim)
 
 
     def forward(self, _input, memory, memory2):
@@ -268,7 +252,7 @@ class Attention(torch.nn.Module):
         Q = Q.view(1, 1, -1)
         
         # one head -> Multi head
-        Q = Q.view(1, self.attention_dkv // self.head_N, self.head_N)
+        Q = Q.view(1, self.hidden_dim // self.head_N, self.head_N)
         Q = Q.permute([2, 0, 1])
 
         # Transformer technique 1 : scaled dot product
@@ -286,11 +270,11 @@ class Attention(torch.nn.Module):
         K = self.K_dense(memory)
         #K = self.K_BN(K)
         K = self.K_dense_dropout(K)
-        K = K.view(1, -1, self.attention_dkv)
+        K = K.view(1, -1, self.hidden_dim)
 
 
         # one head -> Multi head
-        K = K.view(-1, self.attention_dkv // self.head_N, self.head_N)
+        K = K.view(-1, self.hidden_dim // self.head_N, self.head_N)
         K = K.permute([2, 1, 0])
 
         # get Query and Key (= attention logits)
@@ -315,10 +299,10 @@ class Attention(torch.nn.Module):
         V = self.V_dense(memory)
         #V = self.V_BN(V)
         V = self.V_dense_dropout(V)
-        V = V.view(1, -1, self.attention_dkv)
+        V = V.view(1, -1, self.hidden_dim)
 
         # one head -> Multi head
-        V = V.view(-1, self.attention_dkv // self.head_N, self.head_N)
+        V = V.view(-1, self.hidden_dim // self.head_N, self.head_N)
         V = V.permute(2, 0, 1)
         
         # Attetion x Value
@@ -327,28 +311,28 @@ class Attention(torch.nn.Module):
         # Multi head -> one head
         attention_feature = attention_feature.permute(1, 2, 0)
         attention_feature = attention_feature.contiguous().view(1, 1, -1)
-
+        
         # attention + Input
-        #attention_x = torch.cat([_input, attention_feature], dim=-1)
-        #print(attention_x.size())
+        attention_x = torch.cat([_input, attention_feature], dim=-1)
+        
         # apply attention dense
-        #attention_output = self.attention_dense(attention_x)
-        #attention_output = self.attention_dropout(attention_output)
+        attention_output = self.attention_dense(attention_x)
+        #attention_output = self.attention_BN(attention_output)
+        attention_output = self.attention_dropout(attention_output)
+        attention_output = F.relu(attention_output)
 
-        attention_output = self.dense_output(attention_feature)
-        attention_output = self.dropout_output(attention_output)
         return attention_output
 
 
 class FeedForwardNetwork(torch.nn.Module):
-    def __init__(self, d_ff, d_model, dropout_p=0.1):
+    def __init__(self, hidden_dim, dropout_p=0.1):
         super(FeedForwardNetwork, self).__init__()
 
         self.module = torch.nn.Sequential(
-            torch.nn.Linear(d_model, d_ff),
+            torch.nn.Linear(hidden_dim, hidden_dim * 4),
             torch.nn.ReLU(),
             torch.nn.Dropout(dropout_p),
-            torch.nn.Linear(d_ff, d_model)
+            torch.nn.Linear(hidden_dim * 4, hidden_dim)
         )
 
     def forward(self, x, memory_encoder, decoder):
@@ -435,7 +419,6 @@ def train():
     encoder = Encoder(
         voca_num, 
         hidden_dim,
-        attention_dkv=Attention_dkv,
         dropout_p=dropout_p,
         num_layers=num_layers,
         attention_time=Encoder_attention_time,
@@ -443,7 +426,6 @@ def train():
         use_Self_Attention=use_Encoder_Self_Attention,
         MultiHead_Attention_N=MultiHead_Attention_N,
         use_FFNetwork=use_FeedForwardNetwork,
-        FeedForwardNetwork_dff=FeedForwardNetwork_dff,
         use_PositionalEncoding=use_PositionalEncoding
         ).to(device) 
 
@@ -451,7 +433,6 @@ def train():
         hidden_dim,
         voca_num, 
         RNN_dim,
-        attention_dkv=Attention_dkv,
         dropout_p=dropout_p,
         num_layers=num_layers,
         attention_time=Decoder_attention_time, 
@@ -459,7 +440,6 @@ def train():
         use_Self_Attention=use_Encoder_Self_Attention,
         MultiHead_Attention_N=MultiHead_Attention_N,
         use_FFNetwork=use_FeedForwardNetwork,
-        FeedForwardNetwork_dff=FeedForwardNetwork_dff,
         use_PositionalEncoding=use_PositionalEncoding
         ).to(device)
 
@@ -479,8 +459,8 @@ def train():
             encoder_optimizer = torch.optim.SGD(encoder.parameters(), lr=lr, momentum=0.9)
             decoder_optimizer = torch.optim.SGD(decoder.parameters(), lr=lr, momentum=0.9)
         elif opt == "Adam":
-            encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=lr, betas=(0.9, 0.98))
-            decoder_optimizer = torch.optim.Adam(decoder.parameters(), lr=lr, betas=(0.9, 0.98))
+            encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=lr)
+            decoder_optimizer = torch.optim.Adam(decoder.parameters(), lr=lr)
         else:
             raise Exception("invalid optimizer:", opt)
         
@@ -601,7 +581,6 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
     encoder = Encoder(
         voca_num, 
         hidden_dim,
-        attention_dkv=Attention_dkv,
         dropout_p=dropout_p,
         num_layers=num_layers,
         attention_time=Encoder_attention_time,
@@ -609,7 +588,6 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
         use_Self_Attention=use_Encoder_Self_Attention,
         MultiHead_Attention_N=MultiHead_Attention_N,
         use_FFNetwork=use_FeedForwardNetwork,
-        FeedForwardNetwork_dff=FeedForwardNetwork_dff,
         use_PositionalEncoding=use_PositionalEncoding
         ).to(device) 
 
@@ -617,7 +595,6 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
         hidden_dim,
         voca_num, 
         RNN_dim,
-        attention_dkv=Attention_dkv,
         dropout_p=dropout_p,
         num_layers=num_layers,
         attention_time=Decoder_attention_time, 
@@ -625,7 +602,6 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
         use_Self_Attention=use_Encoder_Self_Attention,
         MultiHead_Attention_N=MultiHead_Attention_N,
         use_FFNetwork=use_FeedForwardNetwork,
-        FeedForwardNetwork_dff=FeedForwardNetwork_dff,
         use_PositionalEncoding=use_PositionalEncoding
         ).to(device)
 

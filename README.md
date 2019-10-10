@@ -34,6 +34,7 @@ Twitterで更新を発信してますぅ
 https://twitter.com/curry_yoyoyo
 
 
+- 2019.10.10[PyTorch] Seq2Seq Attention(Step別)を追加
 - 2019.9.30 [Pytorch] MobileNet v2 を追加
 - 2019.9.19 [TensorFlow] Xception, MobileNet_v1 を追加
 - 2019.9.16 [TensorFlow] ResNet 18, 34, 50, 101, 152 を追加
@@ -256,8 +257,13 @@ $ pip install -r requirements.txt
 | [LSTM (Many-to-one)](Question_nlp#q-lstm-many-to-one) |  [✓](Question_nlp/answers/lstm_pytorch.py) | | |[✓](Question_nlp/answers/lstm_tensorflow_slim.py) |[✓](Question_nlp/answers/lstm_keras.py) | [✓](Question_nlp/answers/lstm_chainer.py) |
 | [Bi-directional LSTM (Many-to-one)](Question_nlp#q-bi-directional-lstm-many-to-one) |  [✓](Question_nlp/answers/bdlstm_pytorch.py) | | | [✓](Question_nlp/answers/bdlstm_tensorflow_slim.py) | [✓](Question_nlp/answers/bdlstm_keras.py) | [✓?](Question_nlp/answers/bdlstm_chainer.py) |
 | [GRU (Many-to-one)](Question_nlp#q-gru-many-to-one) |  [✓](Question_nlp/answers/gru_pytorch.py) | | | [✓](Question_nlp/answers/gru_tensorflow_slim.py) | [✓](Question_nlp/answers/gru_keras.py) | [✓](Question_nlp/answers/gru_chainer.py) |
-| [Seq2seq (Many-to-many)](Question_nlp#q-seq2seq-many-to-many) | [✓](Question_nlp/answers/seq2seq_pytorch.py) | |  | [✓](Question_nlp/answers/seq2seq_keras.py) |
-| [Seq2seq + Attention](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_pytorch.py) ||||||2017|
+| [Seq2seq](Question_nlp#q-seq2seq-many-to-many) | [✓](Question_nlp/answers/seq2seq_pytorch.py) | |  | [✓](Question_nlp/answers/seq2seq_keras.py) |
+| [Seq2Seq + Attention (Step1. Source Target Attention)](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_sourceTargetAttention_pytorch.py) ||||||2017|
+| [Seq2Seq + Attention (Step2. Self Attention)](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_selfAttention_pytorch.py) ||||||2017|
+| [Seq2Seq + Attention (Step3. Multi head Attention)](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_multiHeadAttention_pytorch.py) ||||||2017|
+| [Seq2Seq + Attention (Step4. Feed Forward Networ)](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_FFN_pytorch.py) ||||||2017|
+| [Seq2Seq + Attention (Step5. Positional Encoding)](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_positionalEncoding_pytorch.py) ||||||2017|
+| [Seq2Seq + Attention (Final. Parameter setting)](Question_nlp#q-seq2seq--attention) | [✓](Question_nlp/answers/seq2seq_attention_pytorch.py) ||||||2017|
 | [Word2Vec (Skip-gram)](Question_nlp#q-word2vec) | [✓](Question_nlp/answers/word2vec_pytorch.py) |
 
 

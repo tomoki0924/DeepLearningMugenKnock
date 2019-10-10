@@ -188,7 +188,122 @@ GRU (Gated Recurrent Unit) にしましょう。
 - PyTorch [answers/seq2seq_pytorch.py](answers/seq2seq_pytorch.py)
 - Keras [answers/gru_keras.py](answers/seq2seq_keras.py)
 
-## Q. Seq2Seq + Attention
+## Q. Seq2Seq + Attention (Step1. Source Target Attention)
+
+元論文 >> https://arxiv.org/abs/1706.03762
+
+AttentionはNeural Networkにおいて特徴の注目を行うアルゴリズムである。
+Attentionには主に Source Target Attention と Self Attention がある。
+
+Source Target Attention は Source(Encoder) から Target(Decoder) への Attention を作成するアルゴリズムである。
+
+Attentionには２つの入力(InputとMemory)が必要となる。
+それぞれDense Layerを通すことで、Query, Key, Valueを作成する。
+QueryとKeyの要素毎の積(MatMul)をとり、Dense, Softmaxを適用することで、Attentionのマスクを作成する。
+AttentionマスクとValueの要素毎の積を取ることで、注目すべき特徴を抜き出す。
+
+<img src="assets/attention.png" width=350>
+
+<img src="assets/attention_mask.png" width=250>
+
+つまり、QueryとKeyにより注目領域の作成を行い、Valueから注目特徴を抜き出すという流れになる。
+一度、Denseを通すのは特徴量の次元数を調整するためだと思われる。
+
+ちなみにQとKのドット積(MatMul)QKの後に、Keyの次元数d_kの平方根で除算を行っている。d_kが小さい時は問題にならないが、d_kが大きい時はQKの値が大きくなってしまい、Softmaxを適用した時に勾配が急激に小さくなってしまう。そこでsqrt(q_k)で除算を行うことで、スケール調整をしている。
+
+<img src="assets/attention_matmul.png" width=200>
+
+
+Source Target Attentionでは、InputはTarget(Decoder)内部の入力(シンプルにFeed Forwardして得られる特徴)、MemoryはSourceからの出力された特徴となる。
+
+<img src="assets/source_target_attention.png" width=200>
+
+答え
+- PyTorch [answers/seq2seq_attention_sourceTargetAttention_pytorch.py](answers/seq2seq_attention_sourceTargetAttention_pytorch.py)
+
+## Q. Seq2Seq + Attention (Step2. Self Attention)
+
+元論文 >> https://arxiv.org/abs/1706.03762
+
+Self Attention は自身から自身への Attention を作成するアルゴリズムであり、Encoder, Decoderの両方に使うことができる。
+
+Self Attentionでは入力ベクトルをInputとMemoryにすることで、自己に対するAttentionマスクを作成する。
+
+<img src="assets/self_attention.png" width=100>
+
+論文によれば Self Attention の次に Source Target Attention を繋げるらしい。
+
+答え
+- PyTorch [answers/seq2seq_attention_selfAttention_pytorch.py](answers/seq2seq_attention_selfAttention_pytorch.py)
+
+## Q. Seq2Seq + Attention (Step3. Multi head Attention)
+
+元論文 >> https://arxiv.org/abs/1706.03762
+
+Multi head AttentionではAttentionにおいて、チャネルを分割することで精度向上を図るアルゴリズムである。
+
+普通のAttentionはチャネル数Nに対して１つのQKVで計算を行うが、Multi head Attentionでは以下の方法で計算を行う。
+1. QKVのチャネル数をヘッド数だけ分割してQKVを計算する
+2. チャネル方向へのConcatを行う
+3. DenseLayerに入力して、Attentionの出力とする。
+
+<img src="assets/multi_head_attention.png" width=200>
+
+ここでの実装では、チャネル分割を行ってから特徴のshapeを [1, C / N]から [N, C]に変更することでMulti headを実現した。
+
+答え
+- PyTorch [answers/seq2seq_attention_multiHeadAttention_pytorch.py](answers/seq2seq_attention_multiHeadAttention_pytorch.py)
+
+## Q. Seq2Seq + Attention (Step4. Feed Forward Network)
+
+元論文 >> https://arxiv.org/abs/1706.03762
+
+EncoderにもDecoderにもFeed Forward Networkが使われている。
+Feed Forward NetworkはAttentionの直後に毎回使われ。
+
+<img src="assets/feed_forward_network.png" width=200>
+
+論文ではこの数式で表されているが、要はDense Layerを2つ繋げたシンプルな構造だ。
+１個目のDense Layerで2048次元にした後、2個目のDense Layerで512次元に削減されている。
+
+<img src="assets/feed_forward_network2.png" width=200>
+
+答え
+- PyTorch [answers/seq2seq_attention_FFN_pytorch.py](answers/seq2seq_attention_FFN_pytorch.py)
+
+
+## Q. Seq2Seq + Attention (Step5. Positional Encoding)
+
+元論文 >> https://arxiv.org/abs/1706.03762
+
+Sequenceデータに時間的な位置の情報を加えるために、Positional Encodingというものが使われる。
+これは次式で計算される。
+
+posが時間的な位置、iが次元での位置、d_modelが特徴量の全次元数になる。
+
+<img src="assets/positional_encoding.png" width=200>
+
+AttentionでSinusoid(Sin)関数をを使っているのは、学習時にSequenceの長さをモデルに学習させることが可能であるためだという。
+
+答え
+- PyTorch [answers/seq2seq_attention_positionalEncoding_pytorch.py](answers/seq2seq_attention_positionalEncoding_pytorch.py)
+
+
+## Q. Seq2Seq + Attention (Final. Parameter setting)
+
+元論文 >> https://arxiv.org/abs/1706.03762
+
+Attentionのパラメータを論文の通りに実装してみる。
+Table.3に様々なタイプのパラメータが載っているが、ここではbaseモデルの通りに実装してみる。
+
+- Attentionの回数は N = 6
+- Attentionへの入力の次元数は d_model = 512
+- Feed Forward Networkの１段目のDense Layerの次元数は d_ff = 2048
+- Multi Head AttentionのHead数は h = 8
+- AttentionのKeyの次元数は d_k = 64
+- AttentionのValueの次元数は d_v = 64
+- DropoutのDrop確率は P_drop = 0.1
+
 
 答え
 - PyTorch [answers/seq2seq_attention_pytorch.py](answers/seq2seq_attention_pytorch.py)
