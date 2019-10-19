@@ -161,6 +161,9 @@ GRU (Gated Recurrent Unit) にしましょう。
 
 ## Q. Seq2seq (Many-to-many)
 
+元論文
+- Sequence to Sequence Learning with Neural Networks https://arxiv.org/abs/1409.3215?context=cs (2014)
+
 ここではSeq2seqを実装します。Seq2seqとはSequence to sequenceのことであり、時系列(Sequence)データを入力して、時系列データを得ることです。
 
 <EOS>とはEnd of statement、つまり、文の区切りを指します。
@@ -190,7 +193,8 @@ GRU (Gated Recurrent Unit) にしましょう。
 
 ## Q. Seq2Seq + Attention (Step1. Source Target Attention)
 
-元論文 >> https://arxiv.org/abs/1706.03762
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 AttentionはNeural Networkにおいて特徴の注目を行うアルゴリズムである。
 Attentionには主に Source Target Attention と Self Attention がある。
@@ -204,7 +208,7 @@ AttentionマスクとValueの要素毎の積を取ることで、注目すべき
 
 <img src="assets/attention.png" width=400>
 
-<img src="assets/attention_mask.png" width=250>
+<img src="assets/soft_attention.png" width=250>
 
 つまり、QueryとKeyにより注目領域の作成を行い、Valueから注目特徴を抜き出すという流れになる。
 一度、Denseを通すのは特徴量の次元数を調整するためだと思われる。
@@ -223,7 +227,8 @@ Source Target Attentionでは、InputはTarget(Decoder)内部の入力(シンプ
 
 ## Q. Seq2Seq + Attention (Step2. Self Attention)
 
-元論文 >> https://arxiv.org/abs/1706.03762
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 Self Attention は自身から自身への Attention を作成するアルゴリズムであり、Encoder, Decoderの両方に使うことができる。
 
@@ -238,7 +243,8 @@ Self Attentionでは入力ベクトルをInputとMemoryにすることで、自�
 
 ## Q. Seq2Seq + Attention (Step3. Multi head Attention)
 
-元論文 >> https://arxiv.org/abs/1706.03762
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 Multi head AttentionではAttentionにおいて、チャネルを分割することで精度向上を図るアルゴリズムである。
 
@@ -256,7 +262,8 @@ Multi head AttentionではAttentionにおいて、チャネルを分割するこ
 
 ## Q. Seq2Seq + Attention (Step4. Feed Forward Network)
 
-元論文 >> https://arxiv.org/abs/1706.03762
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 EncoderにもDecoderにもFeed Forward Networkが使われている。
 Feed Forward NetworkはAttentionの直後に毎回使われ。
@@ -274,7 +281,8 @@ Feed Forward NetworkはAttentionの直後に毎回使われ。
 
 ## Q. Seq2Seq + Attention (Step5. Positional Encoding)
 
-元論文 >> https://arxiv.org/abs/1706.03762
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 Sequenceデータに時間的な位置の情報を加えるために、Positional Encodingというものが使われる。
 これは次式で計算される。
@@ -291,7 +299,8 @@ AttentionでSinusoid(Sin)関数をを使っているのは、学習時にSequenc
 
 ## Q. Seq2Seq + Attention (Final. Parameter setting)
 
-元論文 >> https://arxiv.org/abs/1706.03762
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 Attentionのパラメータを論文の通りに実装してみる。
 Table.3に様々なタイプのパラメータが載っているが、ここではbaseモデルの通りに実装してみる。
@@ -304,9 +313,22 @@ Table.3に様々なタイプのパラメータが載っているが、ここで�
 - AttentionのValueの次元数は d_v = 64
 - DropoutのDrop確率は P_drop = 0.1
 
+## Q. Seq2Seq + Attention (Hard Attention)
+
+元論文 >>
+- Memory Network https://arxiv.org/abs/1410.3916 (2014)
+- Recurrent Models of Visual Attention https://arxiv.org/abs/1406.6247 (2014)
+
+普通のAttentionはSoftmaxによる確率分布でそのままMaskingする。これは**Soft Attention**と呼ばれる。
+
+<img src='assets/soft_attention.png' width=300>
+
+しかし、Softmaxによる確率分布で値が最大の箇所だけ1それ以外を0の1hotにしたAttentionを**Hard Attention**と呼ぶ。
+
+<img src='assets/hard_attention.png' width=300>
 
 答え
-- PyTorch [answers/seq2seq_attention_pytorch.py](answers/seq2seq_attention_pytorch.py)
+- PyTorch [answers/seq2seq_attention_hardAttention_pytorch.py](answers/seq2seq_attention_hardAttention_pytorch.py)
 
 ## Q. Word2Vec (Skip-gram)
 
