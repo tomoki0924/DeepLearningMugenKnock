@@ -21,9 +21,9 @@ def crop_layer(layer, size):
     return layer[:, :, ph:ph+_h, pw:pw+_w]
 
     
-class Mynet(torch.nn.Module):
+class UNet(torch.nn.Module):
     def __init__(self):
-        super(Mynet, self).__init__()
+        super(UNet, self).__init__()
 
         base = 64
 
@@ -216,7 +216,7 @@ def train():
     device = torch.device("cuda" if GPU else "cpu")
 
     # model
-    model = Mynet().to(device)
+    model = UNet().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     model.train()
 
@@ -225,16 +225,17 @@ def train():
     # training
     mb = 4
     mbi = 0
-    train_ind = np.arange(len(xs))
+    train_N = len(xs)
+    train_ind = np.arange(train_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
     for i in range(100):
-        if mbi + mb > len(xs):
+        if mbi + mb > train_N:
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
-            mbi = mb - (len(xs) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (train_N - mbi))]))
+            mbi = mb - (train_N - mbi)
         else:
             mb_ind = train_ind[mbi: mbi+mb]
             mbi += mb
@@ -255,7 +256,7 @@ def train():
         opt.step()
     
         pred = y.argmax(dim=1, keepdim=True)
-        acc = pred.eq(t.view_as(pred)).sum().item() / mb
+        acc = pred.eq(t.view_as(pred)).sum().item() / mb / img_height / img_width
         
         print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
 
@@ -264,40 +265,41 @@ def train():
 # test
 def test():
     device = torch.device("cuda" if GPU else "cpu")
-    model = Mynet().to(device)
+    model = UNet().to(device)
     model.eval()
     model.load_state_dict(torch.load('cnn.pt'))
 
     xs, ts, paths = data_load('../Dataset/test/images/')
 
-    for i in range(len(paths)):
-        x = xs[i]
-        t = ts[i]
-        path = paths[i]
+    with torch.no_grad():
+        for i in range(len(paths)):
+            x = xs[i]
+            t = ts[i]
+            path = paths[i]
+            
+            x = np.expand_dims(x, axis=0)
+            x = torch.tensor(x, dtype=torch.float).to(device)
+            
+            pred = model(x)
         
-        x = np.expand_dims(x, axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
-    
-        pred = pred.permute(0,2,3,1).reshape(-1, num_classes+1)
-        pred = F.softmax(pred, dim=1)
-        pred = pred.reshape(-1, out_height, out_width, num_classes+1)
-        pred = pred.detach().cpu().numpy()[0]
-        pred = pred.argmax(axis=-1)
+            pred = pred.permute(0,2,3,1).reshape(-1, num_classes+1)
+            pred = F.softmax(pred, dim=1)
+            pred = pred.reshape(-1, out_height, out_width, num_classes+1)
+            pred = pred.detach().cpu().numpy()[0]
+            pred = pred.argmax(axis=-1)
 
-        # visualize
-        out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
-        for i, (_, vs) in enumerate(CLS.items()):
-            out[pred == (i+1)] = vs
+            # visualize
+            out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
+            for i, (_, vs) in enumerate(CLS.items()):
+                out[pred == (i+1)] = vs
 
-        print("in {}".format(path))
-        
-        plt.subplot(1,2,1)
-        plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0))
-        plt.subplot(1,2,2)
-        plt.imshow(out[..., ::-1])
-        plt.show()
+            print("in {}".format(path))
+            
+            plt.subplot(1,2,1)
+            plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0))
+            plt.subplot(1,2,2)
+            plt.imshow(out[..., ::-1])
+            plt.show()
     
 
 def arg_parse():

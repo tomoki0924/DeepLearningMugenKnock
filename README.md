@@ -33,8 +33,9 @@ Twitterで更新を発信してますぅ
 
 https://twitter.com/curry_yoyoyo
 
-- 2019.10.16[PyTorch] Seq2Seq Hard Attentionを追加
-- 2019.10.10[PyTorch] Seq2Seq Attention(Step別)を追加
+- 2019.10.21 [PyTorch] Semantic SegmentationでSegNetを追加
+- 2019.10.16 [PyTorch] Seq2Seq Hard Attentionを追加
+- 2019.10.10 [PyTorch] Seq2Seq Attention(Step別)を追加
 - 2019.9.30 [Pytorch] MobileNet v2 を追加
 - 2019.9.19 [TensorFlow] Xception, MobileNet_v1 を追加
 - 2019.9.16 [TensorFlow] ResNet 18, 34, 50, 101, 152 を追加
@@ -211,9 +212,9 @@ $ pip install -r requirements.txt
 | [MobileNet-v2](Question_model#q-mobilenet-v2) | [✓](Question_model/answers/MobileNet_v2_pytorch.py) |||| | | 2019 |
 
 ### [Semantic Segmentation編](Question_semaseg)
-| 問題 |  PyTorch | TensorFlow | || Keras | Chainer |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | 
+| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | - |
 | [SemanticSegmentationとは?](Question_semaseg#semanticsegmentation%E3%81%A8%E3%81%AF) |
 | [Binalization Step.1. データセット読み込み](Question_semaseg#binalization%E3%81%AB%E3%82%88%E3%82%8Bsemasegstep1-%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_semaseg/answers/bin_dataset_pytorch.py) | | [✓](Question_semaseg/answers/bin_dataset_tensorflow_slim.py) | | [✓](Question_semaseg/answers/bin_dataset_keras.py) | [✓](Question_semaseg/answers/bin_dataset_chainer.py) |
 | [Binalization Step.2. 学習時のLoss計算](Question_semaseg#binalization-step2-%E5%AD%A6%E7%BF%92%E6%99%82%E3%81%AEloss%E8%A8%88%E7%AE%97)| [✓](Question_semaseg/answers/bin_loss_pytorch.py) | | [✓](Question_semaseg/answers/bin_loss_tensorflow_slim.py) | | [✓](Question_semaseg/answers/bin_loss_keras.py) |  [✓](Question_semaseg/answers/bin_loss_chainer.py) | 
@@ -224,8 +225,9 @@ $ pip install -r requirements.txt
 | [UpSampling手法1. NearestNeighbor補間](Question_semaseg#upsampling%E6%89%8B%E6%B3%951-nearestneighbor%E8%A3%9C%E9%96%93) |  [✓](Question_semaseg/answers/nearest_pytorch.py) | | [✓](Question_semaseg/answers/nearest_tensorflow_slim.py) | | [✓](Question_semaseg/answers/nearest_keras.py) | [✓](Question_semaseg/answers/nearest_chainer.py) |
 | [UpSampling手法2. Transposed convolution](Question_semaseg#upsampling%E6%89%8B%E6%B3%952-transposed-convolution) |  [✓](Question_semaseg/answers/transposeconv_pytorch.py) | | [✓](Question_semaseg/answers/transposeconv_tensorflow_slim.py) | | [✓](Question_semaseg/answers/transposeconv_keras.py) | | [✓](Question_semaseg/answers/transposeconv_chainer.py) |
 | [特徴マップのconcat](Question_semaseg#%E7%89%B9%E5%BE%B4%E3%83%9E%E3%83%83%E3%83%97%E3%81%AEconcat) |  [✓](Question_semaseg/answers/concat_pytorch.py) | | [✓](Question_semaseg/answers/concat_tensorflow_slim.py) | | [✓](Question_semaseg/answers/concat_keras.py) | [✓](Question_semaseg/answers/concat_chainer.py) |
-| [UNet](Question_semaseg#unet) |  [✓](Question_semaseg/answers/unet_pytorch.py) | | [✓](Question_semaseg/answers/unet_tensorflow_slim.py) | | [✓](Question_semaseg/answers/unet_keras.py) | [✓](Question_semaseg/answers/unet_chainer.py) |
-| [UNet風モデル](Question_semaseg#unet%E9%A2%A8%E3%83%A2%E3%83%87%E3%83%AB)|  [✓](Question_semaseg/answers/unetlike_pytorch.py) | | [✓](Question_semaseg/answers/unetlike_tensorflow_slim.py) | | [✓](Question_semaseg/answers/unetlike_keras.py) | [✓](Question_semaseg/answers/unetlike_chainer.py) |
+| [UNet](Question_semaseg#unet) |  [✓](Question_semaseg/answers/unet_pytorch.py) | | [✓](Question_semaseg/answers/unet_tensorflow_slim.py) | | [✓](Question_semaseg/answers/unet_keras.py) | [✓](Question_semaseg/answers/unet_chainer.py) | 2015 |
+| [UNet風モデル](Question_semaseg#unet%E9%A2%A8%E3%83%A2%E3%83%87%E3%83%AB)|  [✓](Question_semaseg/answers/unetlike_pytorch.py) | | [✓](Question_semaseg/answers/unetlike_tensorflow_slim.py) | | [✓](Question_semaseg/answers/unetlike_keras.py) | [✓](Question_semaseg/answers/unetlike_chainer.py) | 2015 |
+
 
 
 ### [画像生成編](Question_imageGenerate)

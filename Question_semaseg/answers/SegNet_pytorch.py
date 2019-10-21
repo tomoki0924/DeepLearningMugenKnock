@@ -1,3 +1,6 @@
+from google.colab import drive
+drive.mount("/content/drive", force_remount=True)
+
 import torch
 import torch.nn.functional as F
 import argparse
@@ -5,30 +8,51 @@ import cv2
 import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
+from copy import copy
 
 CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
 
-class_num = len(CLS)
+class_N = len(CLS) + 1
 img_height, img_width = 64, 64 #572, 572
 out_height, out_width = 64, 64 #388, 388
 GPU = False
 torch.manual_seed(0)
 
 
-class UNet(torch.nn.Module):
+class SegNet(torch.nn.Module):
     def __init__(self):
-        super(UNet, self).__init__()
-
-        class UNet_block(torch.nn.Module):
-            def __init__(self, dim1, dim2):
-                super(UNet_block, self).__init__()
+        super(SegNet, self).__init__()
+        
+        # VGG block
+        class VGG_block(torch.nn.Module):
+            def __init__(self, dim1, dim2, layer_N):
+                super(VGG_block, self).__init__()
 
                 _module = []
 
-                for i in range(2):
-                    f = dim1 if i == 0 else dim2
-                    _module.append(torch.nn.Conv2d(f, dim2, kernel_size=3, padding=1, stride=1))
+                for i in range(layer_N):
+                    dim = dim1 if i == 0 else dim2
+                    _module.append(torch.nn.Conv2d(dim, dim2, kernel_size=3, padding=1, stride=1))
+                    _module.append(torch.nn.BatchNorm2d(dim2))
+                    _module.append(torch.nn.ReLU())
+
+                self.module = torch.nn.Sequential(*_module)
+
+            def forward(self, x):
+                x = self.module(x)
+                return x
+            
+        # VGG Decoder block
+        class VGG_block_decoder(torch.nn.Module):
+            def __init__(self, dim1, dim2, layer_N):
+                super(VGG_block_decoder, self).__init__()
+
+                _module = []
+
+                for i in range(layer_N):
+                    dim = dim1 if i < (layer_N-1) else dim2
+                    _module.append(torch.nn.Conv2d(dim1, dim, kernel_size=3, padding=1, stride=1))
                     _module.append(torch.nn.BatchNorm2d(dim2))
                     _module.append(torch.nn.ReLU())
 
@@ -38,78 +62,64 @@ class UNet(torch.nn.Module):
                 x = self.module(x)
                 return x
 
-        class UNet_deconv_block(torch.nn.Module):
-            def __init__(self, dim1, dim2):
-                super(UNet_deconv_block, self).__init__()
-
-                self.module = torch.nn.Sequential(
-                    torch.nn.ConvTranspose2d(dim1, dim2, kernel_size=2, stride=2),
-                    torch.nn.BatchNorm2d(dim2)
-                )
-
-            def forward(self, x):
-                x = self.module(x)
-                return x
-
-        base = 16
         
-        self.enc1 = UNet_block(3, base)
-        self.enc2 = UNet_block(base, base * 2)
-        self.enc3 = UNet_block(base * 2, base * 4)
-        self.enc4 = UNet_block(base * 4, base * 8)
-        self.enc5 = UNet_block(base * 8, base * 16)
+        self.enc1 = VGG_block(3, 64, 2)
+        self.enc2 = VGG_block(64, 128, 2)
+        self.enc3 = VGG_block(128, 256, 3)
+        self.enc4 = VGG_block(256, 512, 3)
+        self.enc5 = VGG_block(512, 512, 3)
 
-        self.tconv4 = UNet_deconv_block(base * 16, base * 8)
-        self.tconv3 = UNet_deconv_block(base * 8, base * 4)
-        self.tconv2 = UNet_deconv_block(base * 4, base * 2)
-        self.tconv1 = UNet_deconv_block(base * 2, base)
+        self.dec5 = VGG_block(512, 512, 3)
+        self.dec4 = VGG_block(512, 256, 3)
+        self.dec3 = VGG_block(256, 128, 3)
+        self.dec2 = VGG_block(128, 64, 2)
+        self.dec1 = VGG_block(64, 64, 2)
 
-        self.dec4 = UNet_block(base * 16, base * 8)
-        self.dec3 = UNet_block(base * 8, base * 4)
-        self.dec2 = UNet_block(base * 4, base * 2)
-        self.dec1 = UNet_block(base * 2, base)
-
-        self.out = torch.nn.Conv2d(base, class_num+1, kernel_size=1, padding=0, stride=1)
+        self.out = torch.nn.Conv2d(64, class_N, kernel_size=1, padding=0, stride=1)
         
         
     def forward(self, x):
-        # block conv1
+        # Encoder block 1
         x_enc1 = self.enc1(x)
-        x = F.max_pool2d(x_enc1, 2, stride=2, padding=0)
+        x, pool1_ind = F.max_pool2d(x_enc1, 2, stride=2, padding=0, return_indices=True)
         
-        # block conv2
+        # Encoder block 2
         x_enc2 = self.enc2(x)
-        x = F.max_pool2d(x_enc2, 2, stride=2, padding=0)
+        x, pool2_ind = F.max_pool2d(x_enc2, 2, stride=2, padding=0, return_indices=True)
         
-        # block conv31
+        # Encoder block 3
         x_enc3 = self.enc3(x)
-        x = F.max_pool2d(x_enc3, 2, stride=2, padding=0)
+        x, pool3_ind = F.max_pool2d(x_enc3, 2, stride=2, padding=0, return_indices=True)
         
-        # block conv4
+        # Encoder block 4
         x_enc4 = self.enc4(x)
-        x = F.max_pool2d(x_enc4, 2, stride=2, padding=0)
+        x, pool4_ind = F.max_pool2d(x_enc4, 2, stride=2, padding=0, return_indices=True)
         
-        # block conv5
-        x = self.enc5(x)
+        # Encoder block 5
+        x_enc5 = self.enc5(x)
+        x, pool5_ind = F.max_pool2d(x_enc5, 2, stride=2, padding=0, return_indices=True)
 
-        x = self.tconv4(x)
-
-        x = torch.cat((x, x_enc4), dim=1)
+        # Decoder block 5
+        x = F.max_unpool2d(x, pool5_ind, 2, stride=2, padding=0)
+        x = self.dec5(x)
+        
+        # Decoder block 4
+        x = F.max_unpool2d(x, pool4_ind, 2, stride=2, padding=0)
         x = self.dec4(x)
-
-        x = self.tconv3(x)
-
-        x = torch.cat((x, x_enc3), dim=1)
+        
+        # Decoder block 3
+        x = F.max_unpool2d(x, pool3_ind, 2, stride=2, padding=0)
         x = self.dec3(x)
-
-        x = self.tconv2(x)
-        x = torch.cat((x, x_enc2), dim=1)
+        
+        # Decoder block 2
+        x = F.max_unpool2d(x, pool2_ind, 2, stride=2, padding=0)
         x = self.dec2(x)
-
-        x = self.tconv1(x)
-        x = torch.cat((x, x_enc1), dim=1)
+        
+        # Decoder block 1
+        x = F.max_unpool2d(x, pool1_ind, 2, stride=2, padding=0)
         x = self.dec1(x)
 
+        # output
         x = self.out(x)
         x = F.softmax(x, dim=1)
         
@@ -177,30 +187,30 @@ def train():
     device = torch.device("cuda" if GPU else "cpu")
 
     # model
-    model = UNet().to(device)
+    model = SegNet().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     model.train()
 
     xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True)
 
     # training
-    mb = 4
+    mb = 16
     mbi = 0
     train_N = len(xs)
-    train_ind = np.arange(train_N)
+    train_ind = np.arange(len(xs))
     np.random.seed(0)
     np.random.shuffle(train_ind)
 
     loss_fn = torch.nn.NLLLoss()
     
     for i in range(1000):
-        if mbi + mb > train_N:
-            mb_ind = train_ind[mbi:]
+        if mbi + mb > len(xs):
+            mb_ind = copy(train_ind[mbi:])
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (train_N - mbi))]))
-            mbi = mb - (train_N - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
+            mbi = mb - (len(xs) - mbi)
         else:
-            mb_ind = train_ind[mbi : mbi + mb]
+            mb_ind = train_ind[mbi: mbi+mb]
             mbi += mb
 
         x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
@@ -210,7 +220,7 @@ def train():
         y = model(x)
 
         y = y.permute(0,2,3,1).contiguous()
-        y = y.view(-1, class_num+1)
+        y = y.view(-1, class_N)
         t = t.view(-1)
         
         loss = loss_fn(torch.log(y), t)
@@ -218,16 +228,16 @@ def train():
         opt.step()
     
         pred = y.argmax(dim=1, keepdim=True)
-        acc = pred.eq(t.view_as(pred)).sum().item() / mb
+        acc = pred.eq(t.view_as(pred)).sum().item() / mb / img_height / img_width
         
-        print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
+        print("iter :", i+1, ', loss :', loss.item(), ', accuracy :', acc)
 
     torch.save(model.state_dict(), 'cnn.pt')
 
 # test
 def test():
     device = torch.device("cuda" if GPU else "cpu")
-    model = UNet().to(device)
+    model = SegNet().to(device)
     model.eval()
     model.load_state_dict(torch.load('cnn.pt'))
 
@@ -238,12 +248,12 @@ def test():
             x = xs[i]
             t = ts[i]
             path = paths[i]
-            
+
             x = np.expand_dims(x, axis=0)
             x = torch.tensor(x, dtype=torch.float).to(device)
-            
+
             pred = model(x)
-        
+
             #pred = pred.permute(0,2,3,1).reshape(-1, class_num+1)
             pred = pred.detach().cpu().numpy()[0]
             pred = pred.argmax(axis=0)
@@ -254,7 +264,7 @@ def test():
                 out[pred == (i+1)] = vs
 
             print("in {}".format(path))
-            
+
             plt.subplot(1,2,1)
             plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0))
             plt.subplot(1,2,2)
@@ -269,17 +279,5 @@ def arg_parse():
     args = parser.parse_args()
     return args
 
-# main
-if __name__ == '__main__':
-    args = arg_parse()
-
-    if args.train:
-        train()
-    if args.test:
-        test()
-
-    if not (args.train or args.test):
-        print("please select train or test flag")
-        print("train: python main.py --train")
-        print("test:  python main.py --test")
-        print("both:  python main.py --train --test")
+train()
+test()

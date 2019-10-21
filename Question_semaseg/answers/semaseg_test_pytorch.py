@@ -155,34 +155,35 @@ def test():
 
     xs, ts, paths = data_load('../Dataset/test/images/')
 
-    for i in range(len(paths)):
-        x = xs[i]
-        t = ts[i]
-        path = paths[i]
+    with torch.no_grad():
+        for i in range(len(paths)):
+            x = xs[i]
+            t = ts[i]
+            path = paths[i]
+            
+            x = np.expand_dims(x, axis=0)
+            x = torch.tensor(x, dtype=torch.float).to(device)
+            
+            pred = model(x)
         
-        x = np.expand_dims(x, axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
-    
-        pred = pred.permute(0,2,3,1).reshape(-1, num_classes+1)
-        pred = F.softmax(pred, dim=1)
-        pred = pred.reshape(-1, out_height, out_width, num_classes+1)
-        pred = pred.detach().cpu().numpy()[0]
-        pred = pred.argmax(axis=-1)
+            pred = pred.permute(0,2,3,1).reshape(-1, num_classes+1)
+            pred = F.softmax(pred, dim=1)
+            pred = pred.reshape(-1, out_height, out_width, num_classes+1)
+            pred = pred.detach().cpu().numpy()[0]
+            pred = pred.argmax(axis=-1)
 
-        # visualize
-        out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
-        for i, (_, vs) in enumerate(CLS.items()):
-            out[pred == (i+1)] = vs
+            # visualize
+            out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
+            for i, (_, vs) in enumerate(CLS.items()):
+                out[pred == (i+1)] = vs
 
-        print("in {}".format(path))
-        
-        plt.subplot(1,2,1)
-        plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0))
-        plt.subplot(1,2,2)
-        plt.imshow(out[..., ::-1])
-        plt.show()
+            print("in {}".format(path))
+            
+            plt.subplot(1,2,1)
+            plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0))
+            plt.subplot(1,2,2)
+            plt.imshow(out[..., ::-1])
+            plt.show()
     
 
 def arg_parse():

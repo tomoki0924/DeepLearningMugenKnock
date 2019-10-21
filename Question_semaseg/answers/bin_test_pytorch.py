@@ -149,37 +149,38 @@ def test():
 
     xs, ts, paths = data_load('../Dataset/test/images/')
 
-    for i in range(len(paths)):
-        x = xs[i]
-        t = ts[i]
-        path = paths[i]
+    with torch.no_grad():
+        for i in range(len(paths)):
+            x = xs[i]
+            t = ts[i]
+            path = paths[i]
+            
+            x = np.expand_dims(x, axis=0)
+            x = torch.tensor(x, dtype=torch.float).to(device)
+            
+            pred = model(x)
         
-        x = np.expand_dims(x, axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
+            pred = torch.sigmoid(pred)
+            pred = pred.detach().cpu().numpy()[0, 0]
+
+            ## binalization
+            bin_pred = pred.copy()
+            th = 0.5
+            bin_pred[bin_pred >= th] = 1
+            bin_pred[bin_pred < th] = 0
     
-        pred = torch.sigmoid(pred)
-        pred = pred.detach().cpu().numpy()[0, 0]
+            plt.subplot(1,3,1)
+            plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0))
+            plt.title("input")
+            plt.subplot(1,3,2)
+            plt.imshow(pred, cmap='gray')
+            plt.title("predicted")
+            plt.subplot(1,3,3)
+            plt.imshow(bin_pred, cmap='gray')
+            plt.title("after binalization")
+            plt.show()
 
-        ## binalization
-        bin_pred = pred.copy()
-        th = 0.5
-        bin_pred[bin_pred >= th] = 1
-        bin_pred[bin_pred < th] = 0
-   
-        plt.subplot(1,3,1)
-        plt.imshow(x.detach().cpu().numpy()[0].transpose(1,2,0))
-        plt.title("input")
-        plt.subplot(1,3,2)
-        plt.imshow(pred, cmap='gray')
-        plt.title("predicted")
-        plt.subplot(1,3,3)
-        plt.imshow(bin_pred, cmap='gray')
-        plt.title("after binalization")
-        plt.show()
-
-        print("in {}".format(path))
+            print("in {}".format(path))
     
 
 def arg_parse():

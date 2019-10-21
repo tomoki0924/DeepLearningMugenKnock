@@ -45,10 +45,10 @@ Groud-truthは *../Dataset/train/seg_images* にpngで入ってます。(なぜp
 pngを読み込んだら、イモリの位置になっている部分が1、それ以外が0となるようにground-truthを作成してください。
 
 答え
-- Pytorch [answers/bin_dataset_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_dataset_pytorch.py)
-- Tensorflow [answers/bin_dataset_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_dataset_tensorflow_slim.py)
-- Keras [answers/bin_dataset_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_dataset_keras.py)
-- chainer [answers/bin_dataset_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_dataset_chainer.py)
+- Pytorch [answers/bin_dataset_pytorch.py](answers/bin_dataset_pytorch.py)
+- Tensorflow [answers/bin_dataset_tensorflow_slim.py](answers/bin_dataset_tensorflow_slim.py)
+- Keras [answers/bin_dataset_keras.py](answers/bin_dataset_keras.py)
+- chainer [answers/bin_dataset_chainer.py](answers/bin_dataset_chainer.py)
 
 ## Binalization Step.2. 学習時のLoss計算
 
@@ -71,10 +71,10 @@ loss = torch.nn.BCELoss()(y, t)
 を6回適用して最後に *Convolution(kernel_size=1, kernel_number=1, padding=0, stride=1)* を適用するネットワークを作成し、SigmoidによるBinalizationを実現してください。入力画像サイズは64とします。（大きくしても良いがGPUを使わないと計算時間がキツキツになってしまうので注意！）(BatchNormalizationの後にReLUする場合もあるが、ReLUの後にBNの法が今回はきれいにいったのでこれでいきます)
 
 答え
-- Pytorch [answers/bin_loss_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_loss_pytorch.py)
-- Tensorflow [answers/bin_loss_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_loss_tensorflow_slim.py)
-- Keras [answers/bin_loss_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_loss_keras.py)
-- chainer [answers/bin_loss_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_loss_chainer.py)
+- Pytorch [answers/bin_loss_pytorch.py](answers/bin_loss_pytorch.py)
+- Tensorflow [answers/bin_loss_tensorflow_slim.py](answers/bin_loss_tensorflow_slim.py)
+- Keras [answers/bin_loss_keras.py](answers/bin_loss_keras.py)
+- chainer [answers/bin_loss_chainer.py](answers/bin_loss_chainer.py)
 
 ## Binalization Step.3. テスト時の予測結果の表示
 
@@ -91,10 +91,10 @@ loss = torch.nn.BCELoss()(y, t)
 
 
 答え
-- Pytorch [answers/bin_test_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/bin_test_pytorch.py)
-- Tensorflow [answers/bin_test_tensorflow_silm.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_test_tensorflow_slim.py)
-- Keras [answers/bin_test_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_test_keras.py)
-- chainer [answers/bin_test_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/bin_test_chainer.py)
+- Pytorch [answers/bin_test_pytorch.py](answers/bin_test_pytorch.py)
+- Tensorflow [answers/bin_test_tensorflow_silm.py](answers/bin_test_tensorflow_slim.py)
+- Keras [answers/bin_test_keras.py](answers/bin_test_keras.py)
+- chainer [answers/bin_test_chainer.py](answers/bin_test_chainer.py)
 
 ## Semantic Segmentation Step.1. データセット読み込み
 
@@ -117,10 +117,10 @@ t = np.zeros((out_height, out_width), dtype=torch.int)
 | ![](assets/semaseg_gt_akahara_0008.png) | ![](assets/semaseg_gt_madara_0005.png) |
 
 答え
-- Pytorch [answers/semaseg_dataset_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_dataset_pytorch.py)
-- Tensorflow [answers/semaseg_dataset_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_dataset_tensorflow_slim.py)
-- Keras [answers/semaseg_dataset_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_dataset_keras.py)
-- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_dataset_chainer.py)
+- Pytorch [answers/semaseg_dataset_pytorch.py](answers/semaseg_dataset_pytorch.py)
+- Tensorflow [answers/semaseg_dataset_tensorflow_slim.py](answers/semaseg_dataset_tensorflow_slim.py)
+- Keras [answers/semaseg_dataset_keras.py](answers/semaseg_dataset_keras.py)
+- chainer [answers/lenet_chainer.py](answers/semaseg_dataset_chainer.py)
 
 ## Semantic Segmentation Step.2. 学習時のLoss計算
 
@@ -142,10 +142,10 @@ pytorchやchainerは[ミニバッチ、チャネル、高さ、幅]のshapeだ�
 
 
 答え
-- Pytorch [answers/semaseg_loss_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_loss_pytorch.py)
-- Tensorflow [answers/semaseg_loss_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_loss_tensorflow_slim.py)
-- Keras [answers/semaseg_loss_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_loss_keras.py)
-- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_loss_chainer.py)
+- Pytorch [answers/semaseg_loss_pytorch.py](answers/semaseg_loss_pytorch.py)
+- Tensorflow [answers/semaseg_loss_tensorflow_slim.py](answers/semaseg_loss_tensorflow_slim.py)
+- Keras [answers/semaseg_loss_keras.py](answers/semaseg_loss_keras.py)
+- chainer [answers/lenet_chainer.py](answers/semaseg_loss_chainer.py)
 
 ## Semantic Segmentation Step.3. テスト時の予測結果の表示
 
@@ -160,10 +160,10 @@ pytorchやchainerは[ミニバッチ、チャネル、高さ、幅]のshapeだ�
 | ![](answers/answer_semaseg_loss_pytorch_madara_0010.png) | ![](answers/answer_semaseg_loss_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/semaseg_test_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/semaseg_loss_pytorch.py)
-- Tensorflow [answers/semaseg_test_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_test_tensorflow_slim.py)
-- Keras [answers/semaseg_test_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_test_keras.py)
-- chainer [answers/lenet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/semaseg_test_chainer.py)
+- Pytorch [answers/semaseg_test_pytorch.py](answers/semaseg_loss_pytorch.py)
+- Tensorflow [answers/semaseg_test_tensorflow_slim.py](answers/semaseg_test_tensorflow_slim.py)
+- Keras [answers/semaseg_test_keras.py](answers/semaseg_test_keras.py)
+- chainer [answers/lenet_chainer.py](answers/semaseg_test_chainer.py)
 
 ## UpSampling手法1. NearestNeighbor補間
 
@@ -196,10 +196,10 @@ Nearest Neighborの方法
 | ![](answers/answer_nearest_pytorch_madara_0010.png) | ![](answers/answer_nearest_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/nearest_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/nearest_pytorch.py)
-- Tensorflow [answers/nearest_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/nearest_tensorflow_slim.py)
-- Keras [answers/nearest_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/nearest_keras.py)
-- chainer [answers/nearest_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/nearest_chainer.py)
+- Pytorch [answers/nearest_pytorch.py](answers/nearest_pytorch.py)
+- Tensorflow [answers/nearest_tensorflow_slim.py](answers/nearest_tensorflow_slim.py)
+- Keras [answers/nearest_keras.py](answers/nearest_keras.py)
+- chainer [answers/nearest_chainer.py](answers/nearest_chainer.py)
 
 ## UpSampling手法2. Transposed Convolution
 
@@ -223,10 +223,10 @@ Transposed convolutionの方法
 | ![](answers/answer_transposeconv_pytorch_madara_0010.png) | ![](answers/answer_transposeconv_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/transposeconv_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/transposeconv_pytorch.py)
-- Tensorflow [answers/transposeconv_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/transposeconv_tensorflow_slim.py)
-- Keras [answers/transposeconv_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/transposeconv_keras.py)
-- chainer [answers/transposeconv_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/transposeconv_chainer.py)
+- Pytorch [answers/transposeconv_pytorch.py](answers/transposeconv_pytorch.py)
+- Tensorflow [answers/transposeconv_tensorflow_slim.py](answers/transposeconv_tensorflow_slim.py)
+- Keras [answers/transposeconv_keras.py](answers/transposeconv_keras.py)
+- chainer [answers/transposeconv_chainer.py](answers/transposeconv_chainer.py)
 
 ここまででセグメンテーションを行うための基本は終わり。次から論文の実装に入っていきます！！
 
@@ -257,14 +257,15 @@ Transposed convolutionの方法
 | TensorFlow | tf.concat | | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
 
 答え
-- Pytorch [answers/concat_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/concat_pytorch.py)
-- Tensorflow [answers/concat_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/concat_tensorflow_slim.py)
-- Keras [answers/concat_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/concat_keras.py)
-- chainer [answers/concat_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/concat_chainer.py)
+- Pytorch [answers/concat_pytorch.py](answers/concat_pytorch.py)
+- Tensorflow [answers/concat_tensorflow_slim.py](answers/concat_tensorflow_slim.py)
+- Keras [answers/concat_keras.py](answers/concat_keras.py)
+- chainer [answers/concat_chainer.py](answers/concat_chainer.py)
 
 ## UNet
 
-論文 >> https://arxiv.org/abs/1505.04597
+論文 
+- U-Net https://arxiv.org/abs/1505.04597 (2015)
 
 まずはUNet。これはもともと医療の画像処理の中で、細胞をセグメンテーションするために提案されたネットワークです。Uの由来は論文中のFig.1のモデルの形がUに見えるから。（Vやんとか言っちゃだめ）
 
@@ -347,12 +348,15 @@ _enc3 = crop_layer(enc3, dec3.shape)
 ```
 
 答え
-- Pytorch [answers/unet_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/unet_pytorch.py)
-- Tensorflow [answers/unet_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unet_tensorflow_slim.py)
-- Keras [answers/unet_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unet_keras.py)
-- chainer [answers/unet_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unet_chainer.py)
+- Pytorch [answers/unet_pytorch.py](answers/unet_pytorch.py)
+- Tensorflow [answers/unet_tensorflow_slim.py](answers/unet_tensorflow_slim.py)
+- Keras [answers/unet_keras.py](answers/unet_keras.py)
+- chainer [answers/unet_chainer.py](answers/unet_chainer.py)
 
 ## UNet風モデル
+
+論文 
+- U-Net https://arxiv.org/abs/1505.04597 (2015)
 
 これは論文などはないが、UNet風のモデルを作成する。UNetではconvolutionのpaddingが0だったことなどがあり、正直使いにくく、また入力サイズから出力サイズを自分で計算しなければいけない、というしがらみがありました。そこで、ネットワーク構成をなるべくUNetにしながら、SemaSegを行うモデルを作成します。
 
@@ -378,12 +382,32 @@ UNetからの変更点は２つ。１つはconvolutionのpaddingを1にしたこ
 | ![](answers/answer_unetlike_pytorch_madara_0010.png) | ![](answers/answer_unetlike_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/unetlike_pytorch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_semaseg/answers/unetlike_pytorch.py)
--  Tensorflow [answers/unetlike_tensorflow_slim.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_tensorflow_slim.py)
-- Keras [answers/unetlike_keras.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_keras.py)
-- chainer [answers/unetlike_chainer.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_model/answers/unetlike_chainer.py)
+- Pytorch [answers/unetlike_pytorch.py](answers/unetlike_pytorch.py)
+-  Tensorflow [answers/unetlike_tensorflow_slim.py](answers/unetlike_tensorflow_slim.py)
+- Keras [answers/unetlike_keras.py](answers/unetlike_keras.py)
+- chainer [answers/unetlike_chainer.py](answers/unetlike_chainer.py)
 
 ## SegNet
 
-元論文  https://arxiv.org/abs/1511.00561
+元論文  
+- SegNet https://arxiv.org/abs/1511.00561 (2015)
 
+UNetではConvolutionを２層を１ブロックとして扱っていたが、SegNetではVGG16のConvolutionの構造をEncoderとして使っている。
+
+Decoderでも対応するEncoderと同じConvolutionのBlockを使っている。
+
+<img src="assets/segnet.png" width=500>
+
+SegNetのDecoderにおけるアップサンプルでは、EncoderのPoolingの最大値として選ばれたインデックスを使う。
+
+UnpoolingはPooling操作の逆で、Max poolingで選ばれたピクセルの位置と同じ位置に値を当てはめて、特徴マップを拡大する手法である。当てはめ以外のピクセルは0になる。
+
+SegNetでは同じ特徴マップのサイズのpoolingのインデックス情報と使って、Unpoolingを行っている。
+
+0が多くスパースに見えるが、SegNetではUnpoolingの後にConvolutionブロックを入れて、ヒスパースな特徴マップに変換している。
+
+<img src="assets/unpooling.png" width=400>
+
+
+答え
+- Pytorch [answers/SegNet_pytorch.py](answers/SegNet_pytorch.py)
