@@ -396,7 +396,7 @@ UNetではConvolutionを２層を１ブロックとして扱っていたが、Se
 
 Decoderでも対応するEncoderと同じConvolutionのBlockを使っている。
 
-<img src="assets/segnet.png" width=500>
+<img src="assets/segnet.png" width=600>
 
 SegNetのDecoderにおけるアップサンプルでは、EncoderのPoolingの最大値として選ばれたインデックスを使う。
 

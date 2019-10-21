@@ -227,7 +227,7 @@ $ pip install -r requirements.txt
 | [特徴マップのconcat](Question_semaseg#%E7%89%B9%E5%BE%B4%E3%83%9E%E3%83%83%E3%83%97%E3%81%AEconcat) |  [✓](Question_semaseg/answers/concat_pytorch.py) | | [✓](Question_semaseg/answers/concat_tensorflow_slim.py) | | [✓](Question_semaseg/answers/concat_keras.py) | [✓](Question_semaseg/answers/concat_chainer.py) |
 | [UNet](Question_semaseg#unet) |  [✓](Question_semaseg/answers/unet_pytorch.py) | | [✓](Question_semaseg/answers/unet_tensorflow_slim.py) | | [✓](Question_semaseg/answers/unet_keras.py) | [✓](Question_semaseg/answers/unet_chainer.py) | 2015 |
 | [UNet風モデル](Question_semaseg#unet%E9%A2%A8%E3%83%A2%E3%83%87%E3%83%AB)|  [✓](Question_semaseg/answers/unetlike_pytorch.py) | | [✓](Question_semaseg/answers/unetlike_tensorflow_slim.py) | | [✓](Question_semaseg/answers/unetlike_keras.py) | [✓](Question_semaseg/answers/unetlike_chainer.py) | 2015 |
-
+| [SegNet](Question_semaseg#segnet)|  [✓](Question_semaseg/answers/unetlike_pytorch.py) | | | | | | 2015 |
 
 
 ### [画像生成編](Question_imageGenerate)
