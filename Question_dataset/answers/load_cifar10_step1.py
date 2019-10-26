@@ -11,7 +11,7 @@ def load_cifar10():
     path = 'cifar-10-batches-py'
 
     if not os.path.exists(path):
-        os.system("wget {}".format(path))
+        os.system("wget {}".format('https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz'))
         os.system("tar xvf {}".format(path))
 
 

@@ -1,6 +1,6 @@
-# Q. 2ディープラーニング準備編
+# Q. データセット用意
 
-## Q.1. 学習データセット読み込み 
+## Q.1. 自分で用意した学習データセット読み込み 
 
 まずはディープラーニングを学習させるためのデータセットの準備をします。
 
@@ -67,7 +67,7 @@ def data_load(path):
 xs, ts, paths = data_load('../Dataset/train/images/')
 ```
 
-答え >> [answers/answer_data_load.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_data_load.py)
+答え >> [answers/answer_data_load.py](answers/answer_data_load.py)
 
 ## Q.2. ミニバッチ作成
 
@@ -115,7 +115,7 @@ $ python answer_minibatch.py
 [11  0  9]
 ```
 
-答え >> [answers/answer_minibatch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_minibatch.py)
+答え >> [answers/answer_minibatch.py](answers/answer_minibatch.py)
 
 
 ## Q.3. イテレーションとエポック
@@ -153,7 +153,7 @@ Q.2-2では10回ミニバッチを回したが、これは10iterationしたこ�
 [11  4 14]
 ```
 
-答え >> [answers/answer_epoch.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_epoch.py)
+答え >> [answers/answer_epoch.py](answers/answer_epoch.py)
 
 
 ## Q.4. データ拡張・左右反転
@@ -165,7 +165,7 @@ Q.2-2では10回ミニバッチを回したが、これは10iterationしたこ�
 
 *data_load()*の引数に*hf* という引数(デフォルはFalse)を加えて左右反転も加えられるようにして下さい。
 
-答え >> [answers/answer_hf.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_hf.py)
+答え >> [answers/answer_hf.py](answers/answer_hf.py)
 
 ## Q.5. データ拡張・上下反転
 
@@ -173,7 +173,7 @@ Q.2-2では10回ミニバッチを回したが、これは10iterationしたこ�
 
 *data_load()*の引数に*vf* という引数(デフォルはFalse)を加えて左右反転も加えられるようにして下さい。
 
-答え >> [answers/answer_vf.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_vf.py)
+答え >> [answers/answer_vf.py](answers/answer_vf.py)
 
 ## Q.6. データ拡張・回転
 
@@ -183,10 +183,12 @@ Q.2-2では10回ミニバッチを回したが、これは10iterationしたこ�
 
 ![](answer_rotation.png)
 
-答え >> [answers/answer_rotation.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/answer_rotation.py)
+答え >> [answers/answer_rotation.py](answers/answer_rotation.py)
 
 
-## Q. MNIST Step.1 ダウンロード
+# オープンソースのデータセットを使う
+
+## Q.1-1 MNIST Step.1 ダウンロード
 
 MNISTはNISTが公開している手書きの文字（0から9）の10クラス分類を行うための有名なオープンデータセットの1つです。学習データ60,000枚、テストデータ10,000枚で構成されます。
 ここではMNISTを読み込むためのプログラムを作成してみましょう。(以下は https://deepage.net/features/numpy-neuralnetwork-5.html を参照)
@@ -195,9 +197,9 @@ MNIStの公式ページはここです。>>  http://yann.lecun.com/exdb/mnist/
 これの「train-images-idx3-ubyte.gz, train-labels-idx1-ubyte.gz, t10k-images-idx3-ubyte.gz, t10k-labels-idx1-ubyte.gz」が今回使うデータセットのgzファイルですが、まずはカレントディレクトリにこれらのファイルがなければ、ダウンロードするコードを書いてみましょう。
 ここではlinuxかosxを想定して、「wget」でダウンロードします。
 
-答え >> [answers/load_mnist_step1.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_mnist_step1.py)
+答え >> [answers/load_mnist_step1.py](answers/load_mnist_step1.py)
 
-## Q. MNIST Step.2 学習データの読み込み
+## Q.1-2 MNIST Step.2 学習データの読み込み
 
 MNISTのデータはバイナリ化されていて、非常に扱いにくいです。これを最終的には、[データ数, 28, 28]のshapeを持ったnumpyに変換したいです。そこで、gzip.open()とnumpy.frombuffer()という関数を使って、上記のデータを読み込みます。
 
@@ -215,16 +217,16 @@ with gzip.open("train-labels-idx1-ubyte.gz", 'rb') as f:
     train_y = np.frombuffer(f.read(), np.uint8, offset=8)
 ```
 
-答え >> [answers/load_mnist_step2.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_mnist_step2.py)
+答え >> [answers/load_mnist_step2.py](answers/load_mnist_step2.py)
 
-## Q. MNIST Step. Final テストデータの読み込み
+## Q.1-3 MNIST Step. Final テストデータの読み込み
 
 test_batchに関しても同じように test_xとtest_yに分けて見ましょう。
 最後に関数の返り値をtrain_x, train_y, test_x, test_yとしてkeras.datasets.load_mnistっぽくしてみましょう。
 
-答え >> [answers/load_mnist.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_mnist.py)
+答え >> [answers/load_mnist.py](answers/load_mnist.py)
 
-## Q. CIFAR-10 Step.1 ダウンロード
+## Q.2-1 CIFAR-10 Step.1 ダウンロード
 
 CIFAR-10は10クラス分類を行うための有名なオープンデータセットの1つです。学習データ50,000枚、テストデータ10,000枚で構成されます。
 ここではCIFAR-10を読み込むためのプログラムを作成してみましょう。
@@ -233,9 +235,11 @@ CIFAR-10の公式ページはここです。>>  https://www.cs.toronto.edu/~kriz
 これの「CIFAR-10 python version」が今回使うデータセットのtarファイルですが、まずはカレントディレクトリに「cifar-10-batches-py」がなければ、ダウンロードするコードを書いてみましょう。
 ここではlinuxかosxを想定して、「wget」でダウンロード、「tar」でダウンロードしたファイルを展開します。
 
-答え >> [answers/load_cifar10_step1.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_cifar10_step1.py)
+wgetするURLは https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz
 
-## Q. CIFAR-10 Step.2 学習データの読み込み
+答え >> [answers/load_cifar10_step1.py](answers/load_cifar10_step1.py)
+
+## Q.2-2 CIFAR-10 Step.2 学習データの読み込み
 
 Step.1で展開したファイルは下記の構造となります。
 
@@ -259,11 +263,36 @@ with open('data_batch_1', 'rb') as f:
 
 ここでは、data_batch_の1 - 5の全てを、train_xに入力画像のデータ、train_yに教師ラベルのデータとしてまとめてみましょう。
 
-答え >> [answers/load_cifar10_step2.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_cifar10_step2.py)
+答え >> [answers/load_cifar10_step2.py](answers/load_cifar10_step2.py)
 
-## Q. CIFAR-10 Step.Final テストデータの読み込み
+## Q.2-3 CIFAR-10 Step.Final テストデータの読み込み
 
 test_batchに関しても同じように test_xとtest_yに分けて見ましょう。
 最後に関数の返り値をtrain_x, train_y, test_x, test_yとしてkeras.datasets.load_mnistっぽくしてみましょう。
 
-答え >> [answers/load_cifar10.py](https://github.com/yoyoyo-yo/DeepLearningMugenKnock/blob/master/Question_prepare/answers/load_cifar10.py)
+答え >> [answers/load_cifar10.py](answers/load_cifar10.py)
+
+## Q. Fashion MNIST
+
+Fashion MNISTは10種類の衣服に関する画像認識のためのデータセット
+
+公式サイトは https://github.com/zalandoresearch/fashion-mnist
+
+ファイル形式はMNISTと同じらしい。
+
+各ラベルは、
+
+0.    T-shirt/top
+1.    Trouser
+2.    Pullover
+3.    Dress
+4.    Coat
+5.    Sandal
+6.    Shirt
+7.    Sneaker
+8.    Bag
+9.    Ankle boot
+
+となっている
+
+答え >> [answers/load_fashion_mnist.py](answers/load_fashion_mnist.py)

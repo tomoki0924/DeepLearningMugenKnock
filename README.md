@@ -125,9 +125,9 @@ $ pip install -r requirements.txt
 
 詳細な問題内容は各ディレクトリのREADMEにあります。（ディレクトリで下にスクロールすればあります）
 
-## 自分で全部実装編
+## 自分でフルスクラッチから実装する(理論)
 
-### [理論編](Question_theory)
+## [理論編](Question_theory)
 
 | 番号 | 問題 | 答え | | 番号 | 問題 |
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -144,7 +144,7 @@ $ pip install -r requirements.txt
 | 11 | [更に多層パーセプトロン](Question_theory#q-%E6%9B%B4%E3%81%AB%E5%A4%9A%E5%B1%A4%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3) | [✓](Question_theory/answers/multi_perceptron_3.py)
 | 12 | [ニューラルネットのクラス化](Question_theory#q-%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E5%8C%96) | [✓](Question_theory/answers/multi_perceptron_class.py)
 
-### [理論編2](Question_theory2/)
+## [理論編2](Question_theory2/)
 
 | 番号 | 問題 | 答え | | 番号 | 問題 |
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -158,22 +158,30 @@ $ pip install -r requirements.txt
 |  | [Average-pooling layer](Question_theory2#average-pooling-layer) | [✓](Question_theory2/answers/avepool.py)
 
 
-### [ディープラーニングをやる前の準備編](Question_prepare)
+## [データセット用意](Question_dataset)
+
+### 1. 自分で用意したデータセットを読み込む + 前処理
 
 |番号|問題| 答え | | 番号|問題|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| 1 | [データセットの読み込み](Question_prepare#q2-1-%E5%AD%A6%E7%BF%92%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_prepare/answers/answer_data_load.py)
-| 2 | [ミニバッチの作成](Question_prepare#q2-2-%E3%83%9F%E3%83%8B%E3%83%90%E3%83%83%E3%83%81%E4%BD%9C%E6%88%90) | [✓](Question_prepare/answers/answer_minibatch.py)
-| 3 | [イテレーション・エポック](Question_prepare#q2-3-%E3%82%A4%E3%83%86%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%82%A8%E3%83%9D%E3%83%83%E3%82%AF) | [✓](Question_prepare/answers/answer_epoch.py)
-| 4 | [データ拡張・水平反転](Question_prepare#q4-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E5%B7%A6%E5%8F%B3%E5%8F%8D%E8%BB%A2) | [✓](Question_prepare/answers/answer_hf.py)
-| 5 | [データ拡張・上下反転](Question_prepare#q5-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E4%B8%8A%E4%B8%8B%E5%8F%8D%E8%BB%A2) | [✓](Question_prepare/answers/answer_vf.py)
-| 6 | [データ拡張・回転](Question_prepare#q6-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E5%9B%9E%E8%BB%A2) | [✓](Question_prepare/answers/answer_rotation.py)
-|  | [MNIST Step.1 ダウンロード](Question_prepare#q-mnist-10-step1-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89) | [✓](Question_prepare/answers/load_mnist_step1.py)
-|  | [MNIST Step.2 学習データの読み込み](Question_prepare#q-mnist-10-step2-%E5%AD%A6%E7%BF%92%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_prepare/answers/load_mnist_step2.py)
-|  | [MNIST Step.Final テストデータの読み込み](Question_prepare#q-mnist-10-stepfinal-%E3%83%86%E3%82%B9%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_prepare/answers/load_mnist.py)
-|  | [CIFAR-10 Step.1 ダウンロード](Question_prepare#q-cifar-10-step1-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89) | [✓](Question_prepare/answers/load_cifar10_step1.py)
-|  | [CIFAR-10 Step.2 学習データの読み込み](Question_prepare#q-cifar-10-step2-%E5%AD%A6%E7%BF%92%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_prepare/answers/load_cifar10_step2.py)
-|  | [CIFAR-10 Step.Final テストデータの読み込み](Question_prepare#q-cifar-10-stepfinal-%E3%83%86%E3%82%B9%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_prepare/answers/load_cifar10.py)
+| 1 | [自分で用意したデータセットの読み込み](Question_dataset#q2-1-%E5%AD%A6%E7%BF%92%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_dataset/answers/answer_data_load.py)
+| 2 | [ミニバッチの作成](Question_dataset#q2-2-%E3%83%9F%E3%83%8B%E3%83%90%E3%83%83%E3%83%81%E4%BD%9C%E6%88%90) | [✓](Question_dataset/answers/answer_minibatch.py)
+| 3 | [イテレーション・エポック](Question_dataset#q2-3-%E3%82%A4%E3%83%86%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%82%A8%E3%83%9D%E3%83%83%E3%82%AF) | [✓](Question_dataset/answers/answer_epoch.py)
+| 4 | [データ拡張・水平反転](Question_dataset#q4-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E5%B7%A6%E5%8F%B3%E5%8F%8D%E8%BB%A2) | [✓](Question_dataset/answers/answer_hf.py)
+| 5 | [データ拡張・上下反転](Question_dataset#q5-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E4%B8%8A%E4%B8%8B%E5%8F%8D%E8%BB%A2) | [✓](Question_dataset/answers/answer_vf.py)
+| 6 | [データ拡張・回転](Question_dataset#q6-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E5%9B%9E%E8%BB%A2) | [✓](Question_dataset/answers/answer_rotation.py)
+
+### 2.　オープンソースのデータセットを使う
+
+|番号|問題| 答え | | 番号|問題|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| 1-1 | [MNIST Step.1 ダウンロード](Question_dataset#q-mnist-10-step1-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89) | [✓](Question_dataset/answers/load_mnist_step1.py)
+| 1-2 | [MNIST Step.2 学習データの読み込み](Question_dataset#q-mnist-10-step2-%E5%AD%A6%E7%BF%92%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_dataset/answers/load_mnist_step2.py)
+| 1-3 | [MNIST Step.Final テストデータの読み込み](Question_dataset#q-mnist-10-stepfinal-%E3%83%86%E3%82%B9%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_dataset/answers/load_mnist.py)
+| 2-1 | [CIFAR-10 Step.1 ダウンロード](Question_dataset#q-cifar-10-step1-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89) | [✓](Question_dataset/answers/load_cifar10_step1.py)
+| 2-2| [CIFAR-10 Step.2 学習データの読み込み](Question_dataset#q-cifar-10-step2-%E5%AD%A6%E7%BF%92%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_dataset/answers/load_cifar10_step2.py)
+| 2-3 | [CIFAR-10 Step.Final テストデータの読み込み](Question_dataset#q-cifar-10-stepfinal-%E3%83%86%E3%82%B9%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_dataset/answers/load_cifar10.py)
+| 3 | [Fashion MNIST](Question_dataset#q-cifar-10-stepfinal-%E3%83%86%E3%82%B9%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_dataset/answers/load_fashion_mnist.py)
 
 
 ## 自分でネットワーク組む編
@@ -245,7 +253,10 @@ $ pip install -r requirements.txt
 | [DCGAN cifar10](Question_imageGenerate#q-dcgan) | [✓](Question_imageGenerate/answers/dcgan_cifar10_pytorch.py) | | [✓](Question_imageGenerate/answers/dcgan_cifar10_tensorflow_slim.py) | | [✓](Question_imageGenerate/answers/dcgan_cifar10_keras.py) | [✓](Question_imageGenerate/answers/dcgan_cifar10_chainer.py) |
 | [Conditional GAN mnist](Question_imageGenerate#q-conditional-gan) | [✓](Question_imageGenerate/answers/cgan_mnist_pytorch.py) | | [✓](Question_imageGenerate/answers/cgan_mnist_tensorflow_slim.py)  | | [✓](Question_imageGenerate/answers/cgan_mnist_keras.py) |  [✓](Question_imageGenerate/answers/cgan_mnist_chainer.py) |
 | [Conditional GAN cifar10](Question_imageGenerate#conditional-gan) | [✓](Question_imageGenerate/answers/cgan_cifar10_pytorch.py) | | [✓](Question_imageGenerate/answers/cgan_cifar10_tensorflow_slim.py)   | | [✓](Question_imageGenerate/answers/cgan_cifar10_keras.py) |  [✓](Question_imageGenerate/answers/cgan_cifar10_chainer.py) |
-| [pix2pix](Question_imageGenerate#pix2pix) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) | 
+| [pix2pix](Question_imageGenerate#pix2pix) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) |
+| [WGAN] |
+| [WGAN-GP] |
+| [alpha-GAN] |
 
 ### [画像処理編]()
 
