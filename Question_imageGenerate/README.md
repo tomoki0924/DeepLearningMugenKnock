@@ -247,7 +247,7 @@ Discriminatorの学習は以下の操作を5回連続で繰り返す
 2. 一様分布p(z)からミニバッチサイズだけノイズ{z}を取る
 3. Lossを計算して、逆伝搬する
 
-<img src='assets/wgan_loss_d.png' width=300>
+<img src='assets/wgan_loss_d.png' width=400>
 
 4. Discriminatorのパラメータを -0.01から0.01の範囲にクリッピングする。(-0.01以下のものは-0.01、0.01以上のものは0.01に置き換える)
 このクリッピングによって、勾配の連続性を実現している。
@@ -256,7 +256,7 @@ Generatorの学習はDiscriminator後に
 1. 一様分布p(z)からミニバッチサイズだけノイズ{z}を取る
 2. Lossを計算して、逆伝搬する
 
-<img src='assets/wgan_loss_g.png' width=200>
+<img src='assets/wgan_loss_g.png' width=300>
 
 (WGANは収束がすごく遅い、、学習回数がめちゃくちゃ必要なので、注意！！！！)
 
