@@ -255,7 +255,7 @@ $ pip install -r requirements.txt
 | [Conditional GAN mnist](Question_imageGenerate#q-conditional-gan) | [✓](Question_imageGenerate/answers/cgan_mnist_pytorch.py) | | [✓](Question_imageGenerate/answers/cgan_mnist_tensorflow_slim.py)  | | [✓](Question_imageGenerate/answers/cgan_mnist_keras.py) |  [✓](Question_imageGenerate/answers/cgan_mnist_chainer.py) | 2014 |
 | [Conditional GAN cifar10](Question_imageGenerate#conditional-gan) | [✓](Question_imageGenerate/answers/cgan_cifar10_pytorch.py) | | [✓](Question_imageGenerate/answers/cgan_cifar10_tensorflow_slim.py)   | | [✓](Question_imageGenerate/answers/cgan_cifar10_keras.py) |  [✓](Question_imageGenerate/answers/cgan_cifar10_chainer.py) |
 | [pix2pix](Question_imageGenerate#pix2pix) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) | |||||2016|
-| [WGAN] | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) |||||| 2017 |
+| [WGAN](Question_imageGenerate#wgan) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) |||||| 2017 |
 | [WGAN-GP] |
 | [alpha-GAN] |
 
