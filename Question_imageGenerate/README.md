@@ -77,7 +77,8 @@ AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convo
 
 ## Q. GAN
 
-論文 >> https://arxiv.org/abs/1406.2661
+元論文 >> 
+- Generative Adversarial Networks https://arxiv.org/abs/1406.2661 (2014)
 
 GAN とは*Generateive Adversarial Networks* の略です。最近はこのGANをベースにした手法だらけです。GANはGeneratorとDiscreminatorの２つが敵対(adverse)するのでこんな名前がついています。Generatoirは画像を生成するネットワーク、Discreminatorは画像がGeneratorが作ったか否かを分類するネットワークになっています。つまり **GANは画像を生成するニューラルネットワーク** です。
 
@@ -111,7 +112,7 @@ GANはピクセルごとにLossを取るAutoEncoderとは違い、画像を非�
 4. MLP(1) + sigomid
 
 GANの出力
-![](answers/gan_keras.png)
+![](answers_image/gan_keras.png)
 
 ちなみにGAN系は収束がくそ難しいことでも有名です。GANの学習ノウハウだけで論文が出てるほどです。なので、各種パラメータ調整はかなり厳しい戦いになると思います。がんばりましょう。僕もがんばりました(´；ω；｀)
 
@@ -130,7 +131,8 @@ GANの出力
 
 ## DCGAN
 
-論文 >> https://arxiv.org/abs/1511.06434
+元論文 >> 
+- Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks https://arxiv.org/abs/1511.06434 (2015)
 
 GANの進化版、DCGAN (Deep Convolutional GAN)。GANはMulti layer perceptronだけの構成でしたが、DCGANではconvolutionやBNなどを入れてきれいな画像が生成できるようになりました。
 
@@ -158,7 +160,7 @@ GANの進化版、DCGAN (Deep Convolutional GAN)。GANはMulti layer perceptron�
 4. MLP(1) + sigomid
 
 DCGANの出力
-![](answers/dcgan_keras.png)
+![](answers_image/dcgan_keras.png)
 
 答え
 ### imori
@@ -176,7 +178,8 @@ DCGANの出力
 
 ## Conditional GAN
 
-元論文 >> https://arxiv.org/abs/1411.1784
+元論文 >>
+- Conditional Generative Adversarial Nets https://arxiv.org/abs/1411.1784 (2014)
 
 DCGANはGANよりきれいな画像を作成することができますが、あくまでランダムなノイズから作るのでどんな画像が作成されるかもランダムでした。例えば、CIFAR10では馬の画像か犬の画像ができるかこちら側では決めることができません。
 
@@ -192,7 +195,7 @@ DCGANはGANよりきれいな画像を作成することができますが、あ
 ### mnist
 MNISTでの出力はこんな感じになります。
 
-![](answers/answer_cgan_mnist_pytorch.png)
+![](answers_image/answer_cgan_mnist_pytorch.png)
 
 - Pytorch [answers/cgan_mnist_pytorch.py](answers/cgan_mnist_pytorch.py)
 - Tensorflow [answers/cgan_mnist_tensorflow_slim.py](answers/cgan_mnist_tensorflow_slim.py)
@@ -203,22 +206,19 @@ MNISTでの出力はこんな感じになります。
 ### cifar10
 CIFAR10での出力はこんな感じになります。
 
-![](answers/answer_cgan_cifar10_pytorch.png)
+![](answers_image/answer_cgan_cifar10_pytorch.png)
 
 - Pytorch [answers/cgan_cifar10_pytorch.py](answers/cgan_cifar10_pytorch.py)
 - Tensorflow [answers/cgan_cifar10_tensorflow_slim.py](answers/cgan_cifar10_tensorflow_slim.py)
 - Keras [answers/cgan_cifar10_keras.py](answers/cgan_cifar10_keras.py)
 - Chainer [answers/cgan_cifar10_chainer.py](answers/cgan_cifar10_chainer.py)
 
-## WGAN
-
-論文 https://arxiv.org/abs/1701.07875
-
-
-
 ## pix2pix
 
-元論文 https://arxiv.org/abs/1611.07004
+元論文 >>
+- Image-to-Image Translation with Conditional Adversarial Networks https://arxiv.org/abs/1611.07004 (2016)
+
+pix2pixは画素（pixel)と画素の関係を学習させる。
 
 
 <img src="assets/pix2pix_fig1.png" width="400">
@@ -226,4 +226,65 @@ CIFAR10での出力はこんな感じになります。
 
 答え
 - Pytorch [answers/pix2pix_segment_pytorch.py](answers/pix2pix_segment_pytorch.py)
+
+## WGAN
+
+元論文 >>
+- Wasserstein GAN https://arxiv.org/abs/1701.07875 (2017)
+
+WGANはGANのLossを変えることで、数学的に画像生成の学習を良くしよう!っていうもの。
+
+通常のGANはKLDivergenceを使って、Generatorによる確率分布を、生成したい画像の生起分布に近づけていく。だが、KLDでは連続性が保証されないので、代わりにWasserstain距離を用いて、近似していこうというのがWGAN。
+
+Wasserstain距離によるLossを実現するために、WGANのDiscriminatorでは最後にSigmoid関数を適用しない。つまり、LossもSigmoid Cross Entropyでなく、Discriminatorの出力の値をそのまま使う。
+
+WGANのアルゴリズムは、イテレーション毎に以下のDiscriminatorとGeneratorの学習を交互に行っていく。
+- 最適化 : RMSProp
+- 学習率 : 0.00005。
+
+Discriminatorの学習は以下の操作を5回連続で繰り返す
+1. データセットから画像のミニバッチ{x}を取る
+2. 一様分布p(z)からミニバッチサイズだけノイズ{z}を取る
+3. Lossを計算して、逆伝搬する
+<img src='assets/wgan_loss_d.png' width=300>
+4. Discriminatorのパラメータを -0.01から0.01の範囲にクリッピングする。(-0.01以下のものは-0.01、0.01以上のものは0.01に置き換える)
+このクリッピングによって、勾配の連続性を実現している。
+ 
+Generatorの学習はDiscriminator後に
+1. 一様分布p(z)からミニバッチサイズだけノイズ{z}を取る
+2. Lossを計算して、逆伝搬する
+<img src='assets/wgan_loss_g.png' width=200>
+
+(WGANは収束がすごく遅い、、学習回数がめちゃくちゃ必要なので、注意！！！！)
+
+Cifar10でPytorchでの結果はこんな感じ。正直まだ何の画像かはわからないですが、もっと学習をつづければいい結果になりそうな雰囲気は伝わってきます笑
+
+||
+|:---:|
+| 70k iteration |
+| <img src='answers_image/wgan_iter_70000.jpg' width=600> |
+| 80k iteration |
+| <img src='answers_image/wgan_iter_80000.jpg' width=600> |
+| 90k iteration |
+| <img src='answers_image/wgan_iter_90000.jpg' width=600> |
+| 100k iteration |
+| <img src='answers_image/wgan_iter_100000.jpg' width=600> |
+
+- Pytorch [answers/cgan_cifar10_pytorch.py](answers/cgan_cifar10_pytorch.py)
+
+## WGAN-GP
+
+元論文 >>
+- Improved Training of Wasserstein GANs https://arxiv.org/abs/1704.00028 (2017)
+
+## Alpha-GAN
+
+元論文 >> 
+- Variational Approaches for Auto-Encoding Generative Adversarial Networks https://arxiv.org/abs/1706.04987 (2017)
+
+GANは柔軟に画像を作成できるが、モード崩壊（データ分布の多様性を捉えられないこと）につながる最適化の不安定さに繋がる。この問題の解決のためにAE-GAN(Auto-Encoder based GAN)がある。
+
+Alpha-GANではVAEとGANのいいとこ取りを試みている。VAEはぼやけた画像を作るがモード崩壊が起こらない。また、表現学習や可視化、説明がやりやすい。GANはモデルを作成する時の分布予測を行う。
+
+
 

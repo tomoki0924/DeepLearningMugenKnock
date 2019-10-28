@@ -33,6 +33,7 @@ Twitterで更新を発信してますぅ
 
 https://twitter.com/curry_yoyoyo
 
+- 2019.10.28 [Pytorch] 画像生成のWGANを追加
 - 2019.10.21 [PyTorch] Semantic SegmentationでSegNetを追加
 - 2019.10.16 [PyTorch] Seq2Seq Hard Attentionを追加
 - 2019.10.10 [PyTorch] Seq2Seq Attention(Step別)を追加
@@ -220,7 +221,7 @@ $ pip install -r requirements.txt
 | [MobileNet-v2](Question_model#q-mobilenet-v2) | [✓](Question_model/answers/MobileNet_v2_pytorch.py) |||| | | 2019 |
 
 ### [Semantic Segmentation編](Question_semaseg)
-| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year
+| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year | 
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | - |
 | [SemanticSegmentationとは?](Question_semaseg#semanticsegmentation%E3%81%A8%E3%81%AF) |
@@ -239,8 +240,8 @@ $ pip install -r requirements.txt
 
 
 ### [画像生成編](Question_imageGenerate)
-| 問題 |  PyTorch | TensorFlow | || Keras | Chainer |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | 
 | [AutoEncoder](Question_imageGenerate#q-auto-encoder) |  [✓](Question_semaseg/answers/ae_pytorch.py) | | [✓?](Question_imageGenerate/answers/ae_tensorflow_slim.py) | | [✓](Question_imageGenerate/answers/ae_keras.py) |  [✓](Question_imageGenerate/answers/ae_chainer.py) |
 | [AutoEncoder cifar10](Question_imageGenerate#q-auto-encoder) |  [✓](Question_semaseg/answers/ae_cifar10_pytorch.py) | | [✓](Question_imageGenerate/answers/ae_cifar10_tensorflow_slim.py)  | | [✓](Question_imageGenerate/answers/ae_cifar10_keras.py) |  [✓](Question_imageGenerate/answers/ae_cifar10_chainer.py) |
@@ -251,10 +252,10 @@ $ pip install -r requirements.txt
 | [GAN cifar10](Question_imageGenerate#q-gan) | [✓](Question_imageGenerate/answers/gan_cifar10_pytorch.py) | | [✓ failed](Question_imageGenerate/answers/gan_cifar10_tensorflow_slim.py)  | | [✓](Question_imageGenerate/answers/gan_cifar10_keras.py) | [✓](Question_imageGenerate/answers/gan_cifar10_chainer.py) |
 | [DCGAN](Question_imageGenerate#q-dcgan) | [✓](Question_imageGenerate/answers/dcgan_pytorch.py) | | [✓](Question_imageGenerate/answers/dcgan_tensorflow_slim.py) |  | [✓](Question_imageGenerate/answers/dcgan_keras.py) | [✓](Question_imageGenerate/answers/dcgan_chainer.py)
 | [DCGAN cifar10](Question_imageGenerate#q-dcgan) | [✓](Question_imageGenerate/answers/dcgan_cifar10_pytorch.py) | | [✓](Question_imageGenerate/answers/dcgan_cifar10_tensorflow_slim.py) | | [✓](Question_imageGenerate/answers/dcgan_cifar10_keras.py) | [✓](Question_imageGenerate/answers/dcgan_cifar10_chainer.py) |
-| [Conditional GAN mnist](Question_imageGenerate#q-conditional-gan) | [✓](Question_imageGenerate/answers/cgan_mnist_pytorch.py) | | [✓](Question_imageGenerate/answers/cgan_mnist_tensorflow_slim.py)  | | [✓](Question_imageGenerate/answers/cgan_mnist_keras.py) |  [✓](Question_imageGenerate/answers/cgan_mnist_chainer.py) |
+| [Conditional GAN mnist](Question_imageGenerate#q-conditional-gan) | [✓](Question_imageGenerate/answers/cgan_mnist_pytorch.py) | | [✓](Question_imageGenerate/answers/cgan_mnist_tensorflow_slim.py)  | | [✓](Question_imageGenerate/answers/cgan_mnist_keras.py) |  [✓](Question_imageGenerate/answers/cgan_mnist_chainer.py) | 2014 |
 | [Conditional GAN cifar10](Question_imageGenerate#conditional-gan) | [✓](Question_imageGenerate/answers/cgan_cifar10_pytorch.py) | | [✓](Question_imageGenerate/answers/cgan_cifar10_tensorflow_slim.py)   | | [✓](Question_imageGenerate/answers/cgan_cifar10_keras.py) |  [✓](Question_imageGenerate/answers/cgan_cifar10_chainer.py) |
-| [pix2pix](Question_imageGenerate#pix2pix) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) |
-| [WGAN] |
+| [pix2pix](Question_imageGenerate#pix2pix) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) | |||||2016|
+| [WGAN] | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) |||||| 2017 |
 | [WGAN-GP] |
 | [alpha-GAN] |
 
