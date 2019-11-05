@@ -31,7 +31,7 @@
 
 Twitterで更新を発信してますぅ
 
-https://twitter.com/curry_yoyoyo
+https://twitter.com/curry_frog
 
 - 2019.10.28 [Pytorch] 画像生成のWGANを追加
 - 2019.10.21 [PyTorch] Semantic SegmentationでSegNetを追加
