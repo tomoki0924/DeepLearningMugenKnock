@@ -7,7 +7,7 @@ import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
 
-num_classes = 2
+class_N = 10
 img_height, img_width = 28, 28
 channel = 1
 
@@ -246,6 +246,59 @@ def test():
         plt.title("predicted")
         plt.imshow(pred, cmap=cmap)
         plt.show()
+        
+    
+    
+def test_latent_show():
+    device = torch.device("cuda" if GPU else "cpu")
+    
+    model_encoder = Encoder().to(device)
+    model_sampler = Sampler().to(device)
+    model_decoder = Decoder().to(device)
+    model = torch.nn.Sequential(model_encoder, model_sampler, model_decoder)
+    
+    model.eval()
+    model.load_state_dict(torch.load('cnn.pt'))
+
+    train_x, train_y, test_x, test_y = load_mnist()
+    xs = test_x / 255
+    xs = xs.transpose(0, 3, 1, 2)
+
+    plt.figure(figsize=[10, 10])
+    
+    colors = ["red", "blue", "orange", "green", "purple", 
+              "magenta", "yellow", "aqua", "black", "khaki"]
+    
+    class_counts = [0 for _ in range(class_N)]
+    
+    for i in range(len(xs)):
+        x = xs[i]
+        
+        x = np.expand_dims(x, axis=0)
+        x = torch.tensor(x, dtype=torch.float).to(device)
+        
+        y = model(x)
+        mu = model_encoder.mu
+        sigma = model_encoder.sigma
+        sample_z = model_sampler.sample_z
+        
+        mu = mu.detach().cpu().numpy()[0]
+        sigma = sigma.detach().cpu().numpy()[0]
+        sample_z = sample_z.detach().cpu().numpy()[0]
+        
+        t = test_y[i]
+
+        class_counts[t] += 1
+
+        if class_counts[t] == 1:
+            plt.scatter(sample_z[0], sample_z[1], c=colors[t], label=str(t))
+        else:
+            plt.scatter(sample_z[0], sample_z[1], c=colors[t])
+    
+    plt.legend()
+    plt.savefig('vae_latent_show.png')
+    plt.show()
+   
 
 
 def arg_parse():
@@ -261,7 +314,7 @@ if __name__ == "__main__":
     if args.train:
         train()
     if args.test:
-        test()
+        test_latent_show()
 
     if not (args.train or args.test):
         print("please select train or test flag")

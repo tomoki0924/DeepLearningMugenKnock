@@ -246,10 +246,176 @@ def test():
         plt.title("predicted")
         plt.imshow(pred, cmap=cmap)
         plt.show()
+        
+    
+    
+def test_latent_show():
+    device = torch.device("cuda" if GPU else "cpu")
+    
+    model_encoder = Encoder().to(device)
+    model_sampler = Sampler().to(device)
+    model_decoder = Decoder().to(device)
+    model = torch.nn.Sequential(model_encoder, model_sampler, model_decoder)
+    
+    model.eval()
+    model.load_state_dict(torch.load('cnn.pt'))
+
+    train_x, train_y, test_x, test_y = load_mnist()
+    xs = test_x / 255
+    xs = xs.transpose(0, 3, 1, 2)
+
+    plt.figure(figsize=[10, 10])
+    
+    colors = ["red", "blue", "orange", "green", "purple", 
+              "magenta", "yellow", "aqua", "black", "khaki"]
+    
+    for i in range(len(xs)):
+        x = xs[i]
+        
+        x = np.expand_dims(x, axis=0)
+        x = torch.tensor(x, dtype=torch.float).to(device)
+        
+        y = model(x)
+        mu = model_encoder.mu
+        sigma = model_encoder.sigma
+        sample_z = model_sampler.sample_z
+        
+        mu = mu.detach().cpu().numpy()[0]
+        sigma = sigma.detach().cpu().numpy()[0]
+        sample_z = sample_z.detach().cpu().numpy()[0]
+        
+        t = test_y[i]
+        
+        plt.scatter(sample_z[0], sample_z[1], c=colors[t])
+    
+    plt.savefig('vae_latent_show.png')
+    plt.show()
+
+
+def test_latent_change():
+    device = torch.device("cuda" if GPU else "cpu")
+    
+    model_encoder = Encoder().to(device)
+    model_sampler = Sampler().to(device)
+    model_decoder = Decoder().to(device)
+    model = torch.nn.Sequential(model_encoder, model_sampler, model_decoder)
+    
+    model.eval()
+    model.load_state_dict(torch.load('cnn.pt'))
+
+    train_x, train_y, test_x, test_y = load_mnist()
+    xs = test_x / 255
+    xs = xs.transpose(0, 3, 1, 2)
+    
+    plt.figure(figsize=[12, 2])
+    
+    # split number (show image number)
+    show_num = 15
+
+    # latent lower and upper bound
+    z1_lower, z1_upper = -2, 2
+    z2_lower, z2_upper = -2, 2
+
+    z1_diff = float(z1_upper - z1_lower) / show_num
+    z2_diff = float(z2_upper - z2_lower) / show_num
+    
+    for ind in range(show_num):
+        # get latent vector
+        z1 = z1_lower + z1_diff * ind
+        z2 = z2_upper - z2_diff * ind
+        z = [z1, z2]
+        z = torch.tensor(z).to(device)
+
+        # decode latent vector
+        pred = model_decoder(z)
+
+        pred = pred.view(channel, img_height, img_width)
+        pred = pred.detach().cpu().numpy()
+
+        # normalize to [0, 1]
+        pred -= pred.min()
+        pred /= pred.max()
+        pred = pred.transpose(1, 2, 0)
+        
+        if channel == 1:
+            cmap = "gray"
+            pred = pred[..., 0]
+        elif channel == 3:
+            cmap = None
+
+        plt.subplot(1, show_num, ind + 1)
+        #plt.title("predicted")
+        plt.imshow(pred, cmap=cmap)
+        plt.axis("off")
+
+    plt.savefig('vae_latent_change.png')
+    plt.show()
+   
+
+def test_latent_change2():
+    device = torch.device("cuda" if GPU else "cpu")
+    
+    model_encoder = Encoder().to(device)
+    model_sampler = Sampler().to(device)
+    model_decoder = Decoder().to(device)
+    model = torch.nn.Sequential(model_encoder, model_sampler, model_decoder)
+    
+    model.eval()
+    model.load_state_dict(torch.load('cnn.pt'))
+
+    train_x, train_y, test_x, test_y = load_mnist()
+    xs = test_x / 255
+    xs = xs.transpose(0, 3, 1, 2)
+    
+    plt.figure(figsize=[12, 12])
+    
+    # split number (show image number)
+    z1_num = 30
+    z2_num = 30
+
+    # latent lower and upper bound
+    z1_lower, z1_upper = -4, 4
+    z2_lower, z2_upper = -4, 4
+    z1_diff = float(z1_upper - z1_lower) / z1_num
+    z2_diff = float(z2_upper - z2_lower) / z2_num
+    
+    for z2_i in range(z2_num):
+        for z1_i in range(z1_num):
+            
+            # get latent vector
+            z1 = z1_lower + z1_diff * z1_i
+            z2 = z2_upper - z2_diff * z2_i
+            z = [z1, z2]
+            z = torch.tensor(z).to(device)
+
+            # decode latent vector
+            pred = model_decoder(z)
+
+            pred = pred.view(channel, img_height, img_width)
+            pred = pred.detach().cpu().numpy()
+
+            # normalize to [0, 1]
+            pred -= pred.min()
+            pred /= pred.max()
+            pred = pred.transpose(1, 2, 0)
+            
+            if channel == 1:
+                cmap = "gray"
+                pred = pred[..., 0]
+            elif channel == 3:
+                cmap = None
+
+            plt.subplot(z1_num, z2_num, z2_i * z1_num + z1_i +1)
+            #plt.title("predicted")
+            plt.imshow(pred, cmap=cmap)
+            plt.axis("off")
+
+    plt.savefig('vae_latent_change2.png')
+    plt.show()
 
 
 def arg_parse():
-    parser = argparse.ArgumentParser(description='CNN implemented with Keras')
+    parser = argparse.ArgumentParser(description='CNN')
     parser.add_argument('--train', dest='train', action='store_true')
     parser.add_argument('--test', dest='test', action='store_true')
     args = parser.parse_args()
@@ -261,7 +427,7 @@ if __name__ == "__main__":
     if args.train:
         train()
     if args.test:
-        test()
+        test_latent_change2()
 
     if not (args.train or args.test):
         print("please select train or test flag")

@@ -71,9 +71,90 @@ AEはMLPのみの構成だったが、ここではConvolutoinとTransposed convo
 
 ## VAE
 
+元論文
+- Auto-Encoding Variational Bayes https://arxiv.org/abs/1312.6114 (2013)
+
+AutoEncoderの構造にEncoderとDecoderの中間での出力を特定の確率分布に近似させるのが**VAE(Variational Auto Encoder)**。
+
+雑に言っちゃえばこんな感じ。この中間のパラメータを **潜在変数** と呼んだりする。 
+
+<img src='assets/vae.png' width=400>
+
+VAEでは確率分布（黄色）を平均μ, 標準偏差σのガウス分布で近似する。つまり、Encoderでは最後にMLPを２つ用意し、それぞれの出力をμとσとして扱う。Decoderの入力にはN(μ, σ)からサンプリングしたノイズzをMLPでデコードする。
+
+<img src='assets/vae_3.png' width=400>
+
+だけど、ガウス分布からサンプリングするネットワークを組むと、学習（誤差の逆伝搬）ができなくなる。そこで、Parameterization Trickという方法を使う。Parameterization Trickでは、サンプリングする代わりに、μとσから直接的にzを求める。zは次式で計算される。
+
+εは平均0、標準偏差1のガウス分布からサンプリングするものだけど、Encoderへの逆伝搬には影響しない。
+
+<img src='assets/vae_trick.png' width=150>
+
+つまり、 VAEの全体的な構造はこうなる。ここでは潜在変数を２次元にしている。（MNISTでは２次元でなんとかなるが、Cifar10のように画像の分散が大きくなると、潜在変数も大きくする必要がある）
+
+<img src='assets/vae_2.png' width=400>
+
+VAE の Loss は *Reconstruction Loss* と *KLDivergence* の２つの Multi task loss になる。 LreconstructionはAutoEncoderのロス（画像を復元するための入力画像と出力画像のCrossEntropy)。KLDは潜在変数をある特定の値に近づけるために導入されている。
+
+ここでは潜在変数となるμ、σをそれぞれ0,1に近づけるために次式で定義される。
+
+<img src='assets/vae_loss.png' width=200>
+
+MNISTによる10kイテレーションのサンプルがこれ
+||||
+|:---:|:---:|:---:|
+| <img src='answers_image/vae_result1.png' width=200> | <img src='answers_image/vae_result2.png' width=200> | <img src='answers_image/vae_result3.png' width=200> |
+
+
 答え
 ### MNIST
 - Pytorch [answers/vae_mnist_pytorch.py](answers/vae_mnist_pytorch.py)
+
+## VAE (潜在変数の可視化)
+
+VAEでは潜在変数を一定の値になるようにKLDの学習が行われている。
+まずは、入力画像と潜在変数の関係を可視化してみる。
+
+VAEでは入力画像の特徴量がEncoderによって少ない潜在変数に次元圧縮される。この潜在変数には近い画像は近い部分に分布する性質がある。つまり、「１」の画像を表す潜在変数のグループ、「２」を表すものというようにグループになっている。
+
+
+<img src='answers_image/vae_latent_show.png' width=300>
+
+答え
+### MNIST
+- Pytorch [answers/vae_latent_show_mnist_pytorch.py](answers/vae_latent_show_mnist_pytorch.py)
+
+## VAE (潜在変数の操作による画像の生成)
+
+
+VAEではEncoderにより入力画像を潜在変数に落とし込む。全問はそれを可視化した。Decoderは潜在変数から入力画像を復元する。
+
+逆にいえば、潜在変数をこちら側で操作すればDecoderで任意の画像を作ることができる。全問の図を見る限り、潜在変数は[-4, 4]の範囲に分布している。（N(0,1)に従うように学習されたので０が中心になる）
+
+最初に下図左のように(-2, -2)から(2,2)までの直線上に潜在変数を動かして、Decoderから得られる画像を見る。
+
+数字が狙った通りに変化していることが分かる。このようにVAEでは、人間が出力させたい製剤変数をDecoderに入力することで、好きな画像をつくることができる。(ただし、予め潜在変数の分布をしらなければいけない)
+
+|||
+|:---:|:---:|
+| <img src='assets/vae_latent.png' width=400> | <img src='answers_image/vae_latent_change.png' width=600> |
+
+次に潜在変数z1,z2をそれぞれ-4から4まで動かしながら、Decoderで生成される画像の表を作成する。
+
+Pytorchでのサンプルがこれ。それぞれの数字がクラス毎に生成されていることと、クラス間で数字の変化が確認できる。
+
+|||
+|:---:|:---:|
+| <img src='answers_image/vae_latent_show.png' width=500> | <img src='answers_image/vae_latent_change2.png' width=500> |
+
+
+
+答え
+### MNIST
+- Pytorch [answers/vae_latent_change_mnist_pytorch.py](answers/vae_latent_change_mnist_pytorch.py)
+- Pytorch [answers/vae_latent_change2_mnist_pytorch.py](answers/vae_latent_change2_mnist_pytorch.py)
+
+# Adversarial Networks
 
 ## Q. GAN
 
@@ -280,10 +361,29 @@ Cifar10でPytorchでの結果はこんな感じ。正直まだ何の画像かは
 元論文 >>
 - Improved Training of Wasserstein GANs https://arxiv.org/abs/1704.00028 (2017)
 
+### 論文のサマリ 
+
+WGANのパラメータのクリッピングは最適化を難しくするというのがWGAN-GPの導入背景。
+Critic(DiscriminatorをWGANの論文ではCriticと呼ぶ)にBatch Normalizationが入っているとパラメータのクリッピング問題は弱めることができるけど、深いCriticでは収束しにくいらしい。
+
+Criticのパラメータを[-c, c]にクリッピングするが、cの値を注意深く選ばないと勾配消失か勾配爆発になってしまう。しかし、WGANでWasserstain距離を用いた画像でLossを作るために1Lipschits制約を実現するために、このクリッピングが必要だった。
+
+なので、**WGAN-GPでは勾配を1に近づける正則化項（これをGP:Gradient Penalty)** を導入することで、クリッピングを使わない1Lipschits制約を実現する。
+
+ただし、BatchNormalizationはバッチで正規化するけど、GPは入力毎に行うので、相性が悪い。CriticではBatchNormalizationの代わりにLayerNormalizationを入れた。(これで結果も良くなった)
+
+以上がWGAN-GPの論文での主張
+
+### 論文での結果
+
+DCGAN, LSGAN, WGAN, WGAN-GPを比較するために、GeneratorとDiscriminatorにいろんな条件をつけて LSUNデータセットで試した。その結果がFigure.2。WGAN-GPがずば抜けていい画像を作っている。しかもRes101をGとDに使ってもモード崩壊に陥らないという。
+
 ## Alpha-GAN
 
 元論文 >> 
 - Variational Approaches for Auto-Encoding Generative Adversarial Networks https://arxiv.org/abs/1706.04987 (2017)
+
+### 論文のサマリ
 
 GANは柔軟に画像を作成できるが、モード崩壊（データ分布の多様性を捉えられないこと）につながる最適化の不安定さに繋がる。この問題の解決のためにAE-GAN(Auto-Encoder based GAN)がある。
 
