@@ -101,6 +101,7 @@ VAE の Loss は *Reconstruction Loss* と *KLDivergence* の２つの Multi tas
 <img src='assets/vae_loss.png' width=200>
 
 MNISTによる10kイテレーションのサンプルがこれ
+
 ||||
 |:---:|:---:|:---:|
 | <img src='answers_image/vae_result1.png' width=200> | <img src='answers_image/vae_result2.png' width=200> | <img src='answers_image/vae_result3.png' width=200> |
