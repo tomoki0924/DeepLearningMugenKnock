@@ -23,7 +23,7 @@
 ★追記 2019.11.7
 
 Study-AI株式会社様　http://kentei.ai/
-のAI実装検定のシラバスに使用していただくことになりました！(ディープラーニング無限ノックも）
+のAI実装検定のシラバスに使用していただくことになりました！(画像処理１００本ノックも）
 Study-AI株式会社様ではAIスキルを学ぶためのコンテンツを作成されており、AIを学ぶ上でとても参考になります！
 検定も実施されてるので、興味ある方はぜひ受けることをお勧めします！
 
@@ -37,6 +37,7 @@ Twitterで更新を発信してますぅ
 
 https://twitter.com/curry_frog
 
+- 2019.11.8 [Pytorch]　画像生成のVAEとalphaGANを追加
 - 2019.10.28 [Pytorch] 画像生成のWGANを追加
 - 2019.10.21 [PyTorch] Semantic SegmentationでSegNetを追加
 - 2019.10.16 [PyTorch] Seq2Seq Hard Attentionを追加
@@ -264,7 +265,8 @@ $ pip install -r requirements.txt
 | [pix2pix](Question_imageGenerate#pix2pix) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) | |||||2016|
 | [WGAN](Question_imageGenerate#wgan) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) |||||| 2017 |
 | [WGAN-GP] |
-| [alpha-GAN] |
+| [alpha-GAN](Question_imageGenerate#alphagan) MNIST | [✓](Question_imageGenerate/answers/alphaGAN_mnist_pytorch.py) |||||| 2017 |
+| [alpha-GAN](Question_imageGenerate#alphagan) CIFAR10 | [✓](Question_imageGenerate/answers/alphaGAN_cifar10_pytorch.py) |||||| 2017 |
 
 ### [画像処理編]()
 

@@ -322,7 +322,7 @@ def test_latent_change():
     for ind in range(show_num):
         # get latent vector
         z1 = z1_lower + z1_diff * ind
-        z2 = z2_upper - z2_diff * ind
+        z2 = z2_lower + z2_diff * ind
         z = [z1, z2]
         z = torch.tensor(z).to(device)
 

@@ -388,7 +388,52 @@ DCGAN, LSGAN, WGAN, WGAN-GPを比較するために、GeneratorとDiscriminator�
 
 GANは柔軟に画像を作成できるが、モード崩壊（データ分布の多様性を捉えられないこと）につながる最適化の不安定さに繋がる。この問題の解決のためにAE-GAN(Auto-Encoder based GAN)がある。
 
-Alpha-GANではVAEとGANのいいとこ取りを試みている。VAEはぼやけた画像を作るがモード崩壊が起こらない。また、表現学習や可視化、説明がやりやすい。GANはモデルを作成する時の分布予測を行う。
+Alpha-GANではVAEとGANのいいとこ取りを試みている。VAEはぼやけた画像を作るがモード崩壊が起こらない。また、表現学習や可視化、説明がやりやすい。GANはモデルを作成する時の分布予測を行い、綺麗な画像を作るがモード崩壊が起こりやすい。
 
+AlphaGANの構造は下図。赤線がGAN、青線がVAEの構造を取っている。また、Encoderの出力の潜在変数がガウス分布からサンプルされたものかを判別するCode Discriminatorが加わっている。
 
+<img src='assets/alphaGAN.png' width=500>
 
+学習は1イテレーション毎に次の４ステップを繰り返す。
+
+1. Encoderの学習
+
+ReconstructionLoss と CodeDiscriminator のLossを使う。
+
+<img src='assets/alphaGAN_LossE.png' width=400>
+
+2. Generatorの学習
+
+ReconstructionLoss と Discriminator のLossを使う。
+
+<img src='assets/alphaGAN_LossG.png' width=400>
+
+3. Discriminatorの学習
+
+Discriminator のLossを使う。
+
+Encoderの出力のzとガウス分布からサンプルされたzをGeneratorに入力する。それらの出力はFake画像、データセットからのサンプル画像はReal画像として扱われる。
+
+<img src='assets/alphaGAN_LossD.png' width=400>
+
+4. CodeDiscriminatorの学習
+
+CodeDiscriminator のLossを使う。
+
+<img src='assets/alphaGAN_LossCD.png' width=400>
+
+Pytorch実装のCifar10の例はこんな感じ
+
+|Iteration |MNIST| CIFAR10 |
+|:---:|:---:|:---:|
+| 90k | <img src='answers_image/alphaGAN_mnist_iter_90000.jpg' width=600> | <img src='answers_image/alphaGAN_iter_90000.jpg' width=600> |
+| 95k | <img src='answers_image/alphaGAN_mnist_iter_95000.jpg' width=600> | <img src='answers_image/alphaGAN_iter_95000.jpg' width=600> |
+| 100k | <img src='answers_image/alphaGAN_mnist_iter_100000.jpg' width=600> | <img src='answers_image/alphaGAN_iter_100000.jpg' width=600> |
+
+MNIST
+
+- Pytorch [answers/alphaGAN_mnist_pytorch.py](answers/alphaGAN_mnist_pytorch.py)
+
+CIFAR10
+
+- Pytorch [answers/alphaGAN_cifar10_pytorch.py](answers/alphaGAN_cifar10_pytorch.py)
