@@ -404,7 +404,7 @@ ReconstructionLoss と CodeDiscriminator のLossを使う。
 
 2. Generatorの学習
 
-ReconstructionLoss と Discriminator のLossを使う。
+ReconstructionLoss と Discriminator のLossを使う。論文に記載はないが、Generatorの更新は一度に２回行うことで、学習を進めるコツとなる。
 
 <img src='assets/alphaGAN_LossG.png' width=400>
 
@@ -422,7 +422,7 @@ CodeDiscriminator のLossを使う。
 
 <img src='assets/alphaGAN_LossCD.png' width=400>
 
-Pytorch実装のCifar10の例はこんな感じ
+Pytorch実装のCifar10の例はこんな感じ。画像としては荒い感じが目立った。学習がなかなかいい感じに行かなかったので、何か細かなテクニックがあるのかもしれない。。。
 
 |Iteration |MNIST| CIFAR10 |
 |:---:|:---:|:---:|

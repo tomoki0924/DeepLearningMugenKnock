@@ -266,7 +266,7 @@ $ pip install -r requirements.txt
 | [WGAN](Question_imageGenerate#wgan) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) |||||| 2017 |
 | [WGAN-GP] |
 | [alpha-GAN](Question_imageGenerate#alphagan) MNIST | [✓](Question_imageGenerate/answers/alphaGAN_mnist_pytorch.py) |||||| 2017 |
-| [alpha-GAN](Question_imageGenerate#alphagan) CIFAR10 | [✓](Question_imageGenerate/answers/alphaGAN_cifar10_pytorch.py) |||||| 2017 |
+| [alpha-GAN](Question_imageGenerate#alpha-gan) CIFAR10 | [✓](Question_imageGenerate/answers/alphaGAN_cifar10_pytorch.py) |||||| 2017 |
 
 ### [画像処理編]()
 
