@@ -321,24 +321,9 @@ WGANはGANのLossを変えることで、数学的に画像生成の学習を良
 Wasserstain距離によるLossを実現するために、WGANのDiscriminatorでは最後にSigmoid関数を適用しない。つまり、LossもSigmoid Cross Entropyでなく、Discriminatorの出力の値をそのまま使う。
 
 WGANのアルゴリズムは、イテレーション毎に以下のDiscriminatorとGeneratorの学習を交互に行っていく。
-- 最適化 : RMSProp
-- 学習率 : 0.00005。
+- 最適化 : RMSProp(LearningRate:0.0005)
 
-Discriminatorの学習は以下の操作を5回連続で繰り返す
-1. データセットから画像のミニバッチ{x}を取る
-2. 一様分布p(z)からミニバッチサイズだけノイズ{z}を取る
-3. Lossを計算して、逆伝搬する
-
-<img src='assets/wgan_loss_d.png' width=400>
-
-4. Discriminatorのパラメータを -0.01から0.01の範囲にクリッピングする。(-0.01以下のものは-0.01、0.01以上のものは0.01に置き換える)
-このクリッピングによって、勾配の連続性を実現している。
- 
-Generatorの学習はDiscriminator後に
-1. 一様分布p(z)からミニバッチサイズだけノイズ{z}を取る
-2. Lossを計算して、逆伝搬する
-
-<img src='assets/wgan_loss_g.png' width=300>
+<img src='assets/WGAN_train.png' width=500>
 
 (WGANは収束がすごく遅い、、学習回数がめちゃくちゃ必要なので、注意！！！！)
 
@@ -355,7 +340,7 @@ Cifar10でPytorchでの結果はこんな感じ。正直まだ何の画像かは
 | 100k iteration |
 | <img src='answers_image/wgan_iter_100000.jpg' width=600> |
 
-- Pytorch [answers/cgan_cifar10_pytorch.py](answers/wgan_cifar10_pytorch.py)
+- Pytorch [answers/WGAN_cifar10_pytorch.py](answers/WGAN_cifar10_pytorch.py)
 
 ## WGAN-GP
 
@@ -379,6 +364,42 @@ Criticのパラメータを[-c, c]にクリッピングするが、cの値を注
 
 DCGAN, LSGAN, WGAN, WGAN-GPを比較するために、GeneratorとDiscriminatorにいろんな条件をつけて LSUNデータセットで試した。その結果がFigure.2。WGAN-GPがずば抜けていい画像を作っている。しかもRes101をGとDに使ってもモード崩壊に陥らないという。
 
+WGAN-GPのアルゴリズムは、イテレーション毎に以下のDiscriminatorとGeneratorの学習を交互に行っていく。
+- 最適化 : Adam (LearningRate: 0.0001, β1=0, β2=0.9)
+- λ = 10
+
+アルゴリズム
+
+<img src='assets/WGAN-gp_train.png' width=500>
+
+GeneratorとDiscriminatorの構造は次の通り。WGAN-GPではResBlock構造を導入して、Deepな構造にしている。
+
+★ Generator
+
+ResNetの活性化関数はReLU
+
+<img src='assets/WGAN-gp_G.png' width=600>
+
+★ Discriminator
+
+ResNetの活性化関数はLeakyReLU(0.2)
+
+<img src='assets/WGAN-gp_D.png' width=600>
+
+それぞれにおいてResBlockは以下の構造となる
+
+★ ResBlock
+
+<img src='assets/WGAN-gp_ResBlock.png' width=300>
+
+Pytorchによる結果はこんな感じ。それっぽい画像はできている。WGAN-GPは収束がかなり早いので、見ていて楽しいと思う★
+
+| 50k iteration |
+|:---:|
+| <img src='answers_image/WGAN-GP_iter_50k.jpg' width=500> |
+
+- Pytorch [answers/WGAN-GP_cifar10_pytorch.py](answers/WGAN-GP_cifar10_pytorch.py)
+
 ## Alpha-GAN
 
 元論文 >> 
@@ -394,21 +415,23 @@ AlphaGANの構造は下図。赤線がGAN、青線がVAEの構造を取ってい
 
 <img src='assets/alphaGAN.png' width=500>
 
+Generator, DiscriminatorはWGAN-GPと同じ。EncoderはGeneratorの逆の構造にしている。
+
 学習は1イテレーション毎に次の４ステップを繰り返す。
 
-1. Encoderの学習
+### 1. Encoderの学習
 
 ReconstructionLoss と CodeDiscriminator のLossを使う。
 
 <img src='assets/alphaGAN_LossE.png' width=400>
 
-2. Generatorの学習
+### 2. Generatorの学習
 
 ReconstructionLoss と Discriminator のLossを使う。論文に記載はないが、Generatorの更新は一度に２回行うことで、学習を進めるコツとなる。
 
 <img src='assets/alphaGAN_LossG.png' width=400>
 
-3. Discriminatorの学習
+### 3. Discriminatorの学習
 
 Discriminator のLossを使う。
 
@@ -416,7 +439,7 @@ Encoderの出力のzとガウス分布からサンプルされたzをGenerator�
 
 <img src='assets/alphaGAN_LossD.png' width=400>
 
-4. CodeDiscriminatorの学習
+### 4. CodeDiscriminatorの学習
 
 CodeDiscriminator のLossを使う。
 

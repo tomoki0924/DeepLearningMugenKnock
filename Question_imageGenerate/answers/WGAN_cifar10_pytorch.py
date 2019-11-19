@@ -202,51 +202,39 @@ def train():
             for param in D.parameters():
                 param.data.clamp_(-clip_value, clip_value)
 
+            # sample real image from dataset
             x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
 
-            #dis.train()
-
+            # sample noize z from normal distribution [-1, 1]
             z = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
-            #input_noise = np.random.normal(0, 1, (mb, 100, 1, 1))
             z = torch.tensor(z, dtype=torch.float).to(device)
 
+            # feedforward G(z)
             Gz = G(z)
 
-            #X = torch.cat([x, g_output])
-            #t = [1] * mb + [-1] * mb
-            #t = torch.tensor(t, dtype=torch.float).to(device)
-
+            # loss for fake
             loss_D_fake = D(Gz).mean(0).view(1)
+
+            # loss for real
             loss_D_real = D(x).mean(0).view(1)
             loss_D_real.backward(one)
             loss_D_fake.backward(minus_one)
-            loss_D = loss_D_fake - loss_D_real #torch.mean(loss_fake) - torch.mean( loss_real)
+
+            # total loss
+            loss_D = loss_D_fake - loss_D_real 
 
             Wasserstein_distance = loss_D_real - loss_D_fake
-
-            #dy = dis(x)[:, 0]
-            #loss_d = torch.nn.BCELoss()(dy, t)
-
-            #loss_d.backward()
             opt_D.step()
 
-            
 
-
-        #param.data = torch.clamp(param.data, min=-clip_value, max=clip_value)
-
-        #if (i+1) % n_critic == 0:
-        # generator training
+        # Generator training
         opt_G.zero_grad()
-        #dis.eval()
 
+        # sample noize z from normal distribution [-1, 1]
         z = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
-        #input_noise = np.random.normal(0, 1, (mb, 100, 1, 1))
         z = torch.tensor(z, dtype=torch.float).to(device)
-        #y = gan(input_noise)[:, 0]
-        #t = torch.tensor([1] * mb, dtype=torch.float).to(device)
-        #loss_g = torch.nn.BCELoss()(y, t)
-
+    
+        # loss for fake
         loss_G = D(G(z)).mean(0).view(1)
 
         loss_G.backward(one)
