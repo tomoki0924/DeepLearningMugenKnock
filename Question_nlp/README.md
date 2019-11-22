@@ -358,7 +358,7 @@ Encoderの出力をSession-level RNNの入力にして、内部状態を逐次�
 
 Decoderの出力を次のEncoderの入力にしても、Session-level RNNの内部状態は保持されるので、過去の会話状況を考慮しながら、Decoderから会話が出力される。
 
-| HREd|
+| HRED|
 |:---:|
 | <img src='assets/HRED.png' width=800> |
 
