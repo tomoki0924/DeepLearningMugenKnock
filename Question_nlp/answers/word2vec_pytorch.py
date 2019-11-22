@@ -247,20 +247,21 @@ def test(first_sentence="サンドウィッチマン"):
     # feature vectors library
     features = np.ndarray([0, hidden_dim])
 
-    for i in range(0, voca_num, mb):
-        # get minibatch
-        _mb = min(mb, voca_num - i)
+    with torch.no_grad():
+        for i in range(0, voca_num, mb):
+            # get minibatch
+            _mb = min(mb, voca_num - i)
 
-        # one hot vector
-        input_X = torch.zeros([_mb, voca_num], dtype=torch.float).to(device)
-        input_X[np.arange(_mb), np.arange(i, min(i + mb, voca_num))] = 1
+            # one hot vector
+            input_X = torch.zeros([_mb, voca_num], dtype=torch.float).to(device)
+            input_X[np.arange(_mb), np.arange(i, min(i + mb, voca_num))] = 1
 
-        # get vector feature
-        vecs = model.get_vec(input_X)
-        vecs = vecs.detach().cpu().numpy()
+            # get vector feature
+            vecs = model.get_vec(input_X)
+            vecs = vecs.detach().cpu().numpy()
 
-        # add feature vectors
-        features = np.vstack([features, vecs])
+            # add feature vectors
+            features = np.vstack([features, vecs])
 
     print(features.shape)
 

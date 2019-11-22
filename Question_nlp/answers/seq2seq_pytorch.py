@@ -325,82 +325,83 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
     encoder.load_state_dict(torch.load('encoder.pt'))
     decoder.load_state_dict(torch.load('decoder.pt'))
 
-    xs = []
-    for x in mecab.parse(first_sentence).strip().split(" "):
-        if x in voca:
-            xs += [voca.index(x)]
-        else:
-            xs += [voca.index("<UNKNOWN>")]
-
-    xs = torch.tensor(xs, dtype=torch.long).to(device)
-
-    count = 0
-
-    print("A:", first_sentence)
-
-    while count < 100:
-        input_length = xs.size()[0]
-        encoder_hidden = encoder.initHidden()
-
-        encoder_outputs = torch.zeros(MAX_LENGTH, hidden_dim).to(device)
-
-        for ei in range(input_length):
-            encoder_output, encoder_hidden = encoder(xs[ei], encoder_hidden)
-            encoder_outputs[ei] += encoder_output[0, 0]
-
-        decoder_input = torch.tensor([[voca.index("<BOS>")]], device=device)  # SOS
-
-        decoder_hidden = encoder_hidden
-        decoded_words = []
-        decoder_attentions = torch.zeros(MAX_LENGTH, MAX_LENGTH)
-
-        for di in range(MAX_LENGTH):
-            if Attention:
-                decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
-                decoder_attentions[di] = decoder_attention.data
+    with torch.no_grad():
+        xs = []
+        for x in mecab.parse(first_sentence).strip().split(" "):
+            if x in voca:
+                xs += [voca.index(x)]
             else:
-                decoder_output, decoder_hidden = decoder(decoder_input, decoder_hidden)
+                xs += [voca.index("<UNKNOWN>")]
 
-            # choice argmax
-            if next_word_mode == "argmax":
-                topv, topi = decoder_output.data.topk(1)
+        xs = torch.tensor(xs, dtype=torch.long).to(device)
 
-            elif next_word_mode == "prob":
-                topi = torch.multinomial(decoder_output, 1)
+        count = 0
 
-            if topi.item() == voca.index("<EOS>"):
-                decoded_words.append('<EOS>')
+        print("A:", first_sentence)
+
+        while count < 100:
+            input_length = xs.size()[0]
+            encoder_hidden = encoder.initHidden()
+
+            encoder_outputs = torch.zeros(MAX_LENGTH, hidden_dim).to(device)
+
+            for ei in range(input_length):
+                encoder_output, encoder_hidden = encoder(xs[ei], encoder_hidden)
+                encoder_outputs[ei] += encoder_output[0, 0]
+
+            decoder_input = torch.tensor([[voca.index("<BOS>")]], device=device)  # SOS
+
+            decoder_hidden = encoder_hidden
+            decoded_words = []
+            decoder_attentions = torch.zeros(MAX_LENGTH, MAX_LENGTH)
+
+            for di in range(MAX_LENGTH):
+                if Attention:
+                    decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
+                    decoder_attentions[di] = decoder_attention.data
+                else:
+                    decoder_output, decoder_hidden = decoder(decoder_input, decoder_hidden)
+
+                # choice argmax
+                if next_word_mode == "argmax":
+                    topv, topi = decoder_output.data.topk(1)
+
+                elif next_word_mode == "prob":
+                    topi = torch.multinomial(decoder_output, 1)
+
+                if topi.item() == voca.index("<EOS>"):
+                    decoded_words.append('<EOS>')
+                    break
+                elif topi.item() == voca.index("<FINISH>"):
+                    break
+                else:
+                    decoded_words.append(voca[topi.item()])
+
+                decoder_input = topi.squeeze().detach()
+
+            decoded_words = decoded_words[1:-1]
+
+            xs = [voca.index(x) for x in decoded_words]  
+            xs = torch.tensor(xs).to(device)
+
+            sentence = "".join(decoded_words)
+
+            if "<FINISH>" in sentence:
                 break
-            elif topi.item() == voca.index("<FINISH>"):
-                break
+
+            for key in ["<BOS>", "<EOS>", "<FINISH>", "<UNKNOWN>"]:
+                sentence = sentence.replace(key, "")
+            
+            attention = decoder_attentions[:di + 1]
+
+            
+            
+            if count % 2 == 0:
+                print("B:", sentence)
             else:
-                decoded_words.append(voca[topi.item()])
+                print("A:", sentence)
 
-            decoder_input = topi.squeeze().detach()
-
-        decoded_words = decoded_words[1:-1]
-
-        xs = [voca.index(x) for x in decoded_words]  
-        xs = torch.tensor(xs).to(device)
-
-        sentence = "".join(decoded_words)
-
-        if "<FINISH>" in sentence:
-            break
-
-        for key in ["<BOS>", "<EOS>", "<FINISH>", "<UNKNOWN>"]:
-            sentence = sentence.replace(key, "")
-        
-        attention = decoder_attentions[:di + 1]
-
-        
-        
-        if count % 2 == 0:
-            print("B:", sentence)
-        else:
-            print("A:", sentence)
-
-        count += 1
+            count += 1
     
 
 def arg_parse():

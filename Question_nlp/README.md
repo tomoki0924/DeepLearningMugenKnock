@@ -330,6 +330,60 @@ Table.3に様々なタイプのパラメータが載っているが、ここで�
 答え
 - PyTorch [answers/seq2seq_attention_hardAttention_pytorch.py](answers/seq2seq_attention_hardAttention_pytorch.py)
 
+## Q. HRED
+
+元論文 >>
+- A Hierarchical Recurrent Encoder-Decoder For Generative Context-Aware Query Suggestion https://arxiv.org/abs/1507.02221 (2015)
+
+HREDは Hierarchical Recurrent Encoder Decoderの略。
+
+簡単に言えば、会話の流れを汲み取りながら会話を自動生成するもの。 seq2seqの進化系。
+
+seq2seqはこんな構造だった。
+
+会話の要素（単語単位とか１文字ずつ）を順次EncoderのRNNに入力して内部状態（Hidden State)を更新する。
+
+その内部状態をDecoderの状態の初期値として、BOSを入力すると、何かしらの単語が出力される。その単語を次のDecoderの入力にして、次の単語を出力させる。
+
+これがseq2seqのアルゴリズムだが、これは１つの対話にしか対応できない。
+つまり、Decoderの出力「何でだよ」を次のEncoderの入力にしても、Encoderの内部状態はリセットされるので、過去の流れ(contextという)がないまま、次の対話を生成しようとする。
+
+| seq2seq|
+|:---:|
+| <img src='assets/seq2seq.png' width=800> |
+
+HREDはseq2seqの上記の問題を解決するための、HRED構造が導入された。HREDはEncoderとDecoderの間に１つのRNNが追加されている。論文ではこれをSession-lebel RNNと呼んでいる
+
+Encoderの出力をSession-level RNNの入力にして、内部状態を逐次更新していく。この内部状態をDecoderの状態の初期値として、Decoderで会話を生成していく。
+
+Decoderの出力を次のEncoderの入力にしても、Session-level RNNの内部状態は保持されるので、過去の会話状況を考慮しながら、Decoderから会話が出力される。
+
+| HREd|
+|:---:|
+| <img src='assets/HRED.png' width=800> |
+
+これがpytorchでの学習後、「ちょっとなにいってるかわからない」を入力した結果。かなり会話になっていることと、seq2seqよりも自然な会話に近づいていることが分かる。
+
+学習
+- Adam(lr=0.001)
+- 5k iteration , 16 minibatch
+- d_h = 256, d_s = 512
+
+```bash
+A: ちょっと何言ってるのか分からない
+B: いっしょにいわなくちゃいけないの。
+A: でちっちぇのしかないんだよ。
+B: じゃねーわだだほらだ。もな！
+A: でちっちぇのしかないんだよ。
+B: でちっちぇのしかないんだよ。ほらよいなんだよな
+...
+```
+
+※解答はseq2seqのプログラムをもとにしているので、Attentionなどのコードも残っている。
+
+答え
+- PyTorch [answers/HRED_pytorch.py](answers/HRED_pytorch.py)
+
 ## Q. Word2Vec (Skip-gram)
 
 答え

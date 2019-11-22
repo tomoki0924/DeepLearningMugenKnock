@@ -15,41 +15,52 @@ torch.manual_seed(0)
 GPU = False
 device = torch.device("cuda" if GPU else "cpu")
 
-mb = 1
+mb = 16
 
 opt = "Adam" # SGD, Adam
 
 # lr, iteration
-train_factors = [[0.001, 4000]] 
+train_factors = [[0.001, 5000]] 
 
 next_word_mode = "prob" # prob, argmax
 
 import MeCab
 mecab = MeCab.Tagger("-Owakati")
 
-hidden_dim = 512
+# RNN parameters
+hidden_dim = 256 # d_h in original paper
 MAX_LENGTH = 100
 teacher_forcing_ratio = 0.5
 use_Bidirectional = False # Bi-directional
 dropout_p = 0.1 # Dropout ratio
 num_layers = 1
 
+# Attention parameters
 Attention = True
 Attention_dkv = 64
-Encoder_attention_time = 6  # Transformer technique 3 : Hopping if > 1
-Decoder_attention_time = 6  # Transformer technique 3 : Hopping if > 1
+Encoder_attention_time = 0  # Transformer technique 3 : Hopping if > 1
+Decoder_attention_time = 0  # Transformer technique 3 : Hopping if > 1
 use_Source_Target_Attention = True # use source target attention
 use_Encoder_Self_Attention = True # self attention of Encoder
 use_Decoder_Self_Attention = True # self attention of Decoder
 MultiHead_Attention_N = 8 # Multi head attention Transformer technique 1
 use_FeedForwardNetwork = True # Transformer technique 4
-FeedForwardNetwork_dff = 2048
+FeedForwardNetwork_dff = 128
 use_PositionalEncoding = True # Transformer technique 5
+use_Hard_Attention_Encoder = True # Hard Attention for Self Attention in Encoder
+use_Hard_Attention_SourceTargetAttention_Decoder = True # Hard Attention for Source Target Attention in Decoder
+use_Hard_Attention_SelfAttention_Decoder = True # Hard Attention for Self Attention in Decoder
 
 
 # automatically get RNN hidden dimension from above config
 RNN_dim = hidden_dim * 2 if use_Bidirectional else hidden_dim
 tensor_dim = num_layers * 2 if use_Bidirectional else num_layers
+
+# HRED parameters
+HRED_Session = 5
+HRED_hidden_dim = 512 # d_s in original paper
+#HRED_out_dim = HRED_hidden_dim * 2 if HRED_use_Bidirectional else HRED_hidden_dim
+
 
 
 class Encoder(torch.nn.Module):
@@ -61,7 +72,8 @@ class Encoder(torch.nn.Module):
         MultiHead_Attention_N=2,
         use_FFNetwork=False,
         FeedForwardNetwork_dff=2048,
-        use_PositionalEncoding=False):
+        use_PositionalEncoding=False,
+        use_Hard_Attention=False):
     
         super(Encoder, self).__init__()
         self.max_length = max_length
@@ -88,7 +100,8 @@ class Encoder(torch.nn.Module):
                         dropout_p=dropout_p, 
                         max_length=max_length, 
                         #self_Attention_Decoder=True, 
-                        head_N=MultiHead_Attention_N
+                        head_N=MultiHead_Attention_N,
+                        hard_Attention=use_Hard_Attention
                         ))
 
                 # Feed Forward Network
@@ -138,7 +151,9 @@ class Decoder(torch.nn.Module):
         MultiHead_Attention_N=2,
         use_FFNetwork=False,
         FeedForwardNetwork_dff=2048,
-        use_PositionalEncoding=False):
+        use_PositionalEncoding=False,
+        use_Hard_Attention_SelfAttention=False,
+        use_Hard_Attention_SourceTargetAttention=False):
 
         super(Decoder, self).__init__()
 
@@ -170,7 +185,8 @@ class Decoder(torch.nn.Module):
                         dropout_p=dropout_p, 
                         max_length=max_length, 
                         self_Attention_Decoder=True,
-                        head_N=MultiHead_Attention_N
+                        head_N=MultiHead_Attention_N,
+                        hard_Attention=use_Hard_Attention_SelfAttention
                         ))
                 
                 # step1 : Source Target Attention
@@ -182,7 +198,8 @@ class Decoder(torch.nn.Module):
                         output_dim=hidden_dim,
                         dropout_p=dropout_p, 
                         max_length=max_length,
-                        head_N=MultiHead_Attention_N
+                        head_N=MultiHead_Attention_N,
+                        hard_Attention=use_Hard_Attention_SourceTargetAttention
                         ))
 
                 # Feed Forward Network
@@ -225,7 +242,18 @@ class Decoder(torch.nn.Module):
 
 
 class Attention(torch.nn.Module):
-    def __init__(self, hidden_dim, memory_dim, attention_dkv, output_dim, dropout_p=0.1, max_length=MAX_LENGTH, head_N=1, self_Attention_Decoder=False):
+    def __init__(self, 
+        hidden_dim, 
+        memory_dim, 
+        attention_dkv, 
+        output_dim, 
+        dropout_p=0.1, 
+        max_length=MAX_LENGTH, 
+        head_N=1, 
+        self_Attention_Decoder=False,
+        hard_Attention=False
+        ):
+
         super(Attention, self).__init__()
         self.hidden_dim = hidden_dim
         self.attention_dkv = attention_dkv
@@ -233,6 +261,7 @@ class Attention(torch.nn.Module):
         self.max_length = max_length
         self.head_N = head_N
         self.self_Attention_Decoder = self_Attention_Decoder
+        self.hard_Attention=hard_Attention
 
         # Attention Query
         #self.Q_embedding = torch.nn.Embedding(self.output_size, hidden_dim)
@@ -310,6 +339,14 @@ class Attention(torch.nn.Module):
         
         # get attention weight
         attention_weights = F.softmax(QK, dim=-1)
+
+        # hard attention
+        if self.hard_Attention:
+            _attention_weights = torch.zeros(attention_weights.size(), dtype=torch.float)
+            argmax = torch.argmax(attention_weights, dim=-1)[:, 0]
+            _attention_weights[[_x for _x in range(argmax.size()[0])], :, argmax] = 1
+            attention_weights = _attention_weights
+        
         
         # get Value
         V = self.V_dense(memory)
@@ -376,6 +413,21 @@ class PositionalEncoding(torch.nn.Module):
         return x
 
 
+class HRED(torch.nn.Module):
+    def __init__(self, decoder_dim, hidden_dim, num_layers=1, use_Bidirectional=False):
+        super(HRED, self).__init__()
+        self.hidden_dim = hidden_dim
+
+        # output GRU
+        self.gru = torch.nn.GRU(decoder_dim, hidden_dim, num_layers=num_layers, bidirectional=use_Bidirectional)
+
+    def forward(self, x, hidden):
+        x, hidden = self.gru(x, hidden)
+        return x, hidden
+
+    def initHidden(self):
+        return torch.zeros([tensor_dim, 1, hidden_dim], device=device)
+
     
 def data_load():
     sentence_pairs = []
@@ -384,46 +436,63 @@ def data_load():
 
     voca = ["<BOS>", "<EOS>", "<FINISH>", "<UNKNOWN>"] + [c for c in _chars]
 
+    # each file
     for file_path in glob("./sandwitchman*.txt"):
         print("read:", file_path)
         with open(file_path, 'r') as f:
+            # read all lines in file
             lines = [x.strip() for x in f.read().strip().split("\n")]
         
+            # add new vocabrary
             for line in lines:
                 voca = list(set(voca) | set(mecab.parse(line).strip().split(" ")))
 
-            lines_before = lines
-            lines_after = lines[1:] + ["<FINISH>"]
-            sentence_pairs += [[s1, s2] for (s1, s2) in zip(lines_before, lines_after)]
+            # add finish flag
+            lines += ['<FINISH>']
 
+            # parse lines to [[s1, s2, ..., sN], [s2, s3, ..., sN+1], ..., ]
+            session_sentences = [[lines[i + j] for j in range(HRED_Session)] for i in range(0, len(lines) - HRED_Session)]
+
+    # vocabrary sort
     voca.sort()
 
-    print("sentence pairs num:", len(sentence_pairs))
+    print("sentences num:", len(session_sentences))
     
-    sentence_pairs_index = []
+    session_sentence_index = []
 
-    for s1, s2 in sentence_pairs:
-        s1_parse = mecab.parse(s1).strip().split(" ")
-        if s2 == "<FINISH>":
-            s2_parse = ["<BOS>", s2, "<EOS>"]
+    # each session sentences
+    for sentences in session_sentences:
+        sentence_index = []
+
+        # each sentence
+        for i in range(HRED_Session - 1):
+            # parse to semantic element
+            sentence_parsed = mecab.parse(sentences[i]).strip().split(' ')
+            # get index of element in vocabrary
+            sentence_voca_index = [voca.index(x) for x in sentence_parsed]
+            sentence_index.append(sentence_voca_index)
+
+        # last sentence
+        last_sentence = sentences[-1]
+        # if session finish flag
+        if last_sentence == '<FINISH>':
+            sentence_parsed = [last_sentence, '<EOS>']
         else:
-            s2_parse = ["<BOS>"] + mecab.parse(s2).strip().split(" ") + ["<EOS>"]
+            sentence_parsed = mecab.parse(last_sentence).strip().split(' ') + ['<EOS>']
         
-        s1_index = [voca.index(x) for x in s1_parse]
-        s2_index = [voca.index(x) for x in s2_parse]
+        # get index of element in vocabrary
+        sentence_voca_index = [voca.index(x) for x in sentence_parsed]
+        sentence_index.append(sentence_voca_index)
         
-        sentence_pairs_index += [[s1_index, s2_index]]
+        session_sentence_index.append(sentence_index)
 
-
-    #sentence_pairs_index = np.array(sentence_pairs_index)
-
-    return voca, sentence_pairs_index
+    return voca, session_sentence_index
 
 
 # train
 def train():
     # data load
-    voca, sentence_pairs = data_load()
+    voca, session_sentences = data_load()
     voca_num = len(voca)
 
     pickle.dump(voca, open("vocabrary.bn", "wb"))
@@ -444,7 +513,8 @@ def train():
         MultiHead_Attention_N=MultiHead_Attention_N,
         use_FFNetwork=use_FeedForwardNetwork,
         FeedForwardNetwork_dff=FeedForwardNetwork_dff,
-        use_PositionalEncoding=use_PositionalEncoding
+        use_PositionalEncoding=use_PositionalEncoding,
+        use_Hard_Attention=use_Hard_Attention_Encoder
         ).to(device) 
 
     decoder = Decoder(
@@ -460,12 +530,21 @@ def train():
         MultiHead_Attention_N=MultiHead_Attention_N,
         use_FFNetwork=use_FeedForwardNetwork,
         FeedForwardNetwork_dff=FeedForwardNetwork_dff,
-        use_PositionalEncoding=use_PositionalEncoding
+        use_PositionalEncoding=use_PositionalEncoding,
+        use_Hard_Attention_SelfAttention=use_Hard_Attention_SelfAttention_Decoder,
+        use_Hard_Attention_SourceTargetAttention=use_Hard_Attention_SourceTargetAttention_Decoder
         ).to(device)
+
+    hred = HRED(
+        decoder_dim=hidden_dim,
+        hidden_dim=hidden_dim,
+        num_layers=num_layers,
+        use_Bidirectional=use_Bidirectional
+    )
 
     mbi = 0
 
-    data_num = len(sentence_pairs)
+    data_num = len(session_sentences)
     train_ind = np.arange(data_num)
     np.random.seed(0)
     np.random.shuffle(train_ind)
@@ -475,16 +554,19 @@ def train():
     for lr, ite in train_factors:
         print("lr", lr, " ite", ite)
 
+        # define optimizer
         if opt == "SGD":
             encoder_optimizer = torch.optim.SGD(encoder.parameters(), lr=lr, momentum=0.9)
             decoder_optimizer = torch.optim.SGD(decoder.parameters(), lr=lr, momentum=0.9)
+            hred_optimizer = torch.optim.SGD(hred.parameters(), lr=lr, momentum=0.9)
         elif opt == "Adam":
             encoder_optimizer = torch.optim.Adam(encoder.parameters(), lr=lr, betas=(0.9, 0.98))
             decoder_optimizer = torch.optim.Adam(decoder.parameters(), lr=lr, betas=(0.9, 0.98))
+            hred_optimizer = torch.optim.Adam(hred.parameters(), lr=lr, betas=(0.9, 0.98))
         else:
             raise Exception("invalid optimizer:", opt)
         
-        
+        # for each iteration
         for ite in range(ite):
             if mbi + mb > data_num:
                 mb_ind = copy(train_ind[mbi:])
@@ -494,94 +576,127 @@ def train():
                 mb_ind = train_ind[mbi: mbi+mb]
                 mbi += mb
 
-            x_pairs = [sentence_pairs[i] for i in mb_ind]
+            # get minibatch
+            session_sentences_minibatch = [session_sentences[i] for i in mb_ind]
 
             loss = 0
             accuracy = 0.
             total_len = 0
 
+            # for each minibatch data
             for mb_index in range(mb):
-                xs = torch.tensor(x_pairs[mb_index][0]).to(device).view(-1, 1)
-                xs_float = torch.tensor(x_pairs[mb_index][0], dtype=torch.float).to(device).view(-1, 1)
-                ts = torch.tensor(x_pairs[mb_index][1]).to(device).view(-1, 1)
-            
-                encoder_hidden = encoder.initHidden()
+                # get session sentences for one minibatch
+                Xs = session_sentences_minibatch[mb_index]
+                #Xs = torch.tensor(session_sentences_minibatch[mb_index]).to(device).view(HRED_Session, -1, 1)
+                #Xs_float = torch.tensor(Xs, dtype=torch.float).to(device)
 
+                #xs = torch.tensor(x_pairs[mb_index][0]).to(device).view(-1, 1)
+                #xs_float = torch.tensor(x_pairs[mb_index][0], dtype=torch.float).to(device).view(-1, 1)
+                #ts = torch.tensor(x_pairs[mb_index][1]).to(device).view(-1, 1)
+            
+                # get initiate state for Encoder and HRED
+                encoder_hidden = encoder.initHidden()
+                hred_hidden = hred.initHidden()
+
+                # reset gradient
                 encoder_optimizer.zero_grad()
                 decoder_optimizer.zero_grad()
+                hred_optimizer.zero_grad()
+
+                # for each session sentence
+                for session_index in range(HRED_Session - 1):
             
-                xs_length = xs.size()[0]
-                ts_length = ts.size()[0]
+                    # get sentence sequence for Encoder
+                    X_encoder = torch.tensor(Xs[session_index]).to(device).view(-1, 1)
+                    #X_encoder_float = torch.tensor(X_encoderm dtype=torch.float).to(device)
 
-                total_len += ts_length
-
-                encoder_outputs = torch.zeros(MAX_LENGTH, RNN_dim).to(device)
-
-                for ei in range(xs_length):
-                    encoder_output, encoder_hidden = encoder(xs[ei], encoder_hidden, xs)
-                    encoder_outputs[ei] = encoder_output[0, 0]
-
-                decoder_xs = torch.tensor([[voca.index("<BOS>")]]).to(device)
-            
-                decoder_hidden = encoder_hidden
-                
-                use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
-
-                self_memory = decoder_xs
-
-                if use_teacher_forcing:
-                    # Teacher forcing: Feed the target (ground-truth word) as the next input
-                    for di in range(ts_length):
-                        decoder_ys, decoder_hidden, decoder_attention = decoder(decoder_xs, decoder_hidden, encoder_outputs, self_memory)
-
-        
-                        # add loss
-                        loss += loss_fn(torch.log(decoder_ys), ts[di])
-
-                        # count accuracy
-                        if decoder_ys.argmax() == ts[di]:
-                            accuracy += 1.
+                    # sample recent decoder output as encoder's input
+                    if (session_index > 0) and (np.random.random() < 0.5):
+                        X_encoder = self_memory
                             
-                        # set next decoder's input (ground-truth label)
-                        decoder_xs = ts[di].view(1, -1)
-                        #self_memory[di] = decoder_xs.clone().detach()[0]
-                        self_memory = torch.cat([self_memory, decoder_xs])
+                    X_encoder_length = X_encoder.size()[0]
 
-                else:
-                    # Without teacher forcing: use its own predictions as the next input
-                    for di in range(ts_length):
-                        decoder_ys, decoder_hidden, decoder_attention = decoder(decoder_xs, decoder_hidden, encoder_outputs, self_memory)
-                        
-                        # Select top 1 word with highest probability
-                        #topv, topi = decoder_ys.topk(1)
-                        # choice argmax
-                        if next_word_mode == "argmax":
-                            topv, topi = decoder_ys.data.topk(1)
+                    # get sentence sequence for Decoder
+                    #X_decoder = Xs[session_index + 1]
+                    X_decoder = torch.tensor(Xs[session_index + 1]).to(device).view(-1, 1)
+                    X_decoder_length = X_decoder.size()[0]
+                    total_len += X_decoder_length
 
-                        elif next_word_mode == "prob":
-                            topi = torch.multinomial(decoder_ys, 1)
-                        
-                        # set next input for decoder training
-                        decoder_xs = topi.squeeze().detach().view(1, -1)
+                    encoder_outputs = torch.zeros(MAX_LENGTH, RNN_dim).to(device)
 
-                        # add loss
-                        loss += loss_fn(torch.log(decoder_ys), ts[di])
+                    # update Encoder
+                    for ei in range(X_encoder_length):
+                        encoder_output, encoder_hidden = encoder(X_encoder[ei], encoder_hidden, X_encoder)
+                        encoder_outputs[ei] = encoder_output[0, 0]
 
-                        # count accuracy
-                        if decoder_ys.argmax() == ts[di]:
-                            accuracy += 1.
 
-                        if decoder_xs.item() == voca.index("<EOS>"):
-                            break
+                    # initialize HRED input
+                    hred_input = encoder_output
+                    
+                    # update HRED
+                    hred_output, hred_hidden = hred(hred_input, hred_hidden)
 
-                        self_memory = torch.cat([self_memory, decoder_xs])
+                    # input 
+                    decoder_xs = torch.tensor([[voca.index("<BOS>")]]).to(device)
+                    decoder_hidden = hred_hidden
+                    
+                    use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
+                    self_memory = decoder_xs
+                    
+                    # update Decoder
+                    if use_teacher_forcing:
+                        # Teacher forcing: Feed the target (ground-truth word) as the next input
+                        for di in range(X_decoder_length):
+                            decoder_ys, decoder_hidden, decoder_attention = decoder(decoder_xs, decoder_hidden, encoder_outputs, self_memory)
+
+            
+                            # add loss
+                            loss += loss_fn(torch.log(decoder_ys), X_decoder[di])
+
+                            # count accuracy
+                            if decoder_ys.argmax() == X_decoder[di]:
+                                accuracy += 1.
+                                
+                            # set next decoder's input (ground-truth label)
+                            decoder_xs = X_decoder[di].view(1, -1)
+                            self_memory = torch.cat([self_memory, decoder_xs])
+
+                    else:
+                        # Without teacher forcing: use its own predictions as the next input
+                        for di in range(X_decoder_length):
+                            decoder_ys, decoder_hidden, decoder_attention = decoder(decoder_xs, decoder_hidden, encoder_outputs, self_memory)
+                            
+                            # Select top 1 word with highest probability
+                            #topv, topi = decoder_ys.topk(1)
+                            # choice argmax
+                            if next_word_mode == "argmax":
+                                topv, topi = decoder_ys.data.topk(1)
+
+                            elif next_word_mode == "prob":
+                                topi = torch.multinomial(decoder_ys, 1)
+                            
+                            # set next input for decoder training
+                            decoder_xs = topi.squeeze().detach().view(1, -1)
+                            self_memory = torch.cat([self_memory, decoder_xs])
+
+                            # add loss
+                            loss += loss_fn(torch.log(decoder_ys), X_decoder[di])
+
+                            # count accuracy
+                            if decoder_ys.argmax() == X_decoder[di]:
+                                accuracy += 1.
+
+                            if decoder_xs.item() == voca.index("<EOS>"):
+                                break
+
+                            
             loss.backward()
 
             encoder_optimizer.step()
             decoder_optimizer.step()
 
-            loss = loss.item() / ts_length
+            loss = loss.item() / total_len
             accuracy = accuracy / total_len
 
             if (ite + 1) % 10 == 0:
@@ -610,7 +725,8 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
         MultiHead_Attention_N=MultiHead_Attention_N,
         use_FFNetwork=use_FeedForwardNetwork,
         FeedForwardNetwork_dff=FeedForwardNetwork_dff,
-        use_PositionalEncoding=use_PositionalEncoding
+        use_PositionalEncoding=use_PositionalEncoding,
+        use_Hard_Attention=use_Hard_Attention_Encoder
         ).to(device) 
 
     decoder = Decoder(
@@ -626,8 +742,17 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
         MultiHead_Attention_N=MultiHead_Attention_N,
         use_FFNetwork=use_FeedForwardNetwork,
         FeedForwardNetwork_dff=FeedForwardNetwork_dff,
-        use_PositionalEncoding=use_PositionalEncoding
+        use_PositionalEncoding=use_PositionalEncoding,
+        use_Hard_Attention_SelfAttention=use_Hard_Attention_SelfAttention_Decoder,
+        use_Hard_Attention_SourceTargetAttention=use_Hard_Attention_SourceTargetAttention_Decoder
         ).to(device)
+
+    hred = HRED(
+        decoder_dim=hidden_dim,
+        hidden_dim=hidden_dim,
+        num_layers=num_layers,
+        use_Bidirectional=use_Bidirectional
+    )
 
     
     encoder.load_state_dict(torch.load('encoder.pt'))
@@ -647,23 +772,38 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
 
         print("A:", first_sentence)
 
+        # get initiate state for Encoder and HRED
+        hred_hidden = hred.initHidden()
+
         while count < 100:
             input_length = xs.size()[0]
-            encoder_hidden = encoder.initHidden()
+            decoded_words = []
 
             encoder_outputs = torch.zeros(MAX_LENGTH, RNN_dim).to(device)
+
+            # update encoder
+            encoder_hidden = encoder.initHidden()
 
             for ei in range(input_length):
                 encoder_output, encoder_hidden = encoder(xs[ei], encoder_hidden, xs)
                 encoder_outputs[ei] = encoder_output[0, 0]
 
-            decoder_x = torch.tensor([[voca.index("<BOS>")]], device=device)  # SOS
 
-            decoder_hidden = encoder_hidden
-            decoded_words = []
+            # initialize HRED input
+            hred_input = encoder_output
+            
+            # update HRED
+            hred_output, hred_hidden = hred(hred_input, hred_hidden)
 
+            # Decoder input 
+            decoder_x = torch.tensor([[voca.index("<BOS>")]]).to(device)
+
+            # Decoder state
+            decoder_hidden = hred_hidden
+            
             self_memory = decoder_x
 
+            # update Decoder
             for di in range(MAX_LENGTH):
                 decoder_ys, decoder_hidden, decoder_attention = decoder(decoder_x, decoder_hidden, encoder_outputs, self_memory)
         
@@ -674,6 +814,7 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
                 elif next_word_mode == "prob":
                     topi = torch.multinomial(decoder_ys, 1)
 
+                # if EOS or FINISH, finish conversation
                 if topi.item() == voca.index("<EOS>"):
                     decoded_words.append('<EOS>')
                     break
@@ -682,6 +823,7 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
                 else:
                     decoded_words.append(voca[topi.item()])
 
+                # next input
                 decoder_x = topi.squeeze().detach().view(1, -1)
 
                 self_memory = torch.cat([self_memory, decoder_x])

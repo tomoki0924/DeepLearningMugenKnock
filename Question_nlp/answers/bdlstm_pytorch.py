@@ -121,26 +121,27 @@ def test():
     pred = 0
     count = 0
         
-    while pred != '@' and count < 1000:
-        in_txt = gens[-n_gram:]
-        x = []
-        for _in in in_txt:
-            _x = [0 for _ in range(num_classes)]
-            _x[chars.index(_in)] = 1
-            x.append(_x)
-        
-        x = np.expand_dims(np.array(x), axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+    with torch.no_grad():
+        while pred != '@' and count < 1000:
+            in_txt = gens[-n_gram:]
+            x = []
+            for _in in in_txt:
+                _x = [0 for _ in range(num_classes)]
+                _x[chars.index(_in)] = 1
+                x.append(_x)
+            
+            x = np.expand_dims(np.array(x), axis=0)
+            x = torch.tensor(x, dtype=torch.float).to(device)
+            
+            pred = model(x)
+            pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
 
-        # sample random from probability distribution
-        ind = np.random.choice(num_classes, 1, p=pred)
-        
-        pred = chars[ind[0]]
-        gens += pred
-        count += 1
+            # sample random from probability distribution
+            ind = np.random.choice(num_classes, 1, p=pred)
+            
+            pred = chars[ind[0]]
+            gens += pred
+            count += 1
 
     # pose process
     gens = gens.replace('#', os.linesep).replace('@', '')

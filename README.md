@@ -37,6 +37,7 @@ Twitterで更新を発信してますぅ
 
 https://twitter.com/curry_frog
 
+- 2019.11.23 [Pytorch] 言語処理・会話生成のHREDを追加
 - 2019.11.19 [Pytorch] 画像生成のWGAN-GPを追加
 - 2019.11.8 [Pytorch]　画像生成のVAEとalphaGANを追加
 - 2019.10.28 [Pytorch] 画像生成のWGANを追加
@@ -265,7 +266,7 @@ $ pip install -r requirements.txt
 | [Conditional GAN cifar10](Question_imageGenerate#conditional-gan) | [✓](Question_imageGenerate/answers/cgan_cifar10_pytorch.py) | | [✓](Question_imageGenerate/answers/cgan_cifar10_tensorflow_slim.py)   | | [✓](Question_imageGenerate/answers/cgan_cifar10_keras.py) |  [✓](Question_imageGenerate/answers/cgan_cifar10_chainer.py) |
 | [pix2pix](Question_imageGenerate#pix2pix) | [✓](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) | |||||2016|
 | [WGAN](Question_imageGenerate#wgan) | [✓](Question_imageGenerate/answers/WGAN_cifar10_pytorch.py) |||||| 2017 |
-| [WGAN-GP](Question_imageGenerate#wgan-gp) | [✓](Question_imageGenerate/answers/WGAN-GP_cifar10_pytorch.py)
+| [WGAN-GP](Question_imageGenerate#wgan-gp) | [✓](Question_imageGenerate/answers/WGAN-GP_cifar10_pytorch.py)  |||||| 2017 |
 | [alpha-GAN](Question_imageGenerate#alpha-gan) MNIST | [✓](Question_imageGenerate/answers/alphaGAN_mnist_pytorch.py) |||||| 2017 |
 | [alpha-GAN](Question_imageGenerate#alpha-gan) CIFAR10 | [✓](Question_imageGenerate/answers/alphaGAN_cifar10_pytorch.py) |||||| 2017 |
 
@@ -289,6 +290,7 @@ $ pip install -r requirements.txt
 | [Seq2Seq + Attention (Step5. Positional Encoding)](Question_nlp#q-seq2seq--attention-step5-positional-encoding) | [✓](Question_nlp/answers/seq2seq_attention_positionalEncoding_pytorch.py) ||||||2017|
 | [Seq2Seq + Attention (Final. Parameter setting)](Question_nlp#q-seq2seq--attention-final-parameter-setting) | [✓](Question_nlp/answers/seq2seq_attention_pytorch.py) ||||||2017|
 | [Seq2Seq + Attention (Hard Attention)](Question_nlp#q-seq2seq--attention-final-parameter-setting) | [✓](Question_nlp/answers/seq2seq_attention_pytorch.py) ||||||2014?|
+| [HRED](Question_nlp#q-seq2seq--attention-final-parameter-setting) | [✓](Question_nlp/answers/HRED_pytorch.py) ||||||2015|
 | [Word2Vec (Skip-gram)](Question_nlp#q-word2vec) | [✓](Question_nlp/answers/word2vec_pytorch.py) |
 
 
