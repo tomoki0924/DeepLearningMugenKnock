@@ -430,7 +430,7 @@ class HRED(torch.nn.Module):
 
     
 def data_load():
-    sentence_pairs = []
+    session_sentences = []
 
     _chars = "あいうおえかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォャュョッー、。「」1234567890!?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.@#"
 
@@ -451,7 +451,7 @@ def data_load():
             lines += ['<FINISH>']
 
             # parse lines to [[s1, s2, ..., sN], [s2, s3, ..., sN+1], ..., ]
-            session_sentences = [[lines[i + j] for j in range(HRED_Session)] for i in range(0, len(lines) - HRED_Session)]
+            session_sentences += [[lines[i + j] for j in range(HRED_Session)] for i in range(0, len(lines) - HRED_Session)]
 
     # vocabrary sort
     voca.sort()
@@ -540,7 +540,7 @@ def train():
         hidden_dim=hidden_dim,
         num_layers=num_layers,
         use_Bidirectional=use_Bidirectional
-    )
+    ).to(device)
 
     mbi = 0
 
@@ -752,7 +752,7 @@ def test(first_sentence="どうもーサンドウィッチマンです"):
         hidden_dim=hidden_dim,
         num_layers=num_layers,
         use_Bidirectional=use_Bidirectional
-    )
+    ).to(device)
 
     
     encoder.load_state_dict(torch.load('encoder.pt'))
