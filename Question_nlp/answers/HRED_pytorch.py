@@ -212,7 +212,7 @@ class Decoder(torch.nn.Module):
             self.attentions = _attentions
 
         # output GRU
-        self.gru = torch.nn.GRU(hidden_dim, hidden_dim, num_layers=num_layers, bidirectional=use_Bidirectional)
+        self.gru = torch.nn.GRU(hidden_dim, RNN_dim, num_layers=num_layers, bidirectional=use_Bidirectional)
         self.out = torch.nn.Linear(RNN_dim, output_dim)
     
 
@@ -426,7 +426,7 @@ class HRED(torch.nn.Module):
         return x, hidden
 
     def initHidden(self):
-        return torch.zeros([tensor_dim, 1, hidden_dim], device=device)
+        return torch.zeros([tensor_dim, 1, HRED_hidden_dim], device=device)
 
     
 def data_load():
@@ -518,9 +518,9 @@ def train():
         ).to(device) 
 
     decoder = Decoder(
-        hidden_dim,
+        HRED_hidden_dim,
         voca_num, 
-        RNN_dim,
+        HRED_hidden_dim,
         attention_dkv=Attention_dkv,
         dropout_p=dropout_p,
         num_layers=num_layers,
@@ -536,8 +536,8 @@ def train():
         ).to(device)
 
     hred = HRED(
-        decoder_dim=hidden_dim,
-        hidden_dim=hidden_dim,
+        decoder_dim=RNN_dim,
+        hidden_dim=HRED_hidden_dim,
         num_layers=num_layers,
         use_Bidirectional=use_Bidirectional
     ).to(device)
