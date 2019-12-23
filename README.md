@@ -1,6 +1,6 @@
 # ディープラーニング∞本ノックぅぅ!!
 
-まだ作成中なのであしからず
+Update now!
 
 何問になるか分からないので∞本になってます。多分これからいろんな技術が出るからどんどん更新する予定でっす。
 これはイモリと一緒にディープラーニングの基礎からDLのライブラリの扱い、どういうDLの論文があったかを実装しながら学んでいくための問題集です。本とか論文読んだだけじゃ机上の空想でしかないので、ネットワークの作成や学習率などのハイパーパラメータの設定を自分の手を動かしながら勉強するための問題集です。
@@ -16,7 +16,7 @@
 - コードの書き方は私の趣向がけっこう出てるので、この書き方キモってなったら自分の書き方でやっていってください。答えはあくまで参考です。FWによってチョクチョク実装に小さな違いがあるのでそこはご愛嬌
 - なんとなく本とか買わずにDLを勉強したいーーーって人向けだと思う
 
-もしこれがみなさんのお役に立ったら寄付や募金なども受け付けてます笑
+もしこれがみなさんのお役に立ったらGithub Sponsorになってください！
 
 ## Related
 
@@ -31,12 +31,14 @@ Study-AI株式会社様ではAIスキルを学ぶためのコンテンツを作�
 
 > [画像処理100本ノック!!](https://github.com/yoyoyo-yo/Gasyori100knock)
 
-## Recent
+## Update
 
 Twitterで更新を発信してますぅ
 
 https://twitter.com/curry_frog
 
+- 2019.12.23 Chainerのサポートが終了したらしいので、PytorchとTensorflowに絞っていきます
+- 2019.12.23 [Pytorch] 可視化 Grad-CAMを追加
 - 2019.11.23 [Pytorch] 言語処理・会話生成のHREDを追加
 - 2019.11.19 [Pytorch] 画像生成のWGAN-GPを追加
 - 2019.11.8 [Pytorch]　画像生成のVAEとalphaGANを追加
@@ -226,6 +228,14 @@ $ pip install -r requirements.txt
 | [DenseNet264](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet264_pytorch.py) | | ||| | 2016 |
 | [MobileNet-v1](Question_model#q-mobilenet-v1) | [✓](Question_model/answers/MobileNet_v1_pytorch.py) | [✓](Question_model/answers/MobileNet_v1_tensorflow_layers.py) ||| | | 2017 |
 | [MobileNet-v2](Question_model#q-mobilenet-v2) | [✓](Question_model/answers/MobileNet_v2_pytorch.py) |||| | | 2019 |
+
+### [Visualization](Question_visualization)
+| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year | 
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | - |
+| [Grad-CAM](Question_semaseg#binalization%E3%81%AB%E3%82%88%E3%82%8Bsemasegstep1-%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_visualization/answers/GradCam_pytorch.py) |
+
+
 
 ### [Semantic Segmentation編](Question_semaseg)
 | 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year | 
