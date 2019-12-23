@@ -233,7 +233,7 @@ $ pip install -r requirements.txt
 | 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year | 
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | - |
-| [Grad-CAM](Question_semaseg#binalization%E3%81%AB%E3%82%88%E3%82%8Bsemasegstep1-%E3%83%87%E3%83%BC%E3%82%BF%E3%82%BB%E3%83%83%E3%83%88%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [✓](Question_visualization/answers/GradCam_pytorch.py) |
+| [Grad-CAM](Question_visualization#grad-cam) | [✓](Question_visualization/answers/GradCam_pytorch.py) | |||| | 2016 |
 
 
 
