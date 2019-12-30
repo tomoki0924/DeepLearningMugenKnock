@@ -16,63 +16,126 @@ channel = 3
 #tf.random.set_random_seed(0)
 
 
-def ResNeXt50(x, keep_prob, train=True):
+def Xception(x, keep_prob, train=True):
 
-    def ResNeXtBlock(x, in_f, f_1, out_f, stride=1, cardinality=32):
+    def XceptionBlock(x, dim=728, cardinality=32):
         
-        depth = f_1 // cardinality
+        depth = dim // cardinality
         
-        res_x = tf.layers.conv2d(x, f_1, [1, 1], strides=stride, padding='same', activation=None)
+        res_x = tf.nn.relu(x)
+        res_x = tf.layers.separable_conv2d(res_x, dim, [3, 3], strides=1, padding='same', activation=None, depth_multiplier=depth)
         res_x = tf.layers.batch_normalization(res_x, training=train)
         res_x = tf.nn.relu(res_x)
 
-        res_x = tf.layers.separable_conv2d(res_x, f_1, [3, 3], strides=1, padding='same', activation=None, depth_multiplier=depth)
+        res_x = tf.layers.separable_conv2d(res_x, dim, [3, 3], strides=1, padding='same', activation=None, depth_multiplier=depth)
         res_x = tf.layers.batch_normalization(res_x, training=train)
         res_x = tf.nn.relu(res_x)
 
-        res_x = tf.layers.conv2d(res_x, out_f, [1, 1], strides=1, padding='same', activation=None)
+        res_x = tf.layers.separable_conv2d(res_x, dim, [3, 3], strides=1, padding='same', activation=None, depth_multiplier=depth)
         res_x = tf.layers.batch_normalization(res_x, training=train)
-        res_x = tf.nn.relu(res_x)
-
-        if in_f != out_f:
-            x = tf.layers.conv2d(x, out_f, [1, 1], strides=1, padding='same', activation=None)
-            x = tf.layers.batch_normalization(x, training=train)
-            x = tf.nn.relu(x)
-
-        if stride != 1:
-            x = tf.layers.max_pooling2d(x, [2, 2], strides=stride, padding='same')
 
         x = tf.add(res_x, x)
-        x = tf.nn.relu(x)
         
         return x
 
+    #-----
+    # Entry flow
+    #-----
+    # conv 1
+    x = tf.layers.conv2d(x, 32, [3, 3], strides=2, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+
+    #-----
+    # conv 2
+    x = tf.layers.conv2d(x, 64, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
     
-    x = tf.layers.conv2d(x, 64, [7, 7], strides=2, padding="same", activation=None)
+    #-----
+    # conv 3
+    # skip connection
+    x_sc = tf.layers.conv2d(x, 128, [3, 3], strides=2, padding="same", activation=None)
+    x_sc = tf.layers.batch_normalization(x_sc, training=train)
+
+    # main stream
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 128, [3, 3], strides=1, padding="same", activation=None)
     x = tf.layers.batch_normalization(x, training=train)
     x = tf.nn.relu(x)
-    
-    x = tf.layers.max_pooling2d(x, [3, 3], strides=2, padding='SAME')
+    x = tf.layers.conv2d(x, 128, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.layers.max_pooling2d(x, [3, 3], strides=2, padding='same')
 
-    x = ResNeXtBlock(x, 64, 64, 256)
-    x = ResNeXtBlock(x, 256, 64, 256)
-    x = ResNeXtBlock(x, 256, 64, 256)
+    # add
+    x = tf.add(x, x_sc)
 
-    x = ResNeXtBlock(x, 256, 128, 512, stride=2)
-    x = ResNeXtBlock(x, 512, 128, 512)
-    x = ResNeXtBlock(x, 512, 128, 512)
-    x = ResNeXtBlock(x, 512, 128, 512)
+    #-----
+    # conv 4
+    # skip connection
+    x_sc = tf.layers.conv2d(x, 256, [3, 3], strides=2, padding="same", activation=None)
+    x_sc = tf.layers.batch_normalization(x_sc, training=train)
 
-    x = ResNeXtBlock(x, 512, 256, 1024, stride=2)
-    x = ResNeXtBlock(x, 1024, 256, 1024)
-    x = ResNeXtBlock(x, 1024, 256, 1024)
-    x = ResNeXtBlock(x, 1024, 256, 1024)
-    x = ResNeXtBlock(x, 1024, 256, 1024)
-    x = ResNeXtBlock(x, 1024, 256, 1024)
+    # main stream
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 256, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 256, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.layers.max_pooling2d(x, [3, 3], strides=2, padding='same')
 
-    x = ResNeXtBlock(x, 1024, 512, 2048, stride=2)
-    x = ResNeXtBlock(x, 2048, 256, 2048)
-    x = ResNeXtBlock(x, 2048, 256, 2048)
+    # add
+    x = tf.add(x, x_sc)
+
+    #-----
+    # conv 5
+    # skip connection
+    x_sc = tf.layers.conv2d(x, 728, [3, 3], strides=2, padding="same", activation=None)
+    x_sc = tf.layers.batch_normalization(x_sc, training=train)
+
+    # main stream
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 728, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 728, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.layers.max_pooling2d(x, [3, 3], strides=2, padding='same')
+
+    # add
+    x = tf.add(x, x_sc)
+
+    #-----
+    # Middle flow
+    for _ in range(8):
+        x = XceptionBlock(x)
+
+    #-----
+    # Exit flow
+    # Exit flow 1
+    # skip connection
+    x_sc = tf.layers.conv2d(x, 1024, [3, 3], strides=2, padding="same", activation=None)
+    x_sc = tf.layers.batch_normalization(x_sc, training=train)
+
+    # main stream
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 728, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 1024, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.layers.max_pooling2d(x, [3, 3], strides=2, padding='same')
+
+    # add
+    x = tf.add(x, x_sc)
+
+    #-----
+    # Exit flow 2
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 1536, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
+    x = tf.nn.relu(x)
+    x = tf.layers.conv2d(x, 2048, [3, 3], strides=1, padding="same", activation=None)
+    x = tf.layers.batch_normalization(x, training=train)
 
     x = tf.reduce_mean(x, axis=[1, 2])
     x = tf.layers.dense(x, num_classes)
@@ -173,13 +236,13 @@ def train():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
     
-    logits = ResNeXt50(X, keep_prob, train=False)
+    logits = Xception(X, keep_prob, train=False)
     preds = tf.nn.softmax(logits)
     
     #loss = tf.reduce_mean(tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=Y))
 
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=Y))
-    optimizer = tf.train.MomentumOptimizer(learning_rate=0.01, momentum=0.9)
+    optimizer = tf.train.MomentumOptimizer(learning_rate=0.001, momentum=0.9)
     train = optimizer.minimize(loss)
 
     correct_pred = tf.equal(tf.argmax(preds, 1), tf.argmax(Y, 1))
@@ -189,7 +252,7 @@ def train():
     xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=10)
 
     # training
-    mb = 32
+    mb = 16
     mbi = 0
     train_ind = np.arange(len(xs))
     np.random.seed(0)
@@ -233,7 +296,7 @@ def test():
     Y = tf.placeholder(tf.float32, [None, num_classes])
     keep_prob = tf.placeholder(tf.float32)
 
-    logits = ResNeXt50(X, keep_prob, train=False)
+    logits = Xception(X, keep_prob, train=False)
     out = tf.nn.softmax(logits)
 
     xs, ts, paths = data_load("../Dataset/test/images/")

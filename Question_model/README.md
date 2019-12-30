@@ -29,7 +29,7 @@ pytorchの参考サイト >> https://github.com/creafz/pytorch-cnn-finetune
 
 ## Q. LeNet
 
-元論文 >> http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf
+元論文 >> Gradient-based learning applied to document recognition http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf (1998)
 
 これが原初のモデル。MNISTと呼ばれる0から9までの手書き数字の判別で使われたCNNモデル。これを実装してください。LeNetはMNIST用に入力サイズが32x32となっているが、ここで用意しているデータセットは128x128サイズです。**よって学習時のデータの入力サイズを32x32にリサイズする必要があります。**
 
@@ -56,7 +56,7 @@ pytorchの参考サイト >> https://github.com/creafz/pytorch-cnn-finetune
 
 ## Q. AlexNet
 
-元論文 >> https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
+元論文 >> ImageNet Classification with Deep Convolutional Neural Networks https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks (2012)
 
 ディープラーニングを流行らせた張本人モデル。ImageNetという画像認識のコンペILSVRC2012で圧倒的一位で優勝したことから現在のディープラーニングブームが起こりました。これを実装してくさい。
 AlexNetでは*Local Response Normalization* という特別な正規化Layerがあります。
@@ -97,7 +97,7 @@ LRNは効果が薄いことから最近ではほとんど使われてません�
 
 ## Q. ZFNet
 
-元論文 >> https://arxiv.org/abs/1311.2901
+元論文 >> Visualizing and Understanding Convolutional Networks https://arxiv.org/abs/1311.2901 (2013)
 
 ILSVRC2013で一位をとったモデル。AlexNetと構造が似てます。
 Alexnetの最初のconvlutionを7x7のカーネルにして、ストライドを2に変更してます。そのかわりに２つ目のconvolutionのストライドを2にしてます。こうすることで、大きなカーネルサイズによる画像の周波数取得を変えてます。論文ではCNNが画像認識を行うまでの解析を主張してｍす。
@@ -129,6 +129,8 @@ Alexnetの最初のconvlutionを7x7のカーネルにして、ストライドを
 
 ## Q. Global Average Pooling
 
+論文 >> Network In Network https://arxiv.org/abs/1312.4400 (2013)
+
 ここではGlobal average poolingを実装してください。これはMLPを使わないでConvolutionaだけのモデル(**FCN: Fully Convolutional Network**)でクラス分類を行うために考案されました。通常クラス分類はMLPをクラスの数だけ用意する必要があるけど、これではネットワークへの入力サイズが固定化されてしまいます。これはMLPの性質による。しかしGAPによりこれは解決されます。
 
 GAPはConvolutionによる生成される特徴マップの内の１チャネルの全部の値のaverage値を取る操作を行います。そうすると、チャネルの数だけの値が取れます。これにSoftmax関数を適用することでクラス分類が行われます。
@@ -157,7 +159,7 @@ GAPはConvolutionによる生成される特徴マップの内の１チャネル
 
 ## Q. Network in network
 
-論文 >> https://arxiv.org/abs/1312.4400
+論文 >> Network In Network https://arxiv.org/abs/1312.4400 (2013)
 
 Network in network(NIN)は1x1のconvoutionを導入したネットワークです。
 
@@ -187,7 +189,7 @@ Convolution | 3 x 3 | 192 | 1 | 1 | ReLU |
 
 ## Q. VGG16
 
-元論文 >> https://arxiv.org/abs/1409.1556
+元論文 >> Very Deep Convolutional Networks for Large-Scale Image Recognition https://arxiv.org/abs/1409.1556 (2014)
 
 VGG16とはOxfort大学の研究グループが提案したモデルであり、けっこう色んな手法のベースに使われているモデルです。VGG16では3x3のカーネルを持ったConvoutionを重ねることでモデルが取得する特徴の非線形性を増大させてます。16というのはconvolutionとMLPを合わせて16という意味らしいっす。
 
@@ -223,6 +225,8 @@ VGG16とはOxfort大学の研究グループが提案したモデルであり、
 - chainer [answers/vgg16_chainer.py](answers/vgg16_chainer.py)
 
 ## Q. VGG19
+
+元論文 >> Very Deep Convolutional Networks for Large-Scale Image Recognition https://arxiv.org/abs/1409.1556 (2014)
 
 VGG19はVGG16にConvolutionが3つ増えたバージョン。こっちよりもVGG16のほうがよく使われてます。多分認識精度とパラメータ数が割に合わないのかと。とりあえずモデル理解のために実装してみましょう。
 
@@ -344,7 +348,7 @@ x = F.max_pooling_2d(x, ksize=2, stride=2)
 
 ## Q. GoogLeNet-v1
 
-元論文 >> https://arxiv.org/abs/1409.4842
+元論文 >> Going Deeper with Convolutions https://arxiv.org/abs/1409.4842 (2014)
 
 - Pytorch [answers/googlenetv1_pytorch.py](answers/googlenetv1_pytorch.py)
 - Tensorflow [answers/googlenetv1_tensorflow_slim.py](answers/googlenetv1_tensorflow_slim.py)
@@ -354,7 +358,7 @@ x = F.max_pooling_2d(x, ksize=2, stride=2)
 
 ##  Q. Batch Normalization
 
-元論文 >> https://arxiv.org/abs/1502.03167
+元論文 >> Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift https://arxiv.org/abs/1502.03167 (2015)
 
 Batch normalizationとは学習をめちゃくちゃ効率化するための手法です。今ではどのディープラーニングでもBNはかかせない存在となっています。
 
@@ -372,7 +376,7 @@ pytorchでは*torch.nn.BatchNorm2d()*, tensorflowでは*tf.layers.batch_normaliz
 
 ## Q. ResNet
 
-元論文 >> https://arxiv.org/abs/1512.03385
+元論文 >> Deep Residual Learning for Image Recognition https://arxiv.org/abs/1512.03385 (2015)
 
 Skip connectionによって、Lossのback propagationの効率化を行った。
 
@@ -416,7 +420,7 @@ Skip connectionによって、Lossのback propagationの効率化を行った。
 
 ## Q. ResNeXt
 
-元論文 >> https://arxiv.org/abs/1611.05431
+元論文 >> Aggregated Residual Transformations for Deep Neural Networks https://arxiv.org/abs/1611.05431 (2016)
 
 ResNetのblockを内を細かく分けて、それらの和をとることでネットワーク内にネットワークを複数作成するモジュールを実現している。
 パラメータ数を減らしながらも精度向上を実現した。
@@ -437,7 +441,7 @@ ResNetのblockを内を細かく分けて、それらの和をとることでネ
 
 ## Q. Xception
 
-元論文 >> https://arxiv.org/abs/1610.02357
+元論文 >> Xception: Deep Learning with Depthwise Separable Convolutions https://arxiv.org/abs/1610.02357 (2016)
 
 - Pytorch [answers/xception_pytorch.py](answers/xception_pytorch.py)
 - TensorFlow [answers/xception_tensorflow_layers.py](answers/xception_tensorflow_layers.py)
@@ -445,7 +449,7 @@ ResNetのblockを内を細かく分けて、それらの和をとることでネ
 
 ## Q. DenseNet
 
-元論文 >> https://arxiv.org/abs/1608.06993
+元論文 >> Densely Connected Convolutional Networks https://arxiv.org/abs/1608.06993 (2016)
 
 ResNetのshortcut connectionは勾配を直接的に前のLayerに伝えられるけども、shorcut connectionをLayerを通した出力に足して(sum)いるのは情報のフローを妨げる可能性があるらしい。
 
@@ -469,7 +473,7 @@ ResNetのshortcut connectionは勾配を直接的に前のLayerに伝えられ�
 
 ## Q. MobileNet-v1
 
-元論文 >> https://arxiv.org/abs/1704.04861?source=post_page---------------------------
+元論文 >> MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications https://arxiv.org/abs/1704.04861?source=post_page--------------------------- (2017)
 
 普通のConvolutionは、カーネルサイズ Dk x Dkを持っていて、出力のチャネルNだけ用意される。
 これに入力のチャネルM、かつ入力の特徴マップDf x Dfに対して適用されるので、全計算量は Dk Dk M N Df Df となる。
@@ -506,7 +510,7 @@ M Df Df (Dk Dk + N) / Dk Dk M N Df Df = (Dk Dk + N) / Dk Dk N = 1 / N + 1 / Dk^2
 
 ## Q. MobileNet-v2
 
-元論文 >> https://arxiv.org/abs/1801.04381
+元論文 >> MobileNetV2: Inverted Residuals and Linear Bottlenecks https://arxiv.org/abs/1801.04381 (2018)
 
 MobileNetを改良したMobileNet-v2では、Convolutionのやり方がさらに変更になっている。
 
@@ -528,4 +532,59 @@ y = min(max(0, x), 6)
 
 となった活性化関数を表す。
 
+本家実装は https://github.com/tensorflow/models/tree/master/research/slim/nets/mobilenet
+
 - Pytorch [answers/MobileNet_v2_pytorch.py](answers/MobileNet_v2_pytorch.py)
+
+## EfficientNet
+
+元論文 >> EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks https://arxiv.org/abs/1905.11946 (2019)
+
+
+EfficientNetは主に３つのモジュールがある。
+
+1. Stem
+
+入力画像に対して、以下操作を行う。
+
+- Conv(channel = 32, kernel_size = 3, padding = 1, stride = 2)
+- BatchNormalization
+- Swish activation
+
+2. Block
+
+ブロックはいくつかの大きく７種類ある。各ブロックは繰り返し数(repeat)が設定されている。
+各ブロックのパラメータは以下のとおり。
+
+| Block | Kernel_size | repeats | filters_in | filters_out | expand_ratio | stride | se_ratio |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Block 1 | 3 | 1 | 32 | 16 | 1 | 1 | 0.25 |
+| Block 2 | 3 | 2 | 16 | 24 | 6 | 2 | 0.25 |
+| Block 3 | 5 | 2 | 24 | 40 | 6 | 2 | 0.25 |
+| Block 4 | 3 | 3 | 40 | 80 | 6 | 2 | 0.25 |
+| Block 5 | 5 | 3 | 80 | 112 | 6 | 1 | 0.25 |
+| Block 6 | 5 | 4 | 112 | 192 | 6 | 2 | 0.25 |
+| Block 7 | 3 | 1 | 192 | 320 | 6 | 1 | 0.25 |
+
+ブロックをそれぞれのrepeatの数だけ繰り返す。
+
+<img src="assets/EfficientNet_block.png" width=300>
+
+
+3. Output
+
+最後は以下の操作をして、クラス予測を出力する。
+- Conv(channel = 1280, kernel_size = 1, padding = 0)
+- BatchNormalization
+- Swish activation
+- Global Average Pooling
+- BatchNormalization
+- Dropout
+- Fully Connected (class number)
+- Softmax
+
+### EfficientNetB0
+
+以下の実装は https://github.com/keras-team/keras-applications/blob/master/keras_applications/efficientnet.py を参照した
+
+- Pytorch [answers/EfficientNetB0_pytorch.py](answers/EfficientNetB0_pytorch.py)

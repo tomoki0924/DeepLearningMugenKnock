@@ -294,7 +294,7 @@ def test():
     device = torch.device("cuda" if GPU else "cpu")
     model = Xception().to(device)
     model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
+    model.load_state_dict(torch.load('cnn.pt', map_location=torch.device(device)))
 
     xs, ts, paths = data_load('../Dataset/test/images/')
 

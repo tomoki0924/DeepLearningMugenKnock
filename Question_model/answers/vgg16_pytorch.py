@@ -6,7 +6,7 @@ import numpy as np
 from glob import glob
 
 num_classes = 2
-img_height, img_width = 224, 224
+img_height, img_width = 128, 128
 channel = 3
 GPU = False
 torch.manual_seed(0)
@@ -28,7 +28,7 @@ class VGG16(torch.nn.Module):
         self.conv5_2 = torch.nn.Conv2d(512, 512, kernel_size=3, padding=1, stride=1)
         self.conv5_3 = torch.nn.Conv2d(512, 512, kernel_size=3, padding=1, stride=1)
         
-        self.fc1 = torch.nn.Linear(25088, 4096)
+        self.fc1 = torch.nn.Linear(int((img_height / 32 * img_width / 32 * 512)), 4096)
         self.fc2 = torch.nn.Linear(4096, 4096)
         self.fc_out = torch.nn.Linear(4096, num_classes)
         
@@ -116,7 +116,7 @@ def train():
 
     # model
     model = VGG16().to(device)
-    opt = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
+    opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     model.train()
 
     xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True)
@@ -128,7 +128,7 @@ def train():
     np.random.seed(0)
     np.random.shuffle(train_ind)
 
-    loss_fn = torch.nn.NLLLoss()
+    loss_func = torch.nn.NLLLoss()
     
     for i in range(500):
         if mbi + mb > len(xs):

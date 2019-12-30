@@ -37,6 +37,7 @@ Twitterで更新を発信してますぅ
 
 https://twitter.com/curry_frog
 
+- 2019.12.30 [Pytorch] EfficientNetB0を追加
 - 2019.12.23 Chainerのサポートが終了したらしいので、PytorchとTensorflowに絞っていきます
 - 2019.12.23 [Pytorch] 可視化 Grad-CAMを追加
 - 2019.11.23 [Pytorch] 言語処理・会話生成のHREDを追加
@@ -228,6 +229,7 @@ $ pip install -r requirements.txt
 | [DenseNet264](Question_model#q-densenet) | [✓](Question_model/answers/DenseNet264_pytorch.py) | | ||| | 2016 |
 | [MobileNet-v1](Question_model#q-mobilenet-v1) | [✓](Question_model/answers/MobileNet_v1_pytorch.py) | [✓](Question_model/answers/MobileNet_v1_tensorflow_layers.py) ||| | | 2017 |
 | [MobileNet-v2](Question_model#q-mobilenet-v2) | [✓](Question_model/answers/MobileNet_v2_pytorch.py) |||| | | 2019 |
+| [EfficientNetB0]() | [✓](Question_model/answers/EfficientNetB0_pytorch.py) |||| | | 2019 |
 
 ### [Visualization](Question_visualization)
 | 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year | 
