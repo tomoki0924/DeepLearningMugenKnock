@@ -24,13 +24,12 @@ device = torch.device("cuda" if GPU and torch.cuda.tp_available() else "cpu")
 torch.manual_seed(0)
 
 
-class EfficientNetB0(torch.nn.Module):
+class EfficientNetB3(torch.nn.Module):
     def __init__(self):
-        super(EfficientNetB0, self).__init__()
-
-        width_coefficient=1
-        depth_coefficient=1
-        dropout_ratio=0.2
+        super(EfficientNetB3, self).__init__()
+        width_coefficient=1.2
+        depth_coefficient=1.4
+        dropout_ratio=0.3
         depth_divisor=8
         drop_connect_rate=0.2
 
@@ -332,7 +331,7 @@ def data_load(path, hf=False, vf=False, rot=False):
 # train
 def train():
     # model
-    model = EfficientNetB0().to(device)
+    model = EfficientNetB3().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     model.train()
 
@@ -377,7 +376,7 @@ def train():
 
 # test
 def test():
-    model = EfficientNetB0().to(device)
+    model = EfficientNetB3().to(device)
     model.eval()
     model.load_state_dict(torch.load('cnn.pt'))
 
