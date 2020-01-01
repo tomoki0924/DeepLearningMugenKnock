@@ -37,6 +37,7 @@ Twitterで更新を発信してますぅ
 
 https://twitter.com/curry_frog
 
+- 2020.1.1 [Pytorch] EfficientNetB1~B7を追加
 - 2019.12.30 [Pytorch] EfficientNetB0を追加
 - 2019.12.23 Chainerのサポートが終了したらしいので、PytorchとTensorflowに絞っていきます
 - 2019.12.23 [Pytorch] 可視化 Grad-CAMを追加
@@ -230,6 +231,13 @@ $ pip install -r requirements.txt
 | [MobileNet-v1](Question_model#q-mobilenet-v1) | [✓](Question_model/answers/MobileNet_v1_pytorch.py) | [✓](Question_model/answers/MobileNet_v1_tensorflow_layers.py) ||| | | 2017 |
 | [MobileNet-v2](Question_model#q-mobilenet-v2) | [✓](Question_model/answers/MobileNet_v2_pytorch.py) |||| | | 2019 |
 | [EfficientNetB0](Question_model#efficientnet) | [✓](Question_model/answers/EfficientNetB0_pytorch.py) |||| | | 2019 |
+| [EfficientNetB1](Question_model#efficientnet) | [✓](Question_model/answers/EfficientNetB1_pytorch.py) |||| | | 2019 |
+| [EfficientNetB2](Question_model#efficientnet) | [✓](Question_model/answers/EfficientNetB2_pytorch.py) |||| | | 2019 |
+| [EfficientNetB3](Question_model#efficientnet) | [✓](Question_model/answers/EfficientNetB3_pytorch.py) |||| | | 2019 |
+| [EfficientNetB4](Question_model#efficientnet) | [✓](Question_model/answers/EfficientNetB4_pytorch.py) |||| | | 2019 |
+| [EfficientNetB5](Question_model#efficientnet) | [✓](Question_model/answers/EfficientNetB5_pytorch.py) |||| | | 2019 |
+| [EfficientNetB6](Question_model#efficientnet) | [✓](Question_model/answers/EfficientNetB6_pytorch.py) |||| | | 2019 |
+| [EfficientNetB7](Question_model#efficientnet) | [✓](Question_model/answers/EfficientNetB7_pytorch.py) |||| | | 2019 |
 
 ### [Visualization](Question_visualization)
 | 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year | 

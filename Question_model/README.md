@@ -583,8 +583,36 @@ EfficientNetは主に３つのモジュールがある。
 - Fully Connected (class number)
 - Softmax
 
-### EfficientNetB0
-
 以下の実装は https://github.com/keras-team/keras-applications/blob/master/keras_applications/efficientnet.py を参照した
 
+### EfficientNetB0
+
 - Pytorch [answers/EfficientNetB0_pytorch.py](answers/EfficientNetB0_pytorch.py)
+
+### EfficientNetB1
+
+- Pytorch [answers/EfficientNetB1_pytorch.py](answers/EfficientNetB1_pytorch.py)
+
+### EfficientNetB2
+
+- Pytorch [answers/EfficientNetB2_pytorch.py](answers/EfficientNetB2_pytorch.py)
+
+### EfficientNetB3
+
+- Pytorch [answers/EfficientNetB3_pytorch.py](answers/EfficientNetB3_pytorch.py)
+
+### EfficientNetB4
+
+- Pytorch [answers/EfficientNetB4_pytorch.py](answers/EfficientNetB4_pytorch.py)
+
+### EfficientNetB5
+
+- Pytorch [answers/EfficientNetB5_pytorch.py](answers/EfficientNetB5_pytorch.py)
+
+### EfficientNetB6
+
+- Pytorch [answers/EfficientNetB6_pytorch.py](answers/EfficientNetB6_pytorch.py)
+
+### EfficientNetB7
+
+- Pytorch [answers/EfficientNetB7_pytorch.py](answers/EfficientNetB7_pytorch.py)
