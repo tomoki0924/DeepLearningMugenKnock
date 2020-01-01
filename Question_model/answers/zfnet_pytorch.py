@@ -184,18 +184,19 @@ def test():
 
     xs, ts, paths = data_load('../Dataset/test/images/')
 
-    for i in range(len(paths)):
-        x = xs[i]
-        t = ts[i]
-        path = paths[i]
+    with torch.no_grad():
+        for i in range(len(paths)):
+            x = xs[i]
+            t = ts[i]
+            path = paths[i]
+            
+            x = np.expand_dims(x, axis=0)
+            x = torch.tensor(x, dtype=torch.float).to(device)
+            
+            pred = model(x)
+            pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
         
-        x = np.expand_dims(x, axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
-        pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
-    
-        print("in {}, predicted probabilities >> {}".format(path, pred))
+            print("in {}, predicted probabilities >> {}".format(path, pred))
     
 
 def arg_parse():
