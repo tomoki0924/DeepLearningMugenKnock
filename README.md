@@ -327,7 +327,7 @@ $ pip install -r requirements.txt
 
 ## License
 
-&copy; Yoshito Nagaoka All Rights Reserved.
+&copy; Curry yoshi All Rights Reserved.
 
 This is under MIT License.
 
