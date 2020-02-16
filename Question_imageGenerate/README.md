@@ -309,6 +309,15 @@ pix2pixは画素（pixel)と画素の関係を学習させる。
 答え
 - Pytorch [answers/pix2pix_segment_pytorch.py](answers/pix2pix_segment_pytorch.py)
 
+## pix2pix-GP
+
+pix2pixにGradient Penaltyを加えたもの
+
+参照論文はなし
+
+答え
+- Pytorch [answers/pix2pixGP_pytorch.py](answers/pix2pixGP_pytorch.py)
+
 ## WGAN
 
 元論文 >>
