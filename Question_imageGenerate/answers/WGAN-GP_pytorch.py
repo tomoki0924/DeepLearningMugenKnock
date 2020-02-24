@@ -9,6 +9,7 @@ from copy import copy
 import os
 from collections import OrderedDict
 import pickle
+from tqdm import tqdm
 
 CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
@@ -176,52 +177,70 @@ class Discriminator(torch.nn.Module):
         return x
 
     
-def load_cifar10():
-
-    path = 'cifar-10-batches-py'
-
-    if not os.path.exists(path):
-        os.system("wget {}".format('https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz'))
-        os.system("tar xvf {}".format('cifar-10-python.tar.gz'))
-
-    # train data
+# get train data
+def data_load(path, hf=False, vf=False, rot=False):
+    paths = []
     
-    train_x = np.ndarray([0, 32, 32, 3], dtype=np.float32)
-    train_y = np.ndarray([0, ], dtype=np.int)
+    data_num = 0
+    for dir_path in glob(path + '/*'):
+        data_num += len(glob(dir_path + "/*"))
+            
+    pbar = tqdm(total = data_num)
     
-    for i in range(1, 6):
-        data_path = path + '/data_batch_{}'.format(i)
-        with open(data_path, 'rb') as f:
-            datas = pickle.load(f, encoding='bytes')
-            print(data_path)
-            x = datas[b'data']
-            x = x.reshape(x.shape[0], 3, 32, 32)
-            x = x.transpose(0, 2, 3, 1)
-            train_x = np.vstack((train_x, x))
+    for dir_path in glob(path + '/*'):
+        for path in glob(dir_path + '/*'):
+
+            info = []
+            info.append(path)
+            
+            if hf:
+                info.append(True)
+            else:
+                info.append(False)
+            
+            if vf:
+                info.append(True)
+            else:
+                info.append(False)
+                
+            paths.append(info)
+            pbar.update(1)
+                    
+    pbar.close()
+    
+    return np.array(paths)
+
+def get_image(paths):
+    xs = []
+    
+    for info in paths:
+        path, hf, vf = info
+        x = cv2.imread(path)
         
-            y = np.array(datas[b'labels'], dtype=np.int)
-            train_y = np.hstack((train_y, y))
+        if channel == 1:
+            x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
+            
+        x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
+        x = x / 127.5 - 1
+        if channel == 3:
+            x = x[..., ::-1]
 
-    print(train_x.shape)
-    print(train_y.shape)
+        if hf:
+            x = x[:, ::-1]
 
-    # test data
+        if vf:
+            x = x[::-1]
+
+        xs.append(x)
+                
+    xs = np.array(xs, dtype=np.float32)
     
-    data_path =  path + '/test_batch'
+    if channel == 1:
+        xs = np.expand_dims(xs, axis=-1)
     
-    with open(data_path, 'rb') as f:
-        datas = pickle.load(f, encoding='bytes')
-        print(data_path)
-        x = datas[b'data']
-        x = x.reshape(x.shape[0], 3, 32, 32)
-        test_x = x.transpose(0, 2, 3, 1)
+    xs = np.transpose(xs, (0,3,1,2))
     
-        test_y = np.array(datas[b'labels'], dtype=np.int)
-
-    print(test_x.shape)
-    print(test_y.shape)
-
-    return train_x, train_y, test_x, test_y
+    return xs
 
 
 # train
@@ -239,21 +258,18 @@ def train():
     opt_D = torch.optim.Adam(D.parameters(), lr=0.0001, betas=(0, 0.9))
     opt_G = torch.optim.Adam(G.parameters(), lr=0.0001, betas=(0, 0.9))
 
-
-    #xs, paths = data_load('drive/My Drive/Colab Notebooks/datasets/', hf=True, vf=True, rot=False)
-    train_x, train_y, test_x, test_y = load_cifar10()
-    xs = train_x / 127.5 - 1
-    xs = xs.transpose(0, 3, 1, 2)
-
+    paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
+    
     # training
     mbi = 0
-    data_N = len(xs)
+    data_N = len(paths)
     train_ind = np.arange(data_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
     one = torch.FloatTensor([1])
     minus_one = one * -1
+
     if GPU:
         one = one.cuda()
         minus_one = mone.cuda()
@@ -273,8 +289,7 @@ def train():
             opt_D.zero_grad()
 
             # sample x from dataset
-            x = xs[mb_ind]
-            x = torch.tensor(x, dtype=torch.float).to(device)
+            x = torch.tensor(get_image(paths[mb_ind]), dtype=torch.float).to(device)
 
             # sample z from uniform distribution [-1, 1]
             z = np.random.uniform(-1, 1, size=(mb, Z_dim))

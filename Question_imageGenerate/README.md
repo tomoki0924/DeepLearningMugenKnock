@@ -407,6 +407,10 @@ Pytorchによる結果はこんな感じ。それっぽい画像はできてい�
 |:---:|
 | <img src='answers_image/WGAN-GP_iter_50k.jpg' width=500> |
 
+答え
+### imori
+- Pytorch [answers/WGAN-GP_pytorch.py](answers/WGAN-GP_pytorch.py)
+### cifar10
 - Pytorch [answers/WGAN-GP_cifar10_pytorch.py](answers/WGAN-GP_cifar10_pytorch.py)
 
 ## Alpha-GAN

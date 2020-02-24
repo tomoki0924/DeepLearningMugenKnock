@@ -9,8 +9,12 @@ import matplotlib.pyplot as plt
 num_classes = 2
 img_height, img_width = 32, 32
 channel = 3
+mb = 64
 
+# GPU
 GPU = False
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
+
 torch.manual_seed(0)
     
 class Generator(torch.nn.Module):
@@ -144,9 +148,6 @@ def load_cifar10():
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
     gen = Generator().to(device)
     dis = Discriminator().to(device)
@@ -161,20 +162,20 @@ def train():
     xs = xs.transpose(0, 3, 1, 2)
 
     # training
-    mb = 64
     mbi = 0
-    train_ind = np.arange(len(xs))
+    data_N = len(xs)
+    train_ind = np.arange(data_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
     for i in range(20000):
-        if mbi + mb > len(xs):
+        if mbi + mb > data_N:
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
-            mbi = mb - (len(xs) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (data_N - mbi))]))
+            mbi = mb - (data_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi: mbi + mb]
             mbi += mb
 
         opt_d.zero_grad()
@@ -219,8 +220,6 @@ def train():
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
-
     gen = Generator().to(device)
     gen.eval()
     gen.load_state_dict(torch.load('cnn.pt'))

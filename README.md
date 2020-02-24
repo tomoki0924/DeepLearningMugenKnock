@@ -37,6 +37,7 @@ Twitterで更新を発信してますぅ
 
 https://twitter.com/curry_frog
 
+- 2020.2.25 Tue [Pytorch] WGAN-GPを修正
 - 2020.1.1 [Pytorch] EfficientNetB1~B7を追加
 - 2019.12.30 [Pytorch] EfficientNetB0を追加
 - 2019.12.23 Chainerのサポートが終了したらしいので、PytorchとTensorflowに絞っていきます
@@ -287,7 +288,8 @@ $ pip install -r requirements.txt
 | [pix2pix](Question_imageGenerate#pix2pix) | [&check;](Question_imageGenerate/answers/pix2pix_segment_pytorch.py) | |||||2016|
 | [pix2pix-GP](Question_imageGenerate#pix2pix-GP)| [&check;](Question_imageGenerate/answers/pix2pixGP_pytorch.py) |||||| - |
 | [WGAN](Question_imageGenerate#wgan) | [&check;](Question_imageGenerate/answers/WGAN_cifar10_pytorch.py) |||||| 2017 |
-| [WGAN-GP](Question_imageGenerate#wgan-gp) | [&check;](Question_imageGenerate/answers/WGAN-GP_cifar10_pytorch.py)  |||||| 2017 |
+| [WGAN-GP](Question_imageGenerate#wgan-gp) | [&check;](Question_imageGenerate/answers/WGAN-GP_pytorch.py)  |||||| 2017 |
+| [WGAN-GP cifar10](Question_imageGenerate#wgan-gp) | [&check;](Question_imageGenerate/answers/WGAN-GP_cifar10_pytorch.py)  |||||| 2017 |
 | [alpha-GAN](Question_imageGenerate#alpha-gan) MNIST | [&check;](Question_imageGenerate/answers/alphaGAN_mnist_pytorch.py) |||||| 2017 |
 | [alpha-GAN](Question_imageGenerate#alpha-gan) CIFAR10 | [&check;](Question_imageGenerate/answers/alphaGAN_cifar10_pytorch.py) |||||| 2017 |
 

@@ -5,12 +5,17 @@ import cv2
 import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 num_classes = 2
 img_height, img_width = 64, 64
 channel = 3
+mb = 64
 
+# GPU
 GPU = False
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
+
 torch.manual_seed(0)
     
 class Generator(torch.nn.Module):
@@ -102,7 +107,6 @@ CLS = {'akahara': [0,0,128],
     
 # get train data
 def data_load(path, hf=False, vf=False, rot=False):
-    xs = []
     paths = []
     
     data_num = 0
@@ -113,16 +117,6 @@ def data_load(path, hf=False, vf=False, rot=False):
     
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
-            """
-            x = cv2.imread(path)
-            if channel == 1:
-                x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-            x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
-            x = x / 127.5 - 1
-            if channel == 3:
-                x = x[..., ::-1]
-            xs.append(x)
-            """
 
             info = []
             info.append(path)
@@ -138,55 +132,11 @@ def data_load(path, hf=False, vf=False, rot=False):
                 info.append(False)
                 
             paths.append(info)
-
-            """
-            if hf:
-                xs.append(x[:, ::-1])
-                paths.append(path)
-
-            if vf:
-                xs.append(x[::-1])
-                paths.append(path)
-
-            if hf and vf:
-                xs.append(x[::-1, ::-1])
-                paths.append(path)
-
-            if rot != False:
-                angle = 0
-                scale = 1
-                while angle < 360:
-                    angle += rot
-                    if channel == 1:
-                        _h, _w = x.shape
-                        max_side = max(_h, _w)
-                        tmp = np.zeros((max_side, max_side))
-                    else:
-                        _h, _w, _c = x.shape
-                        max_side = max(_h, _w)
-                        tmp = np.zeros((max_side, max_side, _c))
-                    max_side = max(_h, _w)
-                    tmp = np.zeros((max_side, max_side, _c))
-                    tx = int((max_side - _w) / 2)
-                    ty = int((max_side - _h) / 2)
-                    tmp[ty: ty+_h, tx: tx+_w] = x.copy()
-                    M = cv2.getRotationMatrix2D((max_side/2, max_side/2), angle, scale)
-                    _x = cv2.warpAffine(tmp, M, (max_side, max_side))
-                    _x = _x[tx:tx+_w, ty:ty+_h]
-                    xs.append(_x)
-                    paths.append(path)
-            """
             pbar.update(1)
-                    
-    """
-    xs = np.array(xs, dtype=np.float32)
-    if channel == 1:
-        xs = np.expand_dims(xs, axis=-1)
-    xs = np.transpose(xs, (0,3,1,2))
-    """
+
     pbar.close()
     
-    return xs, paths
+    return np.array(paths)
 
 
 def get_image(paths):
@@ -223,8 +173,6 @@ def get_image(paths):
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
 
     # model
     gen = Generator().to(device)
@@ -235,23 +183,23 @@ def train():
     opt_d = torch.optim.Adam(dis.parameters(), lr=0.0002,  betas=(0.5, 0.999))
     opt_g = torch.optim.Adam(gen.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
-    xs, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
+    paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
 
     # training
-    mb = 64
     mbi = 0
-    train_ind = np.arange(len(xs))
+    data_N = len(paths)
+    train_ind = np.arange(data_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
     for i in range(5000):
-        if mbi + mb > len(paths):
+        if mbi + mb > data_N:
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(paths)-mbi))]))
-            mbi = mb - (len(paths) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (data_N - mbi))]))
+            mbi = mb - (data_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi: mbi + mb]
             mbi += mb
 
         opt_d.zero_grad()
@@ -296,8 +244,6 @@ def train():
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
-
     gen = Generator().to(device)
     gen.eval()
     gen.load_state_dict(torch.load('cnn.pt'))
