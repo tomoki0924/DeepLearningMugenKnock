@@ -219,7 +219,7 @@ def get_image(paths):
         
         if channel == 1:
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-            
+
         x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
         x = x / 127.5 - 1
         if channel == 3:
@@ -272,7 +272,7 @@ def train():
 
     if GPU:
         one = one.cuda()
-        minus_one = mone.cuda()
+        minus_one = minus_one.cuda()
     
     for ite in range(50000):
         if mbi + mb > data_N:
