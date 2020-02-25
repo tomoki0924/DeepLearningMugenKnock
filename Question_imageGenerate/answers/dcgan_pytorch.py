@@ -7,7 +7,9 @@ from glob import glob
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-num_classes = 2
+CLS = {'akahara': [0,0,128],
+       'madara': [0,128,0]}
+num_classes = len(CLS)
 img_height, img_width = 64, 64
 channel = 3
 mb = 64
@@ -102,11 +104,11 @@ class GAN(torch.nn.Module):
         return x
     
     
-CLS = {'akahara': [0,0,128],
-       'madara': [0,128,0]}
-    
 # get train data
 def data_load(path, hf=False, vf=False, rot=False):
+    if rot == 0:
+        raise Exception('invalid rot >> ', rot, 'should be [1, 359] or False')
+
     paths = []
     
     data_num = 0
@@ -117,47 +119,72 @@ def data_load(path, hf=False, vf=False, rot=False):
     
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
-
-            info = []
-            info.append(path)
-            
+            paths.append({'path': path, 'hf': False, 'vf': False, 'rot': 0})
+            # horizontal flip
             if hf:
-                info.append(True)
-            else:
-                info.append(False)
-            
+                paths.append({'path': path, 'hf': True, 'vf': False, 'rot': 0})
+            # vertical flip
             if vf:
-                info.append(True)
-            else:
-                info.append(False)
+                paths.append({'path': path, 'hf': False, 'vf': True, 'rot': 0})
+            # horizontal and vertical flip
+            if hf and vf:
+                paths.append({'path': path, 'hf': True, 'vf': True, 'rot': 0})
+            # rotation
+            if rot is not False:
+                angle = rot
+                while angle < 360:
+                    paths.append({'path': path, 'hf': False, 'vf': False, 'rot': rot})
+                    angle += rot
                 
-            paths.append(info)
             pbar.update(1)
-
+                    
     pbar.close()
     
     return np.array(paths)
 
-
-def get_image(paths):
+def get_image(infos):
     xs = []
     
-    for info in paths:
-        path, hf, vf = info
+    for info in infos:
+        path = info['path']
+        hf = info['hf']
+        vf = info['vf']
+        rot = info['rot']
         x = cv2.imread(path)
+
+        # resize
+        x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
         
+        # channel BGR -> Gray
         if channel == 1:
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-        x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
-        x = x / 127.5 - 1
+
+        # channel BGR -> RGB
         if channel == 3:
             x = x[..., ::-1]
 
+        # normalization [0, 255] -> [-1, 1]
+        x = x / 127.5 - 1
+
+        # horizontal flip
         if hf:
             x = x[:, ::-1]
 
+        # vertical flip
         if vf:
             x = x[::-1]
+
+        # rotation
+        scale = 1
+        _h, _w, _c = x.shape
+        max_side = max(_h, _w)
+        tmp = np.zeros((max_side, max_side, _c))
+        tx = int((max_side - _w) / 2)
+        ty = int((max_side - _h) / 2)
+        tmp[ty: ty+_h, tx: tx+_w] = x.copy()
+        M = cv2.getRotationMatrix2D((max_side / 2, max_side / 2), rot, scale)
+        _x = cv2.warpAffine(tmp, M, (max_side, max_side))
+        _x = _x[tx:tx+_w, ty:ty+_h]
 
         xs.append(x)
                 
@@ -177,7 +204,6 @@ def train():
     # model
     gen = Generator().to(device)
     dis = Discriminator().to(device)
-    gan = Gan(gen, dis)
     #gan = torch.nn.Sequential(gen, dis)
 
     opt_d = torch.optim.Adam(dis.parameters(), lr=0.0002,  betas=(0.5, 0.999))
@@ -230,7 +256,7 @@ def train():
         #gen.train()
         input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
         input_noise = torch.tensor(input_noise, dtype=torch.float).to(device)
-        y = gan(input_noise)[:, 0]
+        y = dis(gen(input_noise))[:, 0]
         t = torch.tensor([1] * mb, dtype=torch.float).to(device)
         loss_g = torch.nn.BCELoss()(y, t)
 

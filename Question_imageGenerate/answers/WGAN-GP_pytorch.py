@@ -30,7 +30,7 @@ os.makedirs(save_dir, exist_ok=True)
 
 
 # GPU
-GPU = True
+GPU = False
 device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
 
 torch.manual_seed(0)
@@ -179,6 +179,9 @@ class Discriminator(torch.nn.Module):
     
 # get train data
 def data_load(path, hf=False, vf=False, rot=False):
+    if rot == 0:
+        raise Exception('invalid rot >> ', rot, 'should be [1, 359] or False')
+
     paths = []
     
     data_num = 0
@@ -189,47 +192,72 @@ def data_load(path, hf=False, vf=False, rot=False):
     
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
-
-            info = []
-            info.append(path)
-            
+            paths.append({'path': path, 'hf': False, 'vf': False, 'rot': 0})
+            # horizontal flip
             if hf:
-                info.append(True)
-            else:
-                info.append(False)
-            
+                paths.append({'path': path, 'hf': True, 'vf': False, 'rot': 0})
+            # vertical flip
             if vf:
-                info.append(True)
-            else:
-                info.append(False)
+                paths.append({'path': path, 'hf': False, 'vf': True, 'rot': 0})
+            # horizontal and vertical flip
+            if hf and vf:
+                paths.append({'path': path, 'hf': True, 'vf': True, 'rot': 0})
+            # rotation
+            if rot is not False:
+                angle = rot
+                while angle < 360:
+                    paths.append({'path': path, 'hf': False, 'vf': False, 'rot': rot})
+                    angle += rot
                 
-            paths.append(info)
             pbar.update(1)
                     
     pbar.close()
     
     return np.array(paths)
 
-def get_image(paths):
+def get_image(infos):
     xs = []
     
-    for info in paths:
-        path, hf, vf = info
+    for info in infos:
+        path = info['path']
+        hf = info['hf']
+        vf = info['vf']
+        rot = info['rot']
         x = cv2.imread(path)
+
+        # resize
+        x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
         
+        # channel BGR -> Gray
         if channel == 1:
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
 
-        x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
-        x = x / 127.5 - 1
+        # channel BGR -> RGB
         if channel == 3:
             x = x[..., ::-1]
 
+        # normalization [0, 255] -> [-1, 1]
+        x = x / 127.5 - 1
+
+        # horizontal flip
         if hf:
             x = x[:, ::-1]
 
+        # vertical flip
         if vf:
             x = x[::-1]
+
+        # rotation
+        scale = 1
+        _h, _w, _c = x.shape
+        max_side = max(_h, _w)
+        tmp = np.zeros((max_side, max_side, _c))
+        tx = int((max_side - _w) / 2)
+        ty = int((max_side - _h) / 2)
+        tmp[ty: ty+_h, tx: tx+_w] = x.copy()
+        M = cv2.getRotationMatrix2D((max_side / 2, max_side / 2), rot, scale)
+        _x = cv2.warpAffine(tmp, M, (max_side, max_side))
+        _x = _x[tx:tx+_w, ty:ty+_h]
 
         xs.append(x)
                 
@@ -281,7 +309,7 @@ def train():
             mb_ind = np.hstack((mb_ind, train_ind[:(mb - (data_N - mbi))]))
             mbi = mb - (data_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi: mbi + mb]
             mbi += mb
 
         # Discriminator training
