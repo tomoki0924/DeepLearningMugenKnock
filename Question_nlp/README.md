@@ -367,7 +367,8 @@ Decoderの出力を次のEncoderの入力にしても、Session-level RNNの内�
 学習
 - Adam(lr=0.001)
 - 5k iteration , 16 minibatch
-- d_h = 256, d_s = 512
+- Encoderのユニット数 d_h = 256
+- Session-level RNNのユニット数 d_s = 512
 
 ```bash
 A: ちょっと何言ってるのか分からない
@@ -379,10 +380,23 @@ B: でちっちぇのしかないんだよ。ほらよいなんだよな
 ...
 ```
 
+論文の実装では、
+- RMSProb
+- Encoderのユニット数 d_h = 1000
+- Session-level RNNのユニット数 d_s = 1500
+
 ※解答はseq2seqのプログラムをもとにしているので、Attentionなどのコードも残っている。
 
 答え
 - PyTorch [answers/HRED_pytorch.py](answers/HRED_pytorch.py)
+
+## Q. VHRED
+
+元論文 >> https://arxiv.org/abs/1605.06069
+
+VHRED = Variational Hierarchical Recurrent Encoder Decoder で、HREDにVariationalを導入したもの。
+
+
 
 ## Q. Word2Vec (Skip-gram)
 
