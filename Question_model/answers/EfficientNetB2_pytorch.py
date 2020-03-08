@@ -17,8 +17,10 @@ channel = 3
 
 # GPU
 GPU = False
-device = torch.device("cuda" if GPU and torch.cuda.tp_available() else "cpu")
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
 
+# other
+model_path = 'EfficientNetB2.pt'
 
 # random seed
 torch.manual_seed(0)

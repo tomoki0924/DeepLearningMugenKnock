@@ -17,8 +17,10 @@ channel = 3
 
 # GPU
 GPU = False
-device = torch.device("cuda" if GPU and torch.cuda.tp_available() else "cpu")
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
 
+# other
+model_path = 'EfficientNetB1.pt'
 
 # random seed
 torch.manual_seed(0)
@@ -394,13 +396,13 @@ def train():
         if (i + 1) % 50 == 0:
             print("iter >>", i+1, ', loss >>', loss.item(), ', accuracy >>', acc)
 
-    torch.save(model.state_dict(), 'cnn.pt')
+    torch.save(model.state_dict(), model_path)
 
 # test
 def test():
     model = EfficientNetB1().to(device)
     model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
 
     paths, ts = data_load('../Dataset/test/images/', hf=False, vf=False, rot=False)
 
