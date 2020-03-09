@@ -176,6 +176,7 @@ def get_image(infos):
         # channel BGR -> Gray
         if channel == 1:
             x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
+            x = np.expand_dims(x, axis=-1)
 
         # channel BGR -> RGB
         if channel == 3:
@@ -207,10 +208,6 @@ def get_image(infos):
         xs.append(x)
                 
     xs = np.array(xs, dtype=np.float32)
-    
-    if channel == 1:
-        xs = np.expand_dims(xs, axis=-1)
-    
     xs = np.transpose(xs, (0,3,1,2))
     
     return xs
@@ -267,21 +264,21 @@ def train():
 def test():
     # model
     model = MobileNet_v2().to(device)
-    model.eval()
     model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
+    model.eval()
 
     paths, ts = data_load('../Dataset/test/images/', hf=False, vf=False, rot=False)
 
     with torch.no_grad():
         for i in range(len(paths)):
             path = paths[i]
-            x = get_image(paths)
+            x = get_image(path)
             t = ts[i]
             
             x = torch.tensor(x, dtype=torch.float).to(device)
             
             pred = model(x)
-            pred = F.softmax(pred, dim=1).detach().cpu().numpy()[0]
+            pred = pred.detach().cpu().numpy()[0]
         
             print("in {}, predicted probabilities >> {}".format(path, pred))
     
