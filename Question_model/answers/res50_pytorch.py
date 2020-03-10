@@ -6,38 +6,51 @@ import numpy as np
 from glob import glob
 import copy
 
-num_classes = 2
+# class config
+class_label = ['akahara', 'madara']
+class_N = len(class_label)
+
+# config
 img_height, img_width = 224, 224
 channel = 3
+
+# GPU
 GPU = False
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
+
+# other
+model_path = 'ResNeXt101.pt'
+
 torch.manual_seed(0)
 
 
-class ResBlock(torch.nn.Module):
-    def __init__(self, in_f, f_1, out_f, stride=1):
-        super(ResBlock, self).__init__()
+class Res50(torch.nn.Module):
+    def __init__(self):
+        super(Res50, self).__init__()
 
-        self.stride = stride
-        self.fit_dim = False
+        class ResBlock(torch.nn.Module):
+            def __init__(self, in_f, f_1, out_f, stride=1):
+                super(ResBlock, self).__init__()
 
-        self.block = torch.nn.Sequential(
-            torch.nn.Conv2d(in_f, f_1, kernel_size=1, padding=0, stride=stride),
-            torch.nn.BatchNorm2d(f_1),
-            torch.nn.ReLU(),
-            torch.nn.Conv2d(f_1, f_1, kernel_size=3, padding=1, stride=1),
-            torch.nn.BatchNorm2d(f_1),
-            torch.nn.ReLU(),
-            torch.nn.Conv2d(f_1, out_f, kernel_size=1, padding=0, stride=1),
-            torch.nn.BatchNorm2d(out_f),
-            torch.nn.ReLU()
-        )
+                self.stride = stride
+                self.fit_dim = False
 
-        if in_f != out_f:
-            self.fit_conv = torch.nn.Conv2d(in_f, out_f, kernel_size=1, padding=0, stride=1)
-            self.fit_bn = torch.nn.BatchNorm2d(out_f)
-            self.fit_dim = True
-            
-            
+                self.block = torch.nn.Sequential(
+                    torch.nn.Conv2d(in_f, f_1, kernel_size=1, padding=0, stride=stride),
+                    torch.nn.BatchNorm2d(f_1),
+                    torch.nn.ReLU(),
+                    torch.nn.Conv2d(f_1, f_1, kernel_size=3, padding=1, stride=1),
+                    torch.nn.BatchNorm2d(f_1),
+                    torch.nn.ReLU(),
+                    torch.nn.Conv2d(f_1, out_f, kernel_size=1, padding=0, stride=1),
+                    torch.nn.BatchNorm2d(out_f),
+                    torch.nn.ReLU()
+                )
+
+                if in_f != out_f:
+                    self.fit_conv = torch.nn.Conv2d(in_f, out_f, kernel_size=1, padding=0, stride=1)
+                    self.fit_bn = torch.nn.BatchNorm2d(out_f)
+                    self.fit_dim = True
         
     def forward(self, x):
         res_x = self.block(x)
@@ -53,12 +66,6 @@ class ResBlock(torch.nn.Module):
         x = torch.add(res_x, x)
         x = F.relu(x)
         return x
-
-        
-
-class Res50(torch.nn.Module):
-    def __init__(self):
-        super(Res50, self).__init__()
 
         self.conv1 = torch.nn.Conv2d(channel, 64, kernel_size=7, padding=3, stride=2)
         self.bn1 = torch.nn.BatchNorm2d(64)
@@ -118,127 +125,136 @@ class Res50(torch.nn.Module):
         
         return x
 
-
-
-    
-CLS = ['akahara', 'madara']
-
 # get train data
 def data_load(path, hf=False, vf=False, rot=False):
-    xs = []
-    ts = []
+    if rot == 0:
+        raise Exception('invalid rot >> ', rot, 'should be [1, 359] or False')
+
     paths = []
+    ts = []
+    
+    data_num = 0
+    for dir_path in glob(path + '/*'):
+        data_num += len(glob(dir_path + "/*"))
+            
+    pbar = tqdm(total = data_num)
     
     for dir_path in glob(path + '/*'):
         for path in glob(dir_path + '/*'):
-            x = cv2.imread(path)
-            x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
-            x /= 255.
-            x = x[..., ::-1]
-            xs.append(x)
-
-            for i, cls in enumerate(CLS):
+            for i, cls in enumerate(class_label):
                 if cls in path:
                     t = i
-            
+
+            paths.append({'path': path, 'hf': False, 'vf': False, 'rot': 0})
             ts.append(t)
 
-            paths.append(path)
-
+            # horizontal flip
             if hf:
-                xs.append(x[:, ::-1])
+                paths.append({'path': path, 'hf': True, 'vf': False, 'rot': 0})
                 ts.append(t)
-                paths.append(path)
-
+            # vertical flip
             if vf:
-                xs.append(x[::-1])
+                paths.append({'path': path, 'hf': False, 'vf': True, 'rot': 0})
                 ts.append(t)
-                paths.append(path)
-
+            # horizontal and vertical flip
             if hf and vf:
-                xs.append(x[::-1, ::-1])
+                paths.append({'path': path, 'hf': True, 'vf': True, 'rot': 0})
                 ts.append(t)
-                paths.append(path)
-
-            if rot != False:
+            # rotation
+            if rot is not False:
                 angle = rot
-                scale = 1
-
-                # show
-                a_num = 360 // rot
-                w_num = np.ceil(np.sqrt(a_num))
-                h_num = np.ceil(a_num / w_num)
-                count = 1
-                #plt.subplot(h_num, w_num, count)
-                #plt.axis('off')
-                #plt.imshow(x)
-                #plt.title("angle=0")
-                
                 while angle < 360:
-                    _h, _w, _c = x.shape
-                    max_side = max(_h, _w)
-                    tmp = np.zeros((max_side, max_side, _c))
-                    tx = int((max_side - _w) / 2)
-                    ty = int((max_side - _h) / 2)
-                    tmp[ty: ty+_h, tx: tx+_w] = x.copy()
-                    M = cv2.getRotationMatrix2D((max_side/2, max_side/2), angle, scale)
-                    _x = cv2.warpAffine(tmp, M, (max_side, max_side))
-                    _x = _x[tx:tx+_w, ty:ty+_h]
-                    xs.append(_x)
-                    ts.append(t)
-                    paths.append(path)
-
-                    # show
-                    #count += 1
-                    #plt.subplot(h_num, w_num, count)
-                    #plt.imshow(_x)
-                    #plt.axis('off')
-                    #plt.title("angle={}".format(angle))
-
+                    paths.append({'path': path, 'hf': False, 'vf': False, 'rot': rot})
                     angle += rot
-                #plt.show()
-
-
-    xs = np.array(xs, dtype=np.float32)
-    ts = np.array(ts, dtype=np.int)
+                    ts.append(t)
+                
+            pbar.update(1)
+                    
+    pbar.close()
     
-    xs = xs.transpose(0,3,1,2)
+    return np.array(paths), np.array(ts)
 
-    return xs, ts, paths
+def get_image(infos):
+    xs = []
+    
+    for info in infos:
+        path = info['path']
+        hf = info['hf']
+        vf = info['vf']
+        rot = info['rot']
+        x = cv2.imread(path)
 
+        # resize
+        x = cv2.resize(x, (img_width, img_height)).astype(np.float32)
+        
+        # channel BGR -> Gray
+        if channel == 1:
+            x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
+            x = np.expand_dims(x, axis=-1)
 
+        # channel BGR -> RGB
+        if channel == 3:
+            x = x[..., ::-1]
+
+        # normalization [0, 255] -> [-1, 1]
+        x = x / 127.5 - 1
+
+        # horizontal flip
+        if hf:
+            x = x[:, ::-1]
+
+        # vertical flip
+        if vf:
+            x = x[::-1]
+
+        # rotation
+        scale = 1
+        _h, _w, _c = x.shape
+        max_side = max(_h, _w)
+        tmp = np.zeros((max_side, max_side, _c))
+        tx = int((max_side - _w) / 2)
+        ty = int((max_side - _h) / 2)
+        tmp[ty: ty+_h, tx: tx+_w] = x.copy()
+        M = cv2.getRotationMatrix2D((max_side / 2, max_side / 2), rot, scale)
+        _x = cv2.warpAffine(tmp, M, (max_side, max_side))
+        _x = _x[tx:tx+_w, ty:ty+_h]
+
+        xs.append(x)
+                
+    xs = np.array(xs, dtype=np.float32)
+    xs = np.transpose(xs, (0,3,1,2))
+    
+    return xs
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
     model = Res50().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     model.train()
 
-    xs, ts, paths = data_load('../Dataset/train/images/', hf=True, vf=True, rot=10)
+    paths, ts = data_load('../Dataset/train/images/', hf=True, vf=True, rot=1)
 
     # training
     mb = 32
     mbi = 0
-    train_ind = np.arange(len(xs))
+    data_N = len(paths)
+    train_ind = np.arange(data_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
 
-    loss_fn = torch.nn.NLLLoss()
+    loss_func = torch.nn.NLLLoss()
     
     for i in range(500):
-        if mbi + mb > len(xs):
-            mb_ind = copy.copy(train_ind)[mbi:]
+        if mbi + mb > data_N:
+            mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (data_N - mbi))]))
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi : mbi + mb]
             mbi += mb
 
-        x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
+        x = torch.tensor(get_image(paths[mb_ind]), dtype=torch.float).to(device)
         t = torch.tensor(ts[mb_ind], dtype=torch.long).to(device)
 
         opt.zero_grad()
@@ -259,18 +275,17 @@ def train():
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
     model = Res50().to(device)
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
 
-    xs, ts, paths = data_load('../Dataset/test/images/')
+    paths, ts = data_load('../Dataset/test/images/', hf=False, vf=False, rot=False)
 
     with torch.no_grad():
         for i in range(len(paths)):
-            x = xs[i]
-            t = ts[i]
             path = paths[i]
+            x = get_image(path)
+            t = ts[i]
             
             x = np.expand_dims(x, axis=0)
             x = torch.tensor(x, dtype=torch.float).to(device)

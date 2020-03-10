@@ -255,7 +255,6 @@ def train():
         x = torch.tensor(get_image(paths[mb_ind]), dtype=torch.float).to(device)
         t = torch.tensor(ts[mb_ind], dtype=torch.long).to(device)
 
-
         opt.zero_grad()
         y = model(x)
         #y = F.log_softmax(y, dim=1)
