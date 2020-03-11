@@ -24,7 +24,7 @@ CLS = OrderedDict({
 
 CLS = ["akahara_imori", "fire_salamander", "ibo_imori", "madara_imori", "marble_salamander", "minamiibo_imori", "shiriken_imori", "tiger_salamander"]
 
-class_num = len(CLS)
+class_N = len(CLS)
 
 img_height, img_width = 128, 128  #572, 572
 out_height, out_width = 128, 128  #388, 388
@@ -35,7 +35,12 @@ mb_N = 8 # minibatch
 iteration_N = 10000 # iteration
 lr = 0.0001 # learning rate
 
+# GPU
 GPU = True
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
+
+model_path = 'drive/My Drive/Colab Notebooks/pix2pix.pt'
+
 torch.manual_seed(0)
 
 # wgan hyper-parameter
@@ -426,9 +431,6 @@ def data_load(paths, hf=False, vf=False):
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
     # generator
     G = UNet().to(device)
@@ -542,58 +544,58 @@ def train():
             print("iter : ", i+1, ", loss D : ", loss_D.item(), 'loss GP : ', gradient_penalty.item(), ", loss G :", loss_G.item())
             
         if (i+1) % 10000 == 0:
-            torch.save(G.state_dict(), 'drive/My Drive/Colab Notebooks/pix2pix.pt')
+            torch.save(G.state_dict(), model_path)
 
-    torch.save(G.state_dict(), 'drive/My Drive/Colab Notebooks/pix2pix.pt')
+    torch.save(G.state_dict(), model_path)
 
     
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
     model = UNet().to(device)
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
-    model.load_state_dict(torch.load('drive/My Drive/Colab Notebooks/pix2pix.pt'))
 
     #xs, ts, paths = data_load('drive/My Drive/Colab Notebooks/'  + 'datasets/')
     paths = data_path_load('drive/My Drive/Colab Notebooks/datasets/')
 
-    for i in range(40):
-        # get data
-        path = paths[i]
-        imgs, ts = data_load([path])
+    with torch.no_grad():
+        for i in range(40):
+            # get data
+            path = paths[i]
+            imgs, ts = data_load([path])
+            
+            x = torch.tensor(imgs, dtype=torch.float).to(device)
+            
+            # predict image
+            pred = model(x)
         
-        x = torch.tensor(imgs, dtype=torch.float).to(device)
-        
-        # predict image
-        pred = model(x)
-    
-        # change type torch.tensor -> numpy
-        pred = pred.detach().cpu().numpy()[0]
+            # change type torch.tensor -> numpy
+            pred = pred.detach().cpu().numpy()[0]
 
-        # visualize
-        # [-1, 1] -> [0, 255]
-        out = (pred + 1) * 127.5
-        # clipping to [0, 255]
-        out = np.clip(out, 0, 255)
-        # exchange dimension [c, h, w] -> [h, w, c]
-        out = out.transpose(1,2,0).astype(np.uint8)
+            # visualize
+            # [-1, 1] -> [0, 255]
+            out = (pred + 1) * 127.5
+            # clipping to [0, 255]
+            out = np.clip(out, 0, 255)
+            # exchange dimension [c, h, w] -> [h, w, c]
+            out = out.transpose(1,2,0).astype(np.uint8)
 
-        print("in {}".format(path))
-        
-        # for display
-        # [mb, c, h, w] and [-1, 1] -> [h, w] and [0, 1]
-        edge_img = (imgs[0, 0] + 1) / 2.
-        # [mb, c, h, w] and [-1, 1] -> [h, w, c] and [0, 1]
-        original_img = (ts[0].transpose(1, 2, 0) + 1) / 2.
-        
-        
-        plt.subplot(1, 3, 1)
-        plt.imshow(edge_img, cmap="gray")
-        plt.subplot(1, 3, 2)
-        plt.imshow(out)
-        plt.subplot(1, 3, 3)
-        plt.imshow(original_img)
-        plt.show()
+            print("in {}".format(path))
+            
+            # for display
+            # [mb, c, h, w] and [-1, 1] -> [h, w] and [0, 1]
+            edge_img = (imgs[0, 0] + 1) / 2.
+            # [mb, c, h, w] and [-1, 1] -> [h, w, c] and [0, 1]
+            original_img = (ts[0].transpose(1, 2, 0) + 1) / 2.
+            
+            
+            plt.subplot(1, 3, 1)
+            plt.imshow(edge_img, cmap="gray")
+            plt.subplot(1, 3, 2)
+            plt.imshow(out)
+            plt.subplot(1, 3, 3)
+            plt.imshow(original_img)
+            plt.show()
     
 
 def arg_parse():

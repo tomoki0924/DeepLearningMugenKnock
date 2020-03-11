@@ -7,14 +7,20 @@ import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
 
-num_classes = 2
+# config
+class_N = 10
 img_height, img_width = 28, 28
 channel = 1
 
+# GPU
 GPU = False
-device = torch.device("cuda" if GPU else "cpu")
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
 torch.manual_seed(0)
+
+# other config
+model_path = 'VAE.pt'
     
+# VAE paramater
 Z_dim = 2
 dim = 256
 
@@ -69,18 +75,9 @@ class Decoder(torch.nn.Module):
         
         return x
         
-       
-
-
 def loss_KLDivergence(mu, sigma):
     return -0.5 * torch.sum(1 + sigma - torch.pow(mu, 2) - torch.exp(sigma))
         
-        
-    
-import pickle
-import os
-import gzip
-    
 def load_mnist():
     dir_path = "mnist_datas"
 
@@ -138,9 +135,6 @@ def load_mnist():
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
     model_encoder = Encoder().to(device)
     model_sampler = Sampler().to(device)
@@ -157,18 +151,19 @@ def train():
     # training
     mb = 256
     mbi = 0
-    train_ind = np.arange(len(xs))
+    data_N = len(xs)
+    train_ind = np.arange(data_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
     for i in range(10000):
-        if mbi + mb > len(xs):
+        if mbi + mb > data_N:
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
-            mbi = mb - (len(xs) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (data_N - mbi))]))
+            mbi = mb - (data_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi : mbi + mb]
             mbi += mb
 
         x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
@@ -195,57 +190,56 @@ def train():
         if (i+1) % 100 == 0:
             print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
 
-    torch.save(model.state_dict(), 'cnn.pt')
+    torch.save(model.state_dict(), model_path)
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
-    
     model_encoder = Encoder().to(device)
     model_sampler = Sampler().to(device)
     model_decoder = Decoder().to(device)
     model = torch.nn.Sequential(model_encoder, model_sampler, model_decoder)
     
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
 
     train_x, train_y, test_x, test_y = load_mnist()
     xs = test_x / 255
     xs = xs.transpose(0, 3, 1, 2)
 
-    for i in range(10):
-        x = xs[i]
-        
-        x = np.expand_dims(x, axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
+    with torch.no_grad():
+        for i in range(10):
+            x = xs[i]
+            
+            x = np.expand_dims(x, axis=0)
+            x = torch.tensor(x, dtype=torch.float).to(device)
+            
+            pred = model(x)
 
-        pred = pred.view(channel, img_height, img_width)
-        pred = pred.detach().cpu().numpy()
-        pred -= pred.min()
-        pred /= pred.max()
-        pred = pred.transpose(1,2,0)
-        
-        _x = x.detach().cpu().numpy()[0]
-        #_x = (_x + 1) / 2
-        if channel == 1:
-            pred = pred[..., 0]
-            _x = _x[0]
-            cmap = 'gray'
-        else:
-            _x = _x.transpose(1,2,0)
-            cmap = None
+            pred = pred.view(channel, img_height, img_width)
+            pred = pred.detach().cpu().numpy()
+            pred -= pred.min()
+            pred /= pred.max()
+            pred = pred.transpose(1,2,0)
             
-        #print(mu, sigma)
-            
-        plt.subplot(1,2,1)
-        plt.title("input")
-        plt.imshow(_x, cmap=cmap)
-        plt.subplot(1,2,2)
-        plt.title("predicted")
-        plt.imshow(pred, cmap=cmap)
-        plt.show()
+            _x = x.detach().cpu().numpy()[0]
+            #_x = (_x + 1) / 2
+            if channel == 1:
+                pred = pred[..., 0]
+                _x = _x[0]
+                cmap = 'gray'
+            else:
+                _x = _x.transpose(1,2,0)
+                cmap = None
+                
+            #print(mu, sigma)
+                
+            plt.subplot(1,2,1)
+            plt.title("input")
+            plt.imshow(_x, cmap=cmap)
+            plt.subplot(1,2,2)
+            plt.title("predicted")
+            plt.imshow(pred, cmap=cmap)
+            plt.show()
 
 
 def arg_parse():

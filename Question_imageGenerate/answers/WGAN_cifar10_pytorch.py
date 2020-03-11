@@ -8,20 +8,27 @@ import matplotlib.pyplot as plt
 from copy import copy
 import os
 from collections import OrderedDict
+import pickle
 
+# config
 CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
 
-class_num = len(CLS)
+class_N = len(CLS)
 img_height, img_width = 32, 32 #572, 572
 channel = 3
+mb = 64
+
+# GAN parameter
+Z_dim = 128
+
+# Gradient penalty parameter
+Lambda = 10
+
+model_path = 'WGAN.pt'
 
 save_dir = 'output_gan'
 os.makedirs(save_dir, exist_ok=True)
-
-
-GPU = True
-torch.manual_seed(0)
 
 
 def weights_init(m):
@@ -92,9 +99,6 @@ class Discriminator(torch.nn.Module):
         return x
 
     
-import pickle
-import os
-    
 def load_cifar10():
 
     path = 'cifar-10-batches-py'
@@ -145,9 +149,6 @@ def load_cifar10():
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
     G = Generator().to(device)
     D = Discriminator().to(device)
@@ -186,10 +187,10 @@ def train():
         if mbi + mb > len(xs):
             mb_ind = copy(train_ind[mbi:])
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(data_N-mbi))]))
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - ( data_N - mbi))]))
             mbi = mb - (data_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi : mbi + mb]
             mbi += mb
 
         # Discriminator training
@@ -267,41 +268,40 @@ def train():
             plt.savefig('{}/wgan_iter_{:05d}.jpg'.format(save_dir, i + 1), bbox_inches='tight')
             
 
-    torch.save(G.state_dict(), 'cnn.pt')
+    torch.save(G.state_dict(), model_path)
     
     
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
-
     G = Generator().to(device)
+    G.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     G.eval()
-    G.load_state_dict(torch.load('cnn.pt'))
-
+    
     np.random.seed(100)
     
-    for i in range(3):
-        mb = 10
-        z = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
-        z = torch.tensor(z, dtype=torch.float).to(device)
+    with torch.no_grad():
+        for i in range(3):
+            mb = 10
+            z = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
+            z = torch.tensor(z, dtype=torch.float).to(device)
 
-        Gz = G(z)
+            Gz = G(z)
 
-        if GPU:
-            Gz = Gz.cpu()
-            
-        Gz = Gz.detach().numpy()
-        Gz = (Gz + 1) / 2
-        Gz = Gz.transpose(0,2,3,1)
+            if GPU:
+                Gz = Gz.cpu()
+                
+            Gz = Gz.detach().numpy()
+            Gz = (Gz + 1) / 2
+            Gz = Gz.transpose(0,2,3,1)
 
-        for i in range(mb):
-            generated = Gz[i]
-            plt.subplot(1,mb,i+1)
-            plt.imshow(generated)
-            plt.axis('off')
+            for i in range(mb):
+                generated = Gz[i]
+                plt.subplot(1,mb,i+1)
+                plt.imshow(generated)
+                plt.axis('off')
 
-        plt.show()
+            plt.show()
 
 
 def arg_parse():

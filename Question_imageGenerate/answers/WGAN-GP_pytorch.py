@@ -11,10 +11,11 @@ from collections import OrderedDict
 import pickle
 from tqdm import tqdm
 
+# config
 CLS = {'akahara': [0,0,128],
        'madara': [0,128,0]}
 
-class_num = len(CLS)
+class_N = len(CLS)
 img_height, img_width = 32, 32 #572, 572
 channel = 3
 mb = 64
@@ -24,6 +25,8 @@ Z_dim = 128
 
 # Gradient penalty parameter
 Lambda = 10
+
+model_path = 'WGAN_GP.pt'
 
 save_dir = 'output_gan'
 os.makedirs(save_dir, exist_ok=True)
@@ -397,7 +400,7 @@ def train():
             plt.show()
             
 
-    torch.save(G.state_dict(), 'cnn.pt')
+    torch.save(G.state_dict(), model_path)
     
     
 
@@ -405,32 +408,33 @@ def train():
 def test():
     # load Generator
     G = Generator().to(device)
+    G.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     G.eval()
-    G.load_state_dict(torch.load('cnn.pt'))
 
     np.random.seed(100)
     
-    for i in range(3):
-        mb = 10
-        z = np.random.uniform(-1, 1, size=(mb, Z_dim))
-        z = torch.tensor(z, dtype=torch.float).to(device)
+    with torch.no_grad():
+        for i in range(3):
+            mb = 10
+            z = np.random.uniform(-1, 1, size=(mb, Z_dim))
+            z = torch.tensor(z, dtype=torch.float).to(device)
 
-        Gz = G(z)
+            Gz = G(z)
 
-        if GPU:
-            Gz = Gz.cpu()
-            
-        Gz = Gz.detach().numpy()
-        Gz = (Gz + 1) / 2
-        Gz = Gz.transpose(0,2,3,1)
+            if GPU:
+                Gz = Gz.cpu()
+                
+            Gz = Gz.detach().numpy()
+            Gz = (Gz + 1) / 2
+            Gz = Gz.transpose(0,2,3,1)
 
-        for i in range(mb):
-            generated = Gz[i]
-            plt.subplot(1,mb,i+1)
-            plt.imshow(generated)
-            plt.axis('off')
+            for i in range(mb):
+                generated = Gz[i]
+                plt.subplot(1,mb,i+1)
+                plt.imshow(generated)
+                plt.axis('off')
 
-        plt.show()
+            plt.show()
 
 
 def arg_parse():
