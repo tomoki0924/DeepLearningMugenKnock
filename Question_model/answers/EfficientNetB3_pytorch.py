@@ -184,8 +184,8 @@ class EfficientNetB3(torch.nn.Module):
 
         # stem
         _modules = OrderedDict()
-        _modules['stem_conv'] = torch.nn.Conv2d(channel, 32, kernel_size=3, padding=1, stride=2, bias=False)
-        _modules['stem_bn'] = torch.nn.BatchNorm2d(32)
+        _modules['stem_conv'] = torch.nn.Conv2d(channel, round_filters(32), kernel_size=3, padding=1, stride=2, bias=False)
+        _modules['stem_bn'] = torch.nn.BatchNorm2d(round_filters(32))
         _modules['stem_activation'] = Swish()
         self.stem = torch.nn.Sequential(_modules)
         

@@ -6,6 +6,7 @@ import numpy as np
 from glob import glob
 import copy
 from collections import OrderedDict
+from tqdm import tqdm
 
 # class config
 class_label = ['akahara', 'madara']
@@ -122,6 +123,7 @@ class EfficientNetB7(torch.nn.Module):
                 conv_pad = kernel_size // 2
                 
                 _modules[name + 'dw_conv'] = torch.nn.Conv2d(filters, filters, kernel_size, stride=stride, padding=conv_pad, bias=False, groups=1)
+                
                 _modules[name + 'dw_bn'] = torch.nn.BatchNorm2d(filters)
                 _modules[name + 'dw_activation'] = activation_fn
                 self.DW_conv = torch.nn.Sequential(_modules)
@@ -184,8 +186,8 @@ class EfficientNetB7(torch.nn.Module):
 
         # stem
         _modules = OrderedDict()
-        _modules['stem_conv'] = torch.nn.Conv2d(channel, 32, kernel_size=3, padding=1, stride=2, bias=False)
-        _modules['stem_bn'] = torch.nn.BatchNorm2d(32)
+        _modules['stem_conv'] = torch.nn.Conv2d(channel, round_filters(32), kernel_size=3, padding=1, stride=2, bias=False)
+        _modules['stem_bn'] = torch.nn.BatchNorm2d(round_filters(32))
         _modules['stem_activation'] = Swish()
         self.stem = torch.nn.Sequential(_modules)
         
