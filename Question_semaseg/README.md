@@ -85,9 +85,9 @@ loss = torch.nn.BCELoss()(y, t)
 
 だいたい500イテレーションくらい回したpytorchでの結果がこれです。画像処理ではマスク画像作成などでこのようなBinalizationが行われるので、最後に２値化することはよくあります。
 
-| madara_0010.jpg (answers/answer_bin_loss_pytorch_madara_0010.png) | akahara_0011.jpg (answers/answer_bin_loss_pytorch_akahara_0011.png) |
+| madara_0010.jpg (answers_image/answer_bin_loss_pytorch_madara_0010.png) | akahara_0011.jpg (answers_image/answer_bin_loss_pytorch_akahara_0011.png) |
 |:---:|:---:|
-| ![](answers/answer_bin_loss_pytorch_madara_0010.png) | ![](answers/answer_bin_loss_pytorch_akahara_0011.png) |
+| ![](answers_image/answer_bin_loss_pytorch_madara_0010.png) | ![](answers_image/answer_bin_loss_pytorch_akahara_0011.png) |
 
 
 答え
@@ -157,7 +157,7 @@ pytorchやchainerは[ミニバッチ、チャネル、高さ、幅]のshapeだ�
 
 | answer_semaseg_loss_pytorch_madara_0010.png | answer_semaseg_loss_pytorch_akahara_0011.png |
 |:---:|:---:|
-| ![](answers/answer_semaseg_loss_pytorch_madara_0010.png) | ![](answers/answer_semaseg_loss_pytorch_akahara_0011.png) |
+| ![](answers_image/answer_semaseg_loss_pytorch_madara_0010.png) | ![](answers_image/answer_semaseg_loss_pytorch_akahara_0011.png) |
 
 答え
 - Pytorch [answers/semaseg_test_pytorch.py](answers/semaseg_loss_pytorch.py)
@@ -193,7 +193,7 @@ Nearest Neighborの方法
 
 | answer_nearest_pytorch_madara_0010.png | answer_nearest_pytorch_akahara_0011.png |
 |:---:|:---:|
-| ![](answers/answer_nearest_pytorch_madara_0010.png) | ![](answers/answer_nearest_pytorch_akahara_0011.png) |
+| ![](answers_image/answer_nearest_pytorch_madara_0010.png) | ![](answers_image/answer_nearest_pytorch_akahara_0011.png) |
 
 答え
 - Pytorch [answers/nearest_pytorch.py](answers/nearest_pytorch.py)
@@ -220,7 +220,7 @@ Transposed convolutionの方法
 
 | answer_transposeconv_pytorch_madara_0010.png | answer_transposeconv_pytorch_akahara_0011.png |
 |:---:|:---:|
-| ![](answers/answer_transposeconv_pytorch_madara_0010.png) | ![](answers/answer_transposeconv_pytorch_akahara_0011.png) |
+| ![](answers_image/answer_transposeconv_pytorch_madara_0010.png) | ![](answers_image/answer_transposeconv_pytorch_akahara_0011.png) |
 
 答え
 - Pytorch [answers/transposeconv_pytorch.py](answers/transposeconv_pytorch.py)
@@ -379,7 +379,7 @@ UNetからの変更点は２つ。１つはconvolutionのpaddingを1にしたこ
 
 | answer_unetlike_pytorch_madara_0010.png | answer_unertlike_pytorch_akahara_0011.png |
 |:---:|:---:|
-| ![](answers/answer_unetlike_pytorch_madara_0010.png) | ![](answers/answer_unetlike_pytorch_akahara_0011.png) |
+| ![](answers_image/answer_unetlike_pytorch_madara_0010.png) | ![](answers_image/answer_unetlike_pytorch_akahara_0011.png) |
 
 答え
 - Pytorch [answers/unetlike_pytorch.py](answers/unetlike_pytorch.py)

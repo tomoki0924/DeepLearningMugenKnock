@@ -6,24 +6,40 @@ import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
 
-num_classes = 2
+
+# class config
+class_label = {'akahara': [0,0,128],
+       'madara': [0,128,0]}
+
+class_N = len(class_label)
+
+# config
 img_height, img_width = 236, 236 #572, 572
 out_height, out_width = 52, 52 #388, 388
+channel = 3
+
+# GPU
 GPU = False
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
+
+# other
+model_path = 'UNet.pt'
+
+# random seed
 torch.manual_seed(0)
 
-
-def crop_layer(layer, size):
-    _, _, h, w = layer.size()
-    _, _, _h, _w = size
-    ph = int((h - _h) / 2)
-    pw = int((w - _w) / 2)
-    return layer[:, :, ph:ph+_h, pw:pw+_w]
 
     
 class UNet(torch.nn.Module):
     def __init__(self):
         super(UNet, self).__init__()
+
+        def crop_layer(layer, size):
+            _, _, h, w = layer.size()
+            _, _, _h, _w = size
+            ph = int((h - _h) / 2)
+            pw = int((w - _w) / 2)
+            return layer[:, :, ph:ph+_h, pw:pw+_w]
 
         base = 64
 
@@ -103,7 +119,7 @@ class UNet(torch.nn.Module):
             self.dec1.add_module("dec1_relu_{}".format(i+1), torch.nn.ReLU())
             self.dec1.add_module("dec1_bn_{}".format(i+1), torch.nn.BatchNorm2d(base))
 
-        self.out = torch.nn.Conv2d(base, num_classes+1, kernel_size=1, padding=0, stride=1)
+        self.out = torch.nn.Conv2d(base, class_N+1, kernel_size=1, padding=0, stride=1)
         
         
     def forward(self, x):
@@ -152,8 +168,6 @@ class UNet(torch.nn.Module):
         
         return x
 
-CLS = {'akahara': [0,0,128],
-       'madara': [0,128,0]}
     
 # get train data
 def data_load(path, hf=False, vf=False):
@@ -175,7 +189,7 @@ def data_load(path, hf=False, vf=False):
 
             t = np.zeros((out_height, out_width), dtype=np.int)
 
-            for i, (_, vs) in enumerate(CLS.items()):
+            for i, (_, vs) in enumerate(class_label.items()):
                 ind = (gt[...,0] == vs[0]) * (gt[...,1] == vs[1]) * (gt[...,2] == vs[2])
                 t[ind] = i + 1
             #print(gt_path)
@@ -212,9 +226,6 @@ def data_load(path, hf=False, vf=False):
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
     model = UNet().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
@@ -237,7 +248,7 @@ def train():
             mb_ind = np.hstack((mb_ind, train_ind[:(mb - (train_N - mbi))]))
             mbi = mb - (train_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi : mbi + mb]
             mbi += mb
 
         x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
@@ -247,7 +258,7 @@ def train():
         y = model(x)
 
         y = y.permute(0,2,3,1).contiguous()
-        y = y.view(-1, num_classes+1)
+        y = y.view(-1, class_N+1)
         t = t.view(-1)
         
         y = F.log_softmax(y, dim=1)
@@ -260,14 +271,13 @@ def train():
         
         print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
 
-    torch.save(model.state_dict(), 'cnn.pt')
+    torch.save(model.state_dict(), model_path)
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
     model = UNet().to(device)
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
 
     xs, ts, paths = data_load('../Dataset/test/images/')
 
@@ -282,15 +292,15 @@ def test():
             
             pred = model(x)
         
-            pred = pred.permute(0,2,3,1).reshape(-1, num_classes+1)
+            pred = pred.permute(0,2,3,1).reshape(-1, class_N+1)
             pred = F.softmax(pred, dim=1)
-            pred = pred.reshape(-1, out_height, out_width, num_classes+1)
+            pred = pred.reshape(-1, out_height, out_width, class_N+1)
             pred = pred.detach().cpu().numpy()[0]
             pred = pred.argmax(axis=-1)
 
             # visualize
             out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
-            for i, (_, vs) in enumerate(CLS.items()):
+            for i, (_, vs) in enumerate(class_label.items()):
                 out[pred == (i+1)] = vs
 
             print("in {}".format(path))

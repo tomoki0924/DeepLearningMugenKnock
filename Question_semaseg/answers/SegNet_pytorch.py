@@ -10,13 +10,25 @@ from glob import glob
 import matplotlib.pyplot as plt
 from copy import copy
 
-CLS = {'akahara': [0,0,128],
+# class config
+class_label = {'akahara': [0,0,128],
        'madara': [0,128,0]}
 
-class_N = len(CLS) + 1
+class_N = len(class_label)
+
+# config
 img_height, img_width = 64, 64 #572, 572
 out_height, out_width = 64, 64 #388, 388
+channel = 3
+
+# GPU
 GPU = False
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
+
+# other
+model_path = 'SegNet.pt'
+
+# random seed
 torch.manual_seed(0)
 
 
@@ -146,7 +158,7 @@ def data_load(path, hf=False, vf=False):
 
             t = np.zeros((out_height, out_width), dtype=np.int)
 
-            for i, (_, vs) in enumerate(CLS.items()):
+            for i, (_, vs) in enumerate(class_label.items()):
                 ind = (gt[...,0] == vs[0]) * (gt[...,1] == vs[1]) * (gt[...,2] == vs[2])
                 t[ind] = i + 1
             #print(gt_path)
@@ -183,9 +195,6 @@ def data_load(path, hf=False, vf=False):
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
     model = SegNet().to(device)
     opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
@@ -204,13 +213,13 @@ def train():
     loss_fn = torch.nn.NLLLoss()
     
     for i in range(1000):
-        if mbi + mb > len(xs):
+        if mbi + mb > train_N:
             mb_ind = copy(train_ind[mbi:])
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
-            mbi = mb - (len(xs) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (train_N - mbi))]))
+            mbi = mb - (train_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi : mbi + mb]
             mbi += mb
 
         x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
@@ -232,14 +241,13 @@ def train():
         
         print("iter :", i+1, ', loss :', loss.item(), ', accuracy :', acc)
 
-    torch.save(model.state_dict(), 'cnn.pt')
+    torch.save(model.state_dict(), model_path)
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
     model = SegNet().to(device)
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
 
     xs, ts, paths = data_load('../Dataset/test/images/')
 
@@ -254,13 +262,13 @@ def test():
 
             pred = model(x)
 
-            #pred = pred.permute(0,2,3,1).reshape(-1, class_num+1)
+            #pred = pred.permute(0,2,3,1).reshape(-1, class_N+1)
             pred = pred.detach().cpu().numpy()[0]
             pred = pred.argmax(axis=0)
 
             # visualize
             out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
-            for i, (_, vs) in enumerate(CLS.items()):
+            for i, (_, vs) in enumerate(class_label.items()):
                 out[pred == (i+1)] = vs
 
             print("in {}".format(path))
@@ -279,5 +287,17 @@ def arg_parse():
     args = parser.parse_args()
     return args
 
-train()
-test()
+# main
+if __name__ == '__main__':
+    args = arg_parse()
+
+    if args.train:
+        train()
+    if args.test:
+        test()
+
+    if not (args.train or args.test):
+        print("please select train or test flag")
+        print("train: python main.py --train")
+        print("test:  python main.py --test")
+        print("both:  python main.py --train --test")
