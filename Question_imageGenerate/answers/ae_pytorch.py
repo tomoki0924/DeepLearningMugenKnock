@@ -6,16 +6,31 @@ import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
 
-num_classes = 2
-img_height, img_width = 64, 64
-channel = 1
 
+# class config
+class_label = {'akahara': [0,0,128],
+       'madara': [0,128,0]}
+
+class_N = len(class_label)
+
+# config
+img_height, img_width = 64, 64 #572, 572
+channel = 3
+
+# GPU
 GPU = False
+device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
+
+# other
+model_path = 'AE.pt'
+
+# random seed
 torch.manual_seed(0)
+
     
-class Mynet(torch.nn.Module):
+class AE(torch.nn.Module):
     def __init__(self):
-        super(Mynet, self).__init__()
+        super(AE, self).__init__()
 
         self.enc = torch.nn.Linear(img_height * img_width * channel, 64)
         self.dec = torch.nn.Linear(64, img_height * img_width * channel)
@@ -95,11 +110,8 @@ def data_load(path, hf=False, vf=False, rot=False):
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
-    model = Mynet().to(device)
+    model = AE().to(device)
     opt = torch.optim.Adam(model.parameters(), lr=0.001)
     model.train()
 
@@ -108,18 +120,19 @@ def train():
     # training
     mb = 256
     mbi = 0
-    train_ind = np.arange(len(xs))
+    train_N = len(xs)
+    train_ind = np.arange(train_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
     for i in range(1000):
-        if mbi + mb > len(xs):
+        if mbi + mb > train_N:
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
-            mbi = mb - (len(xs) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (train_N - mbi))]))
+            mbi = mb - (train_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi : mbi + mb]
             mbi += mb
 
         x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
@@ -138,51 +151,51 @@ def train():
         
         print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
 
-    torch.save(model.state_dict(), 'cnn.pt')
+    torch.save(model.state_dict(), model_path)
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
     model = Mynet().to(device)
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
 
     xs, paths = data_load('../Dataset/test/images/')
 
-    for i in range(len(paths)):
-        x = xs[i]
-        path = paths[i]
-        
-        x = np.expand_dims(x, axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
-
-        pred = pred.view(channel, img_height, img_width)
-        pred = pred.detach().cpu().numpy()
-        pred -= pred.min()
-        pred /= pred.max()
-        pred = pred.transpose(1,2,0)
-        
-        _x = x.detach().cpu().numpy()[0]
-        _x = (_x + 1) / 2
-        if channel == 1:
-            pred = pred[..., 0]
-            _x = _x[0]
-            cmap = 'gray'
-        else:
-            _x = _x.transpose(1,2,0)
-            cmap = None
-
-        print("in {}".format(path))
+    with torch.no_grad():
+        for i in range(len(paths)):
+            x = xs[i]
+            path = paths[i]
             
-        plt.subplot(1,2,1)
-        plt.title("input")
-        plt.imshow(_x, cmap=cmap)
-        plt.subplot(1,2,2)
-        plt.title("predicted")
-        plt.imshow(pred, cmap=cmap)
-        plt.show()
+            x = np.expand_dims(x, axis=0)
+            x = torch.tensor(x, dtype=torch.float).to(device)
+            
+            pred = model(x)
+
+            pred = pred.view(channel, img_height, img_width)
+            pred = pred.detach().cpu().numpy()
+            pred -= pred.min()
+            pred /= pred.max()
+            pred = pred.transpose(1,2,0)
+            
+            _x = x.detach().cpu().numpy()[0]
+            _x = (_x + 1) / 2
+            if channel == 1:
+                pred = pred[..., 0]
+                _x = _x[0]
+                cmap = 'gray'
+            else:
+                _x = _x.transpose(1,2,0)
+                cmap = None
+
+            print("in {}".format(path))
+                
+            plt.subplot(1,2,1)
+            plt.title("input")
+            plt.imshow(_x, cmap=cmap)
+            plt.subplot(1,2,2)
+            plt.title("predicted")
+            plt.imshow(pred, cmap=cmap)
+            plt.show()
     
 
 def arg_parse():

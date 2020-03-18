@@ -31,6 +31,11 @@ torch.manual_seed(0)
 save_dir = 'output_gan'
 os.makedirs(save_dir, exist_ok=True)
 
+model_path_G = 'alphaGAN_G.pt'
+model_path_D = 'alphaGAN_D.pt'
+model_path_E = 'alphaGAN_E.pt'
+model_path_CD = 'alphaGAN_CD.pt'
+
 def weights_init(m):
     classname = m.__class__.__name__
     if classname.find('conv') != -1:
@@ -471,28 +476,28 @@ def train():
             plt.savefig('{}/alphaGAN_mnist_iter_{:05d}.jpg'.format(save_dir, i + 1), bbox_inches='tight')
             plt.close()
 
-    torch.save(G.state_dict(), 'alphaGAN_G.pt')
-    torch.save(D.state_dict(), 'alphaGAN_D.pt')
-    torch.save(E.state_dict(), 'alphaGAN_E.pt')
-    torch.save(CD.state_dict(), 'alphaGAN_CD.pt')
+    torch.save(G.state_dict(), model_path_G)
+    torch.save(D.state_dict(), model_path_D)
+    torch.save(E.state_dict(), model_path_E)
+    torch.save(CD.state_dict(), model_path_CD)
 
 # test
 def test():
     G = Generator().to(device)
+    G.load_state_dict(torch.load(model_path_G, map_location=torch.device(device)))
     G.eval()
-    G.load_state_dict(torch.load('alphaGAN_G.pt'))
     
     D = Discriminator().to(device)
+    D.load_state_dict(torch.load(model_path_D, map_location=torch.device(device)))
     D.eval()
-    D.load_state_dict(torch.load('alphaGAN_D.pt'))
     
     E = Encoder().to(device)
+    E.load_state_dict(torch.load(model_path_E, map_location=torch.device(device)))
     E.eval()
-    E.load_state_dict(torch.load('alphaGAN_E.pt'))
     
     CD = Code_Discriminator().to(device)
+    CD.load_state_dict(torch.load(model_path_CD, map_location=torch.device(device)))
     CD.eval()
-    CD.load_state_dict(torch.load('alphaGAN_CD.pt'))
 
     np.random.seed(100)
     
