@@ -5,17 +5,31 @@ import cv2
 import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
+import pickle
+import os
 
-num_classes = 2
+# config
+class_N = 10
+
 img_height, img_width = 32, 32
 channel = 3
 
-GPU = True
 torch.manual_seed(0)
+
+# save directory
+save_dir = 'output_gan'
+os.makedirs(save_dir, exist_ok=True)
+
+# model path
+model_path = 'ConvAE.pt'
     
-class Mynet(torch.nn.Module):
+# GPU
+GPU = False
+device = torch.device("cuda" if GPU else "cpu")
+    
+class ConvAE(torch.nn.Module):
     def __init__(self):
-        super(Mynet, self).__init__()
+        super(ConvAE, self).__init__()
 
         self.enc1 = torch.nn.Conv2d(channel, 32, kernel_size=3, padding=1)
         self.enc2 = torch.nn.Conv2d(32, 16, kernel_size=3, padding=1)
@@ -31,9 +45,7 @@ class Mynet(torch.nn.Module):
         x = self.dec1(x)
         return x
 
-    
-import pickle
-import os
+
     
 def load_cifar10():
 
@@ -79,11 +91,8 @@ def load_cifar10():
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
-    model = Mynet().to(device)
+    model = ConvAE().to(device)
     opt = torch.optim.Adam(model.parameters(), lr=0.001)
     model.train()
 
@@ -94,18 +103,19 @@ def train():
     # training
     mb = 512
     mbi = 0
-    train_ind = np.arange(len(xs))
+    train_N = len(xs)
+    train_ind = np.arange(train_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
     for i in range(5000):
-        if mbi + mb > len(xs):
+        if mbi + mb > train_N:
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
-            mbi = mb - (len(xs) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (train_N - mbi))]))
+            mbi = mb - (train_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi : mbi + mb]
             mbi += mb
 
         x = torch.tensor(xs[mb_ind], dtype=torch.float).to(device)
@@ -124,51 +134,51 @@ def train():
         if (i+1) % 100 == 0:
             print("iter >>", i+1, ',loss >>', loss.item(), ',accuracy >>', acc)
 
-    torch.save(model.state_dict(), 'cnn.pt')
+    torch.save(model.state_dict(), model_path)
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
-    model = Mynet().to(device)
+    model = ConvAE().to(device)
+    model.load_state_dict(torch.load(model_path, map_location=device))
     model.eval()
-    model.load_state_dict(torch.load('cnn.pt'))
 
     train_x, train_y, test_x, test_y = load_cifar10()
     xs = test_x / 255
     xs = xs.transpose(0, 3, 1, 2)
 
-    for i in range(10):
-        x = xs[i]
-        
-        x = np.expand_dims(x, axis=0)
-        x = torch.tensor(x, dtype=torch.float).to(device)
-        
-        pred = model(x)
+    with torch.no_grad():
+        for i in range(10):
+            x = xs[i]
+            
+            x = np.expand_dims(x, axis=0)
+            x = torch.tensor(x, dtype=torch.float).to(device)
+            
+            pred = model(x)
 
-        pred = pred.view(channel, img_height, img_width)
-        pred = pred.detach().cpu().numpy()
-        pred -= pred.min()
-        pred /= pred.max()
-        pred = pred.transpose(1,2,0)
+            pred = pred.view(channel, img_height, img_width)
+            pred = pred.detach().cpu().numpy()
+            pred -= pred.min()
+            pred /= pred.max()
+            pred = pred.transpose(1,2,0)
 
-        
-        _x = x.detach().cpu().numpy()[0]
-        #_x = (_x + 1) / 2
-        if channel == 1:
-            pred = pred[..., 0]
-            _x = _x[0]
-            cmap = 'gray'
-        else:
-            _x = _x.transpose(1,2,0)
-            cmap = None
+            
+            _x = x.detach().cpu().numpy()[0]
+            #_x = (_x + 1) / 2
+            if channel == 1:
+                pred = pred[..., 0]
+                _x = _x[0]
+                cmap = 'gray'
+            else:
+                _x = _x.transpose(1,2,0)
+                cmap = None
 
-        plt.subplot(1,2,1)
-        plt.title("input")
-        plt.imshow(_x, cmap=cmap)
-        plt.subplot(1,2,2)
-        plt.title("predicted")
-        plt.imshow(pred, cmap=cmap)
-        plt.show()
+            plt.subplot(1,2,1)
+            plt.title("input")
+            plt.imshow(_x, cmap=cmap)
+            plt.subplot(1,2,2)
+            plt.title("predicted")
+            plt.imshow(pred, cmap=cmap)
+            plt.show()
     
 
 def arg_parse():

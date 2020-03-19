@@ -5,15 +5,26 @@ import cv2
 import numpy as np
 from glob import glob
 import matplotlib.pyplot as plt
+import pickle
+import os
 
-num_classes = 10
+# config
+class_N = 10
+
 img_height, img_width = 32, 32
 channel = 3
 
-GPU = False
 torch.manual_seed(0)
+
+# save directory
+save_dir = 'output_gan'
+os.makedirs(save_dir, exist_ok=True)
+
+# model path
+model_path = 'CGAN.pt'
     
 # GPU
+GPU = False
 device = torch.device("cuda" if GPU else "cpu")
     
 class Generator(torch.nn.Module):
@@ -25,7 +36,7 @@ class Generator(torch.nn.Module):
         
         super(Generator, self).__init__()
         #self.lin = torch.nn.Linear(100, self.in_h * self.in_w * self.base * 8)
-        self.lin = torch.nn.ConvTranspose2d(100 + num_classes, self.base * 8, kernel_size=self.in_h, stride=1, bias=False)
+        self.lin = torch.nn.ConvTranspose2d(100 +class_N, self.base * 8, kernel_size=self.in_h, stride=1, bias=False)
         self.bnin = torch.nn.BatchNorm2d(self.base * 8)
 
         #self.y_in = torch.nn.Linear(num_classes, self.base * 8 * self.in_h * self.in_h)
@@ -42,7 +53,7 @@ class Generator(torch.nn.Module):
         
     def forward(self, x, y, test=False):
         #x = torch.cat((x, y), dim=1)
-        con_x = np.zeros((len(y), num_classes, 1, 1), dtype=np.float32)
+        con_x = np.zeros((len(y),class_N, 1, 1), dtype=np.float32)
         con_x[np.arange(len(y)), y] = 1
         con_x = torch.tensor(con_x, dtype=torch.float).to(device)
         
@@ -69,7 +80,7 @@ class Generator(torch.nn.Module):
             return x
         
         else:
-            con_x = np.zeros((len(y), num_classes, img_height, img_width), dtype=np.float32)
+            con_x = np.zeros((len(y),class_N, img_height, img_width), dtype=np.float32)
             con_x[np.arange(len(y)), y] = 1
             con_x = torch.tensor(con_x).to(device)
         
@@ -83,7 +94,7 @@ class Discriminator(torch.nn.Module):
         self.base = 64
         
         super(Discriminator, self).__init__()
-        self.l1 = torch.nn.Conv2d(channel + num_classes, self.base, kernel_size=5, padding=2, stride=2)
+        self.l1 = torch.nn.Conv2d(channel +class_N, self.base, kernel_size=5, padding=2, stride=2)
         self.l2 = torch.nn.Conv2d(self.base, self.base * 2, kernel_size=5, padding=2, stride=2)
         #self.bn2 = torch.nn.BatchNorm2d(self.base * 2)
         self.l3 = torch.nn.Conv2d(self.base * 2, self.base * 4, kernel_size=5, padding=2, stride=2)
@@ -94,7 +105,7 @@ class Discriminator(torch.nn.Module):
 
     def forward(self, x):
         
-        #con_x = np.zeros((len(y), num_classes, img_height, img_width), dtype=np.float32)
+        #con_x = np.zeros((len(y),class_N, img_height, img_width), dtype=np.float32)
         #con_x[np.arange(len(y)), y] = 1
         #con_x = torch.tensor(con_x).to(device)
         #x = torch.cat((x, con_x), dim=1)
@@ -127,10 +138,6 @@ class GAN(torch.nn.Module):
         x = self.d(x)
         return x
     
-
-
-import pickle
-import os
     
 def load_cifar10():
 
@@ -176,9 +183,6 @@ def load_cifar10():
 
 # train
 def train():
-    # GPU
-    device = torch.device("cuda" if GPU else "cpu")
-
     # model
     gen = Generator().to(device)
     dis = Discriminator().to(device)
@@ -191,24 +195,25 @@ def train():
     xs = train_x / 127.5 - 1
     xs = xs.transpose(0, 3, 1, 2)
 
-    ys = np.zeros([train_y.shape[0], num_classes, 1, 1], np.float32)
+    ys = np.zeros([train_y.shape[0],class_N, 1, 1], np.float32)
     ys[np.arange(train_y.shape[0]), train_y] = 1
 
     # training
     mb = 64
     mbi = 0
-    train_ind = np.arange(len(xs))
+    train_N = len(xs)
+    train_ind = np.arange(train_N)
     np.random.seed(0)
     np.random.shuffle(train_ind)
     
     for i in range(30000):
-        if mbi + mb > len(xs):
+        if mbi + mb > train_N:
             mb_ind = train_ind[mbi:]
             np.random.shuffle(train_ind)
-            mb_ind = np.hstack((mb_ind, train_ind[:(mb-(len(xs)-mbi))]))
-            mbi = mb - (len(xs) - mbi)
+            mb_ind = np.hstack((mb_ind, train_ind[:(mb - (train_N - mbi))]))
+            mbi = mb - (train_N - mbi)
         else:
-            mb_ind = train_ind[mbi: mbi+mb]
+            mb_ind = train_ind[mbi : mbi + mb]
             mbi += mb
 
         opt_d.zero_grad()
@@ -224,7 +229,7 @@ def train():
         input_noise = torch.tensor(input_noise, dtype=torch.float).to(device)
         g_output = gen(input_noise, con_x)
 
-        con_x2 = np.zeros((mb, num_classes, img_height, img_width), dtype=np.float32)
+        con_x2 = np.zeros((mb,class_N, img_height, img_width), dtype=np.float32)
         con_x2[np.arange(mb), con_x] = 1
         con_x2 = torch.tensor(con_x2, dtype=torch.float).to(device)
         x = torch.cat((x, con_x2), dim=1)
@@ -256,45 +261,44 @@ def train():
         if (i+1) % 100 == 0:
             print("iter >>", i+1, ',G:loss >>', loss_g.item(), ',D:loss >>', loss_d.item())
 
-    torch.save(gen.state_dict(), 'cgan_cifar10_pytorch.pt')
+    torch.save(gen.state_dict(), model_path)
 
 # test
 def test():
-    device = torch.device("cuda" if GPU else "cpu")
-
     gen = Generator().to(device)
+    gen.load_state_dict(torch.load(model_path, map_location=device))
     gen.eval()
-    gen.load_state_dict(torch.load('cgan_cifar10_pytorch.pt', map_location=device))
 
     np.random.seed(100)
 
     labels = ["air\nplane", "auto\nmobile", "bird", "cat", "deer", "dog",
               "frog", "horse", "ship", "truck"]
     
-    for i in range(3):
-        mb = 10
-        input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
-        input_noise = torch.tensor(input_noise, dtype=torch.float).to(device)
+    with torch.no_grad():
+        for i in range(3):
+            mb = 10
+            input_noise = np.random.uniform(-1, 1, size=(mb, 100, 1, 1))
+            input_noise = torch.tensor(input_noise, dtype=torch.float).to(device)
 
-        y = np.arange(num_classes, dtype=np.int)
+            y = np.arange(num_classes, dtype=np.int)
 
-        g_output = gen(input_noise, y, test=True)
+            g_output = gen(input_noise, y, test=True)
 
-        if GPU:
-            g_output = g_output.cpu()
-            
-        g_output = g_output.detach().numpy()
-        g_output = (g_output + 1) / 2
-        g_output = g_output.transpose(0,2,3,1)
+            if GPU:
+                g_output = g_output.cpu()
+                
+            g_output = g_output.detach().numpy()
+            g_output = (g_output + 1) / 2
+            g_output = g_output.transpose(0,2,3,1)
 
-        for i in range(mb):
-            generated = g_output[i]
-            plt.subplot(1,mb,i+1)
-            plt.title(labels[i])
-            plt.imshow(generated)
-            plt.axis('off')
+            for i in range(mb):
+                generated = g_output[i]
+                plt.subplot(1,mb,i+1)
+                plt.title(labels[i])
+                plt.imshow(generated)
+                plt.axis('off')
 
-        plt.show()
+            plt.show()
 
 
 def arg_parse():
