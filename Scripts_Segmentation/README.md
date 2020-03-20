@@ -45,10 +45,10 @@ Groud-truthは *../Dataset/train/seg_images* にpngで入ってます。(なぜp
 pngを読み込んだら、イモリの位置になっている部分が1、それ以外が0となるようにground-truthを作成してください。
 
 答え
-- Pytorch [answers/bin_dataset_pytorch.py](answers/bin_dataset_pytorch.py)
-- Tensorflow [answers/bin_dataset_tensorflow_slim.py](answers/bin_dataset_tensorflow_slim.py)
-- Keras [answers/bin_dataset_keras.py](answers/bin_dataset_keras.py)
-- chainer [answers/bin_dataset_chainer.py](answers/bin_dataset_chainer.py)
+- Pytorch [scripts_pytorch/bin_dataset_pytorch.py](scripts_pytorch/bin_dataset_pytorch.py)
+- Tensorflow [scripts_tf_slim/bin_dataset_tensorflow_slim.py](scripts_tf_slim/bin_dataset_tensorflow_slim.py)
+- Keras [scripts_keras/bin_dataset_keras.py](scripts_keras/bin_dataset_keras.py)
+- chainer [scripts_chainer/bin_dataset_chainer.py](scripts_chainer/bin_dataset_chainer.py)
 
 ## Binalization Step.2. 学習時のLoss計算
 
@@ -71,10 +71,10 @@ loss = torch.nn.BCELoss()(y, t)
 を6回適用して最後に *Convolution(kernel_size=1, kernel_number=1, padding=0, stride=1)* を適用するネットワークを作成し、SigmoidによるBinalizationを実現してください。入力画像サイズは64とします。（大きくしても良いがGPUを使わないと計算時間がキツキツになってしまうので注意！）(BatchNormalizationの後にReLUする場合もあるが、ReLUの後にBNの法が今回はきれいにいったのでこれでいきます)
 
 答え
-- Pytorch [answers/bin_loss_pytorch.py](answers/bin_loss_pytorch.py)
-- Tensorflow [answers/bin_loss_tensorflow_slim.py](answers/bin_loss_tensorflow_slim.py)
-- Keras [answers/bin_loss_keras.py](answers/bin_loss_keras.py)
-- chainer [answers/bin_loss_chainer.py](answers/bin_loss_chainer.py)
+- Pytorch [scripts_pytorch/bin_loss_pytorch.py](scripts_pytorch/bin_loss_pytorch.py)
+- Tensorflow [scripts_tf_slim/bin_loss_tensorflow_slim.py](scripts_tf_slim/bin_loss_tensorflow_slim.py)
+- Keras [scripts_keras/bin_loss_keras.py](scripts_keras/bin_loss_keras.py)
+- chainer [scripts_chainer/bin_loss_chainer.py](scripts_chainer/bin_loss_chainer.py)
 
 ## Binalization Step.3. テスト時の予測結果の表示
 
@@ -91,10 +91,10 @@ loss = torch.nn.BCELoss()(y, t)
 
 
 答え
-- Pytorch [answers/bin_test_pytorch.py](answers/bin_test_pytorch.py)
-- Tensorflow [answers/bin_test_tensorflow_silm.py](answers/bin_test_tensorflow_slim.py)
-- Keras [answers/bin_test_keras.py](answers/bin_test_keras.py)
-- chainer [answers/bin_test_chainer.py](answers/bin_test_chainer.py)
+- Pytorch [scripts_pytorch/bin_test_pytorch.py](scripts_pytorch/bin_test_pytorch.py)
+- Tensorflow [scripts_tf_slim/bin_test_tensorflow_silm.py](scripts_tf_slim/bin_test_tensorflow_slim.py)
+- Keras [scripts_keras/bin_test_keras.py](scripts_keras/bin_test_keras.py)
+- chainer [scripts_chainer/bin_test_chainer.py](scripts_chainer/bin_test_chainer.py)
 
 ## Semantic Segmentation Step.1. データセット読み込み
 
@@ -117,10 +117,10 @@ t = np.zeros((out_height, out_width), dtype=torch.int)
 | ![](assets/semaseg_gt_akahara_0008.png) | ![](assets/semaseg_gt_madara_0005.png) |
 
 答え
-- Pytorch [answers/semaseg_dataset_pytorch.py](answers/semaseg_dataset_pytorch.py)
-- Tensorflow [answers/semaseg_dataset_tensorflow_slim.py](answers/semaseg_dataset_tensorflow_slim.py)
-- Keras [answers/semaseg_dataset_keras.py](answers/semaseg_dataset_keras.py)
-- chainer [answers/lenet_chainer.py](answers/semaseg_dataset_chainer.py)
+- Pytorch [scripts_pytorch/semaseg_dataset_pytorch.py](scripts_pytorch/semaseg_dataset_pytorch.py)
+- Tensorflow [scripts_tf_slim/semaseg_dataset_tensorflow_slim.py](scripts_tf_slim/semaseg_dataset_tensorflow_slim.py)
+- Keras [scripts_keras/semaseg_dataset_keras.py](scripts_keras/semaseg_dataset_keras.py)
+- chainer [scripts_chainer/lenet_chainer.py](scripts_chainer/semaseg_dataset_chainer.py)
 
 ## Semantic Segmentation Step.2. 学習時のLoss計算
 
@@ -142,10 +142,10 @@ pytorchやchainerは[ミニバッチ、チャネル、高さ、幅]のshapeだ�
 
 
 答え
-- Pytorch [answers/semaseg_loss_pytorch.py](answers/semaseg_loss_pytorch.py)
-- Tensorflow [answers/semaseg_loss_tensorflow_slim.py](answers/semaseg_loss_tensorflow_slim.py)
-- Keras [answers/semaseg_loss_keras.py](answers/semaseg_loss_keras.py)
-- chainer [answers/lenet_chainer.py](answers/semaseg_loss_chainer.py)
+- Pytorch [scripts_pytorch/semaseg_loss_pytorch.py](scripts_pytorch/semaseg_loss_pytorch.py)
+- Tensorflow [scripts_tf_slim/semaseg_loss_tensorflow_slim.py](scripts_tf_slim/semaseg_loss_tensorflow_slim.py)
+- Keras [scripts_keras/semaseg_loss_keras.py](scripts_keras/semaseg_loss_keras.py)
+- chainer [scripts_chainer/lenet_chainer.py](scripts_chaienr/semaseg_loss_chainer.py)
 
 ## Semantic Segmentation Step.3. テスト時の予測結果の表示
 
@@ -160,10 +160,10 @@ pytorchやchainerは[ミニバッチ、チャネル、高さ、幅]のshapeだ�
 | ![](answers_image/answer_semaseg_loss_pytorch_madara_0010.png) | ![](answers_image/answer_semaseg_loss_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/semaseg_test_pytorch.py](answers/semaseg_loss_pytorch.py)
-- Tensorflow [answers/semaseg_test_tensorflow_slim.py](answers/semaseg_test_tensorflow_slim.py)
-- Keras [answers/semaseg_test_keras.py](answers/semaseg_test_keras.py)
-- chainer [answers/lenet_chainer.py](answers/semaseg_test_chainer.py)
+- Pytorch [scripts_pytorch/semaseg_test_pytorch.py](scripts_pytorch/semaseg_loss_pytorch.py)
+- Tensorflow [scripts_tf_slim/semaseg_test_tensorflow_slim.py](scripts_slim/semaseg_test_tensorflow_slim.py)
+- Keras [scripts_keras/semaseg_test_keras.py](scripts_keras/semaseg_test_keras.py)
+- chainer [scripts_chainer/lenet_chainer.py](scripts_chainer/semaseg_test_chainer.py)
 
 ## UpSampling手法1. NearestNeighbor補間
 
@@ -196,10 +196,10 @@ Nearest Neighborの方法
 | ![](answers_image/answer_nearest_pytorch_madara_0010.png) | ![](answers_image/answer_nearest_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/nearest_pytorch.py](answers/nearest_pytorch.py)
-- Tensorflow [answers/nearest_tensorflow_slim.py](answers/nearest_tensorflow_slim.py)
-- Keras [answers/nearest_keras.py](answers/nearest_keras.py)
-- chainer [answers/nearest_chainer.py](answers/nearest_chainer.py)
+- Pytorch [scripts_pytorch/nearest_pytorch.py](scripts_pytorch/nearest_pytorch.py)
+- Tensorflow [scripts_tf_slim/nearest_tensorflow_slim.py](scripts_tf_slim/nearest_tensorflow_slim.py)
+- Keras [scripts_keras/nearest_keras.py](scripts_keras/nearest_keras.py)
+- chainer [scripts_chainer/nearest_chainer.py](scripts_chainer/nearest_chainer.py)
 
 ## UpSampling手法2. Transposed Convolution
 
@@ -223,10 +223,10 @@ Transposed convolutionの方法
 | ![](answers_image/answer_transposeconv_pytorch_madara_0010.png) | ![](answers_image/answer_transposeconv_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/transposeconv_pytorch.py](answers/transposeconv_pytorch.py)
-- Tensorflow [answers/transposeconv_tensorflow_slim.py](answers/transposeconv_tensorflow_slim.py)
-- Keras [answers/transposeconv_keras.py](answers/transposeconv_keras.py)
-- chainer [answers/transposeconv_chainer.py](answers/transposeconv_chainer.py)
+- Pytorch [scripts_pytorch/transposeconv_pytorch.py](scripts_pytorch/transposeconv_pytorch.py)
+- Tensorflow [scripts_tf_slim/transposeconv_tensorflow_slim.py](scripts_tf_slim/transposeconv_tensorflow_slim.py)
+- Keras [scripts_keras/transposeconv_keras.py](scripts_keras/transposeconv_keras.py)
+- chainer [scripts_chainer/transposeconv_chainer.py](scripts_chainer/transposeconv_chainer.py)
 
 ここまででセグメンテーションを行うための基本は終わり。次から論文の実装に入っていきます！！
 
@@ -257,10 +257,10 @@ Transposed convolutionの方法
 | TensorFlow | tf.concat | | Chainer | chainer.links.Deconvolution2D (なぜかchainerはdeconvolutionの名前) |
 
 答え
-- Pytorch [answers/concat_pytorch.py](answers/concat_pytorch.py)
-- Tensorflow [answers/concat_tensorflow_slim.py](answers/concat_tensorflow_slim.py)
-- Keras [answers/concat_keras.py](answers/concat_keras.py)
-- chainer [answers/concat_chainer.py](answers/concat_chainer.py)
+- Pytorch [scripts_pytorch/concat_pytorch.py](scripts_pytorch/concat_pytorch.py)
+- Tensorflow [scripts_tf_slim/concat_tensorflow_slim.py](scripts_tf_slim/concat_tensorflow_slim.py)
+- Keras [scripts_keras/concat_keras.py](scripts_keras/concat_keras.py)
+- chainer [scripts_chainer/concat_chainer.py](scripts_chainer/concat_chainer.py)
 
 ## UNet
 
@@ -348,10 +348,10 @@ _enc3 = crop_layer(enc3, dec3.shape)
 ```
 
 答え
-- Pytorch [answers/unet_pytorch.py](answers/unet_pytorch.py)
-- Tensorflow [answers/unet_tensorflow_slim.py](answers/unet_tensorflow_slim.py)
-- Keras [answers/unet_keras.py](answers/unet_keras.py)
-- chainer [answers/unet_chainer.py](answers/unet_chainer.py)
+- Pytorch [scripts_pytorch/unet_pytorch.py](scripts_pytorch/unet_pytorch.py)
+- Tensorflow [scripts_tf_slim/unet_tensorflow_slim.py](scripts_tf_slim/unet_tensorflow_slim.py)
+- Keras [scripts_keras/unet_keras.py](scripts_keras/unet_keras.py)
+- chainer [scripts_chainer/unet_chainer.py](scripts_chainer/unet_chainer.py)
 
 ## UNet風モデル
 
@@ -382,10 +382,10 @@ UNetからの変更点は２つ。１つはconvolutionのpaddingを1にしたこ
 | ![](answers_image/answer_unetlike_pytorch_madara_0010.png) | ![](answers_image/answer_unetlike_pytorch_akahara_0011.png) |
 
 答え
-- Pytorch [answers/unetlike_pytorch.py](answers/unetlike_pytorch.py)
--  Tensorflow [answers/unetlike_tensorflow_slim.py](answers/unetlike_tensorflow_slim.py)
-- Keras [answers/unetlike_keras.py](answers/unetlike_keras.py)
-- chainer [answers/unetlike_chainer.py](answers/unetlike_chainer.py)
+- Pytorch [scripts_pytorch/unetlike_pytorch.py](scripts_pytorch/unetlike_pytorch.py)
+-  Tensorflow [scripts_tf_slim/unetlike_tensorflow_slim.py](scripts_tf_slim/unetlike_tensorflow_slim.py)
+- Keras [scripts_keras/unetlike_keras.py](scripts_keras/unetlike_keras.py)
+- chainer [scripts_chainer/unetlike_chainer.py](scripts_chainer/unetlike_chainer.py)
 
 ## SegNet
 
@@ -410,4 +410,4 @@ SegNetでは同じ特徴マップのサイズのpoolingのインデックス情�
 
 
 答え
-- Pytorch [answers/SegNet_pytorch.py](answers/SegNet_pytorch.py)
+- Pytorch [scripts_pytorch/SegNet_pytorch.py](scripts_pytorch/SegNet_pytorch.py)
