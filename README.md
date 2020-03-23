@@ -189,7 +189,7 @@ $ pip install -r requirements.txt
 
 ### [Model](Scripts_Model)
 
-| 問題 |  Implement | Published year
+| 問題 |  Implementation | Published year
 |:---:|:---:|:---:|
 | [ API ](Scripts_Model#api) | [&check; pytorch](Scripts_Model/scripts/api_pytorch.py) | 
 | [LeNet](Scripts_Model#q-lenet) | [&check; pytorch](Scripts_Model/scripts_pytorch/lenet_pytorch.py) [&check; tf.layers](Scripts_Model/scripts_tf_layers/lenet_tensorflow_layers.py) [&check; keras](Scripts_Model/scripts_keras/lenet_keras.py) [&check; chaienr](Scripts_Model/scripts_chainer/lenet_chainer.py) | 
@@ -225,10 +225,9 @@ $ pip install -r requirements.txt
 | [EfficientNetB7](Scripts_Model#efficientnet) | [&check; pytorch](Scripts_Model/scripts_pytorch/EfficientNetB7_pytorch.py) | 2019 |
 
 ### [Interpretation](Scripts_Interpret)
-| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year | 
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | - |
-| [Grad-CAM](Scripts_Interpret#grad-cam) | [&check;](Scripts_Interpret/scripts/GradCam_pytorch.py) | |||| | 2016 |
+| 問題 |  Implementation | Published Year | 
+|:---:|:---:|:---:|
+| [Grad-CAM](Scripts_Interpret#grad-cam) | [&check; pytorch](Scripts_Interpret/scripts_interpret/GradCam_pytorch.py) | 2016 |
 
 
 
