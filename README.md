@@ -141,7 +141,7 @@ $ pip install -r requirements.txt
 ## 自分でフルスクラッチから実装する(理論)
 
 | 番号 | [理論1](Scripts_theory) | 答え  | 番号 | [理論2](Scripts_theory2) | 答え |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|:---:|:---:|:---:|:---:|:---:|:---:|
 | 1 | [パーセプトロン AND](Scripts_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-and) | [&check;](Scripts_theory/scripts/perceptron_1.py) | 13 | [画像認識](Scripts_theory2/#%E7%94%BB%E5%83%8F%E8%AA%8D%E8%AD%98) | [&check;](Scripts_theory2/scripts/neuralnet_classification.py)
 | 2 | [パーセプトロン 学習](Scripts_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-%E5%AD%A6%E7%BF%92) | [&check;](Scripts_theory/scripts/perceptron_2.py)| 14 | [誤差関数](Scripts_theory2/#%E8%AA%A4%E5%B7%AE%E9%96%A2%E6%95%B0) | [&check;](Scripts_theory2/scripts/neuralnet_loss.py)
 | 3 | [パーセプトロン 収束性](Scripts_theory#q-%E3%83%91%E3%83%BC%E3%82%BB%E3%83%97%E3%83%88%E3%83%AD%E3%83%B3-%E5%8F%8E%E6%9D%9F%E6%80%A7) | [&check;](Scripts_theory/scripts/perceptron_3.py) |  | [Sigmoid Cross Entropy](Scripts_theory2/#sigmoid-cross-entropy) | [&check;](Scripts_theory2/scripts/neuralnet_sce.py)
