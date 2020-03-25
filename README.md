@@ -250,10 +250,9 @@ $ pip install -r requirements.txt
 
 
 ### [Generative Model](Scripts_Generative)
-| 問題 |  PyTorch | TensorFlow | || Keras | Chainer | Published Year |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| 問題 |  PyTorch | tf.layers | tf.slim | tf.keras | Keras | Chainer | 
-| [AutoEncoder](Scripts_Generative#q-auto-encoder) |  [&check;](Scripts_Segmentation/scripts/ae_pytorch.py) | | [&check;?](Scripts_Generative/scripts/ae_tensorflow_slim.py) | | [&check;](Scripts_Generative/scripts/ae_keras.py) |  [&check;](Scripts_Generative/scripts/ae_chainer.py) |
+| 問題 |  Implementation | Published Year |
+|:---:|:---:|:---:|
+| [AutoEncoder](Scripts_Generative#q-auto-encoder) |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/ae_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/ae_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/ae_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/ae_chainer.py) |
 | [AutoEncoder cifar10](Scripts_Generative#q-auto-encoder) |  [&check;](Scripts_Segmentation/scripts/ae_cifar10_pytorch.py) | | [&check;](Scripts_Generative/scripts/ae_cifar10_tensorflow_slim.py)  | | [&check;](Scripts_Generative/scripts/ae_cifar10_keras.py) |  [&check;](Scripts_Generative/scripts/ae_cifar10_chainer.py) |
 | [ConvolutionalAutoEncoder](Scripts_Generative#q-convolutional-auto-encoder) |  [&check;](Scripts_Segmentation/scripts/convae_pytorch.py) | | [&check;?](Scripts_Generative/scripts/convae_tensorflow_slim.py) | |[&check;](Scripts_Generative/scripts/convae_keras.py) | [&check;](Scripts_Generative/scripts/convae_chainer.py) |
 | [ConvolutionalAutoEncoder cifar10](Scripts_Generative#q-convolutional-auto-encoder) |  [&check;](Scripts_Segmentation/scripts/convae_cifar10_pytorch.py) |  | [&check;](Scripts_Generative/scripts/convae_cifar10_tensorflow_slim.py)  | | [&check;](Scripts_Generative/scripts/convae_cifar10_keras.py) |  [&check;](Scripts_Generative/scripts/convae_cifar10_chainer.py) |
