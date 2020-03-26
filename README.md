@@ -160,7 +160,7 @@ $ pip install -r requirements.txt
 
 ## [データセット用意](Scripts_Dataset)
 
-### 1. 自分で用意したデータセットを読み込む + 前処理
+### DataAugmentation
 
 |番号|問題| 答え | | 番号|問題|
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -171,8 +171,7 @@ $ pip install -r requirements.txt
 | 5 | [データ拡張・上下反転](Scripts_Dataset#q5-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E4%B8%8A%E4%B8%8B%E5%8F%8D%E8%BB%A2) | [&check;](Scripts_Dataset/scripts/answer_vf.py)
 | 6 | [データ拡張・回転](Scripts_Dataset#q6-%E3%83%87%E3%83%BC%E3%82%BF%E6%8B%A1%E5%BC%B5%E5%9B%9E%E8%BB%A2) | [&check;](Scripts_Dataset/scripts/answer_rotation.py)
 
-### 2.　オープンソースのデータセットを使う
-
+### OpenSource
 |問題| 答え |
 |:---:|:---:|
 | [MNIST](Scripts_Dataset#mnist) | [&check;](Scripts_Dataset/scripts/load_mnist.py)
@@ -182,7 +181,7 @@ $ pip install -r requirements.txt
 
 ## 実装編
 
-ここから基本的に、「python scripts/##.py --train --test」と打てば動きます。
+ここから基本的に、「python scripts_XXX/YYY.py --train --test」と打てば動きます。
 
 ### [Model](Scripts_Model)
 
@@ -249,25 +248,25 @@ $ pip install -r requirements.txt
 ### [Generative Model](Scripts_Generative)
 | 問題 |  Implementation | Published Year |
 |:---:|:---:|:---:|
-| [AutoEncoder](Scripts_Generative#q-auto-encoder) |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/ae_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/ae_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/ae_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/ae_chainer.py) |
 | [AutoEncoder](Scripts_Generative#q-auto-encoder) Cifar10 |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/ae_cifar10_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/ae_cifar10_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/ae_cifar10_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/ae_cifar10_chainer.py) |
-| [ConvolutionalAutoEncoder](Scripts_Generative#q-convolutional-auto-encoder) |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/convae_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/convae_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/convae_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/convae_chainer.py) |
-| [ConvolutionalAutoEncoder](Scripts_Generative#q-convolutional-auto-encoder) Cifar10 |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/convae_cifar10_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/convae_cifar10_tensorflow_slim.py)[&check; keras](Scripts_Generative/scripts_keras/convae_cifar10_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/convae_cifar10_chainer.py) |
+| [AutoEncoder](Scripts_Generative#q-auto-encoder) |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/ae_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/ae_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/ae_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/ae_chainer.py) |
+| [Convolutional AutoEncoder](Scripts_Generative#q-convolutional-auto-encoder) Cifar10 |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/convae_cifar10_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/convae_cifar10_tensorflow_slim.py)[&check; keras](Scripts_Generative/scripts_keras/convae_cifar10_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/convae_cifar10_chainer.py) |
+| [Convolutional AutoEncoder](Scripts_Generative#q-convolutional-auto-encoder) |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/convae_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/convae_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/convae_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/convae_chainer.py) |
 | [VAE (Variational AutoEncoder)](Scripts_Generative#vae) MNIST |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/vae_mnist_pytorch.py) |
 | [VAE 潜在変数の可視化](Scripts_Generative#vae-潜在変数の可視化) MNIST |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/vae_latest_show_mnist_pytorch.py) |
 | [VAE 潜在変数の操作による画像の生成1](Scripts_Generative#vae-潜在変数の操作による画像の生成) MNIST |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/vae_latent_change_mnist_pytorch.py) |
 | [VAE 潜在変数の操作による画像の生成2](Scripts_Generative#vae-潜在変数の操作による画像の生成) MNIST |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/vae_latent_change2_mnist_pytorch.py) |
-| [GAN](Scripts_Generative#q-gan) | [&check; pytorch](Scripts_Generative/scripts_pytorch/gan_pytorch.py) | | [&check; tf.slim (WiP)](Scripts_Generative/scripts_tf_slim/gan_tensorflow_slim.py) | | [&check; keras](Scripts_Generative/scripts_keras/gan_keras.py) | [&check; chainer](Scripts_Generative/scripts_chainer/gan_chainer.py) |
 | [GAN](Scripts_Generative#q-gan) Cifar10 | [&check; pytorch](Scripts_Generative/scripts_pytorch/gan_cifar10_pytorch.py) [&check; tf.slim (WiP)](Scripts_Generative/scripts_tf_slim/gan_cifar10_tensorflow_slim.py)  [&check; keras](Scripts_Generative/scripts_keras/gan_cifar10_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/gan_cifar10_chainer.py) |
-| [DCGAN](Scripts_Generative#dcgan) | [&check; pytorch](Scripts_Generative/scripts_pytorch/dcgan_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/dcgan_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/dcgan_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/dcgan_chainer.py)
+| [GAN](Scripts_Generative#q-gan) | [&check; pytorch](Scripts_Generative/scripts_pytorch/gan_pytorch.py) | | [&check; tf.slim (WiP)](Scripts_Generative/scripts_tf_slim/gan_tensorflow_slim.py) | | [&check; keras](Scripts_Generative/scripts_keras/gan_keras.py) | [&check; chainer](Scripts_Generative/scripts_chainer/gan_chainer.py) |
 | [DCGAN](Scripts_Generative#dcgan) Cifar10 | [&check; pytorch](Scripts_Generative/scripts_pytorch/dcgan_cifar10_pytorch.py)   [&check; tf.keras](Scripts_Generative/scripts_tf_keras/DCGAN_cifar10_tf2.1_keras.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/dcgan_cifar10_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/dcgan_cifar10_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/dcgan_cifar10_chainer.py) |
+| [DCGAN](Scripts_Generative#dcgan) | [&check; pytorch](Scripts_Generative/scripts_pytorch/dcgan_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/dcgan_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/dcgan_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/dcgan_chainer.py)
 | [Conditional GAN](Scripts_Generative#q-conditional-gan) MNIST | [&check; pytorch](Scripts_Generative/scripts_pytorch/cgan_mnist_pytorch.py) [&check; tf.slim](Scripts_Generative/scripts_tf_slim/cgan_mnist_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/cgan_mnist_keras.py)  [&check; chainer](Scripts_Generative/scripts_chainer/cgan_mnist_chainer.py) | 2014 |
 | [Conditional GAN](Scripts_Generative#conditional-gan) Cifar10 | [&check; pytorch](Scripts_Generative/scripts_pytorch/cgan_cifar10_pytorch.py) [&check;tf.slim](Scripts_Generative/scripts_tf_slim/cgan_cifar10_tensorflow_slim.py) [&check; keras](Scripts_Generative/scripts_keras/cgan_cifar10_keras.py) [&check; chainer](Scripts_Generative/scripts_chainer/cgan_cifar10_chainer.py) |
 | [pix2pix](Scripts_Generative#pix2pix) | [&check; pytorch](Scripts_Generative/scripts_pytorch/pix2pix_segment_pytorch.py) |2016|
 | [pix2pix-GP](Scripts_Generative#pix2pix-GP)| [&check; pytorch](Scripts_Generative/scripts_pytorch/pix2pixGP_pytorch.py) | - |
 | [WGAN](Scripts_Generative#wgan) | [&check; pytorch](Scripts_Generative/scripts_pytorch/WGAN_cifar10_pytorch.py)| 2017 |
-| [WGAN-GP](Scripts_Generative#wgan-gp) | [&check; pytorch](Scripts_Generative/scripts_pytorch/WGAN-GP_pytorch.py)  | 2017 |
 | [WGAN-GP](Scripts_Generative#wgan-gp) Cifar10 | [&check; pytorch](Scripts_Generative/scripts_pytorch/WGAN-GP_cifar10_pytorch.py) | 2017 |
+| [WGAN-GP](Scripts_Generative#wgan-gp) | [&check; pytorch](Scripts_Generative/scripts_pytorch/WGAN-GP_pytorch.py)  | 2017 |
 | [alpha-GAN](Scripts_Generative#alpha-gan) MNIST | [&check; pytorch](Scripts_Generative/scripts_pytorch/alphaGAN_mnist_pytorch.py) | 2017 |
 | [alpha-GAN](Scripts_Generative#alpha-gan) CIFAR10 | [&check; pytorch](Scripts_Generative/scripts_pytorch/alphaGAN_cifar10_pytorch.py) |2017 |
 | [Style Transfer]() |  [&check; tf.keras](Scripts_Generative/scripts_tf_keras/StyleTransfer_tf2.1_keras.py) |
@@ -276,9 +275,7 @@ $ pip install -r requirements.txt
 ### [NLP](Scripts_NLP)
 | 問題 |  Implementation | Published year | 
 |:---:|:---:|:---:|
-| [1 hotベクトル化](Scripts_NLP#q-1hot%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%8C%96)
-| [RNN (Many-to-one) Step.1. 学習 ](Scripts_NLP#q-rnn-many-to-one-step1-%E5%AD%A6%E7%BF%92) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/rnn_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/rnn_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/rnn_keras.py) 
-| [RNN (Many-to-one) Step.2. テスト](Scripts_NLP#q-rnn-many-to-one-step2-%E3%83%86%E3%82%B9%E3%83%88) | [&check; pytorch](Scripts_NLP/scripts_pytorch/rnn_pytorch.py)  [&check; tf.slim](Scripts_NLP/scripts_tf_slim/rnn_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/rnn_keras.py) |  |
+| [RNN](Scripts_NLP#q-rnn-many-to-one-step1-%E5%AD%A6%E7%BF%92) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/rnn_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/rnn_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/rnn_keras.py) 
 | [LSTM](Scripts_NLP#q-lstm-many-to-one) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/lstm_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/lstm_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/lstm_keras.py) [&check; chainer](Scripts_NLP/scripts_chainer/lstm_chainer.py) |
 | [Bi-directional LSTM](Scripts_NLP#q-bi-directional-lstm-many-to-one) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/bdlstm_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/bdlstm_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/bdlstm_keras.py) [&check; chainer (WiP)](Scripts_NLP/scripts_chainer/bdlstm_chainer.py) |
 | [GRU](Scripts_NLP#q-gru-many-to-one) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/gru_pytorch.py)  [&check; tf.slim](Scripts_NLP/scripts_tf_slim/gru_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/gru_keras.py) [&check; chainer](Scripts_NLP/scripts_chainer/gru_chainer.py) |
