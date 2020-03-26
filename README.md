@@ -175,9 +175,9 @@ $ pip install -r requirements.txt
 
 |問題| 答え |
 |:---:|:---:|
-| [MNIST](Scripts_Dataset#q-mnist-10-step1-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89) | [&check;](Scripts_Dataset/scripts/load_mnist.py)
-| [CIFAR-10](Scripts_Dataset#q-cifar-10-step1-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89) | [&check;](Scripts_Dataset/scripts/load_cifar10.py)
-| [Fashion MNIST](Scripts_Dataset#q-cifar-10-stepfinal-%E3%83%86%E3%82%B9%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF) | [&check;](Scripts_Dataset/scripts/load_fashion_mnist.py)
+| [MNIST](Scripts_Dataset#mnist) | [&check;](Scripts_Dataset/scripts/load_mnist.py)
+| [CIFAR-10](Scripts_Dataset#cifar-10) | [&check;](Scripts_Dataset/scripts/load_cifar10.py)
+| [Fashion MNIST](Scripts_Dataset#fashion-mnist) | [&check;](Scripts_Dataset/scripts/load_fashion_mnist.py)
 
 
 ## 実装編
@@ -276,7 +276,7 @@ $ pip install -r requirements.txt
 ### [NLP](Scripts_NLP)
 | 問題 |  Implementation | Published year | 
 |:---:|:---:|:---:|
-| [1 hotベクトル化](Scripts_NLP#q-1hot%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%8C%96) |  [&check;](Scripts_NLP/scripts_pytorch/onehot.py) 
+| [1 hotベクトル化](Scripts_NLP#q-1hot%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E5%8C%96)
 | [RNN (Many-to-one) Step.1. 学習 ](Scripts_NLP#q-rnn-many-to-one-step1-%E5%AD%A6%E7%BF%92) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/rnn_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/rnn_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/rnn_keras.py) 
 | [RNN (Many-to-one) Step.2. テスト](Scripts_NLP#q-rnn-many-to-one-step2-%E3%83%86%E3%82%B9%E3%83%88) | [&check; pytorch](Scripts_NLP/scripts_pytorch/rnn_pytorch.py)  [&check; tf.slim](Scripts_NLP/scripts_tf_slim/rnn_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/rnn_keras.py) |  |
 | [LSTM](Scripts_NLP#q-lstm-many-to-one) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/lstm_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/lstm_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/lstm_keras.py) [&check; chainer](Scripts_NLP/scripts_chainer/lstm_chainer.py) |
