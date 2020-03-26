@@ -182,7 +182,7 @@ GRU (Gated Recurrent Unit) にしましょう。
 - PyTorch [scripts_pytorch/seq2seq_pytorch.py](scripts_pytorch/seq2seq_pytorch.py)
 - Keras [scripts_keras/gru_keras.py](scripts_keras/seq2seq_keras.py)
 
-## Seq2Seq + Attention (Step1. Source Target Attention)
+## Transformer (Step1. Source Target Attention)
 
 元論文
 - Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
@@ -216,7 +216,7 @@ Source Target Attentionでは、InputはTarget(Decoder)内部の入力(シンプ
 答え
 - PyTorch [scripts_pytorch/seq2seq_attention_sourceTargetAttention_pytorch.py](scripts_pytorch/seq2seq_attention_sourceTargetAttention_pytorch.py)
 
-## Seq2Seq + Attention (Step2. Self Attention)
+## Transformer (Step2. Self Attention)
 
 元論文
 - Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
@@ -232,7 +232,7 @@ Self Attentionでは入力ベクトルをInputとMemoryにすることで、自�
 答え
 - PyTorch [scripts_pytorch/seq2seq_attention_selfAttention_pytorch.py](scripts_pytorch/seq2seq_attention_selfAttention_pytorch.py)
 
-## Seq2Seq + Attention (Step3. Multi head Attention)
+## Transformer (Step3. Multi head Attention)
 
 元論文
 - Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
@@ -251,7 +251,7 @@ Multi head AttentionではAttentionにおいて、チャネルを分割するこ
 答え
 - PyTorch [scripts_pytorch/seq2seq_attention_multiHeadAttention_pytorch.py](scripts_pytorch/seq2seq_attention_multiHeadAttention_pytorch.py)
 
-## Seq2Seq + Attention (Step4. Feed Forward Network)
+## Transformer (Step4. Feed Forward Network)
 
 元論文
 - Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
@@ -270,7 +270,7 @@ Feed Forward NetworkはAttentionの直後に毎回使われ。
 - PyTorch [scripts_pytorch/seq2seq_attention_FFN_pytorch.py](scripts_pytorch/seq2seq_attention_FFN_pytorch.py)
 
 
-## Seq2Seq + Attention (Step5. Positional Encoding)
+## Transformer (Step5. Positional Encoding)
 
 元論文
 - Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
@@ -288,7 +288,7 @@ AttentionでSinusoid(Sin)関数をを使っているのは、学習時にSequenc
 - PyTorch [scripts_pytorch/seq2seq_attention_positionalEncoding_pytorch.py](scripts_pytorch/seq2seq_attention_positionalEncoding_pytorch.py)
 
 
-## Seq2Seq + Attention (Final. Parameter setting)
+## Transformer (Final. Parameter setting)
 
 元論文
 - Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
@@ -304,7 +304,7 @@ Table.3に様々なタイプのパラメータが載っているが、ここで�
 - AttentionのValueの次元数は d_v = 64
 - DropoutのDrop確率は P_drop = 0.1
 
-## Seq2Seq + Attention (Hard Attention)
+## Transformer (Hard Attention)
 
 元論文 >>
 - Memory Network https://arxiv.org/abs/1410.3916 (2014)
