@@ -275,20 +275,20 @@ $ pip install -r requirements.txt
 ### [NLP](Scripts_NLP)
 | 問題 |  Implementation | Published year | 
 |:---:|:---:|:---:|
-| [RNN](Scripts_NLP#q-rnn-many-to-one-step1-%E5%AD%A6%E7%BF%92) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/rnn_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/rnn_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/rnn_keras.py) 
-| [LSTM](Scripts_NLP#q-lstm-many-to-one) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/lstm_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/lstm_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/lstm_keras.py) [&check; chainer](Scripts_NLP/scripts_chainer/lstm_chainer.py) |
-| [Bi-directional LSTM](Scripts_NLP#q-bi-directional-lstm-many-to-one) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/bdlstm_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/bdlstm_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/bdlstm_keras.py) [&check; chainer (WiP)](Scripts_NLP/scripts_chainer/bdlstm_chainer.py) |
-| [GRU](Scripts_NLP#q-gru-many-to-one) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/gru_pytorch.py)  [&check; tf.slim](Scripts_NLP/scripts_tf_slim/gru_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/gru_keras.py) [&check; chainer](Scripts_NLP/scripts_chainer/gru_chainer.py) |
-| [Seq2seq](Scripts_NLP#q-seq2seq-many-to-many) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_pytorch.py)  [&check; keras](Scripts_NLP/scripts_keras/seq2seq_keras.py) | | | 2014 |
-| [Transformer (Step1. Source Target Attention)](Scripts_NLP#q-seq2seq--attention-step1-source-target-attention) | [&check; pytorch](Scripts_NLP/scripts/seq2seq_attention_sourceTargetAttention_pytorch.py) |2017|
-| [Transformer (Step2. Self Attention)](Scripts_NLP#q-seq2seq--attention-step2-self-attention) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_selfAttention_pytorch.py) |2017|
-| [Transformer (Step3. Multi head Attention)](Scripts_NLP#q-seq2seq--attention-step3-multi-head-attention) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_multiHeadAttention_pytorch.py) |2017|
-| [Transformer (Step4. Feed Forward Networ)](Scripts_NLP#q-seq2seq--attention-step4-feed-forward-network) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_FFN_pytorch.py) |2017|
-| [Transformer (Step5. Positional Encoding)](Scripts_NLP#q-seq2seq--attention-step5-positional-encoding) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_positionalEncoding_pytorch.py) |2017|
-| [Transformer (Final. Parameter setting)](Scripts_NLP#q-seq2seq--attention-final-parameter-setting) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_pytorch.py) ||||||2017|
-| [Transformer (Hard Attention)](Scripts_NLP#q-seq2seq--attention-final-parameter-setting) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_pytorch.py) |2014?|
-| [HRED](Scripts_NLP#q-hred) | [&check; pytorch](Scripts_NLP/scripts_pytorch/HRED_pytorch.py) |2015|
-| [Word2Vec (Skip-gram)](Scripts_NLP#q-word2vec) | [&check; pytorch](Scripts_NLP/scripts_pytorch/word2vec_pytorch.py) |
+| [RNN](Scripts_NLP#rnn) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/rnn_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/rnn_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/rnn_keras.py) 
+| [LSTM](Scripts_NLP#lstm) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/lstm_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/lstm_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/lstm_keras.py) [&check; chainer](Scripts_NLP/scripts_chainer/lstm_chainer.py) |
+| [Bi-directional LSTM](Scripts_NLP#bi-directional-lstm) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/bdlstm_pytorch.py) [&check; tf.slim](Scripts_NLP/scripts_tf_slim/bdlstm_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/bdlstm_keras.py) [&check; chainer (WiP)](Scripts_NLP/scripts_chainer/bdlstm_chainer.py) |
+| [GRU](Scripts_NLP#gru) |  [&check; pytorch](Scripts_NLP/scripts_pytorch/gru_pytorch.py)  [&check; tf.slim](Scripts_NLP/scripts_tf_slim/gru_tensorflow_slim.py) [&check; keras](Scripts_NLP/scripts_keras/gru_keras.py) [&check; chainer](Scripts_NLP/scripts_chainer/gru_chainer.py) |
+| [Seq2seq](Scripts_NLP#seq2seq) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_pytorch.py)  [&check; keras](Scripts_NLP/scripts_keras/seq2seq_keras.py) | | | 2014 |
+| [Transformer (Step1. Source Target Attention)](Scripts_NLP#transformer-step1-source-target-attention) | [&check; pytorch](Scripts_NLP/scripts/seq2seq_attention_sourceTargetAttention_pytorch.py) |2017|
+| [Transformer (Step2. Self Attention)](Scripts_NLP#transformer-step2-self-attention) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_selfAttention_pytorch.py) |2017|
+| [Transformer (Step3. Multi head Attention)](Scripts_NLP#transformer-step3-multi-head-attention) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_multiHeadAttention_pytorch.py) |2017|
+| [Transformer (Step4. Feed Forward Networ)](Scripts_NLP#transformer-step4-feed-forward-network) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_FFN_pytorch.py) |2017|
+| [Transformer (Step5. Positional Encoding)](Scripts_NLP#transformer-step5-positional-encoding) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_positionalEncoding_pytorch.py) |2017|
+| [Transformer (Final. Parameter setting)](Scripts_NLP#transformer-final-parameter-setting) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_pytorch.py) ||||||2017|
+| [Transformer (Hard Attention)](Scripts_NLP#transformer-hard-attention) | [&check; pytorch](Scripts_NLP/scripts_pytorch/seq2seq_attention_pytorch.py) |2014?|
+| [HRED](Scripts_NLP#hred) | [&check; pytorch](Scripts_NLP/scripts_pytorch/HRED_pytorch.py) |2015|
+| [Word2Vec (Skip-gram)](Scripts_NLP#word2vec-skip-gram) | [&check; pytorch](Scripts_NLP/scripts_pytorch/word2vec_pytorch.py) |
 
 
 ## Citation
