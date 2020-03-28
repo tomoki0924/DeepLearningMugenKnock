@@ -1,4 +1,4 @@
-# Natural Language Processing
+# Q. 言語処理編
 
 ここでは自然言語処理の手法を自分の手で実装していきます。**とりあえずPyTorch, Tensorflow, Keras, Chainer全部で実装してください。**
 ネットワークを作ったら、学習率やイテレーションを変えて、テストデータセット *../Dataset/test/images* でテストしてみてください。
@@ -152,7 +152,8 @@ GRU (Gated Recurrent Unit) にしましょう。
 
 ## Seq2seq
 
-[Ref] Sequence to Sequence Learning with Neural Networks https://arxiv.org/abs/1409.3215?context=cs (2014)
+元論文
+- Sequence to Sequence Learning with Neural Networks https://arxiv.org/abs/1409.3215?context=cs (2014)
 
 ここではSeq2seqを実装します。Seq2seqとはSequence to sequenceのことであり、時系列(Sequence)データを入力して、時系列データを得ることです。
 
@@ -181,22 +182,13 @@ GRU (Gated Recurrent Unit) にしましょう。
 - PyTorch [scripts_pytorch/seq2seq_pytorch.py](scripts_pytorch/seq2seq_pytorch.py)
 - Keras [scripts_keras/gru_keras.py](scripts_keras/seq2seq_keras.py)
 
-## Transformer 
+## Transformer (Step1. Source Target Attention)
 
-[Ref] Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
-
-TransformerはRNNに特徴の注目領域を重視するAttentionが加わったもの。次のモジュールが含まれる。
-
-- Source Target Attention
-- Self Attention
-- Multi-head Attention
-- Feed Forward Network
-- Positional Encoding
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 AttentionはNeural Networkにおいて特徴の注目を行うアルゴリズムである。
 Attentionには主に Source Target Attention と Self Attention がある。
-
-### Source Target Attention
 
 Source Target Attention は Source(Encoder) から Target(Decoder) への Attention を作成するアルゴリズムである。
 
@@ -221,7 +213,13 @@ Source Target Attentionでは、InputはTarget(Decoder)内部の入力(シンプ
 
 <img src="assets/source_target_attention.png" width=250>
 
-### Self Attention
+答え
+- PyTorch [scripts_pytorch/seq2seq_attention_sourceTargetAttention_pytorch.py](scripts_pytorch/seq2seq_attention_sourceTargetAttention_pytorch.py)
+
+## Transformer (Step2. Self Attention)
+
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 Self Attention は自身から自身への Attention を作成するアルゴリズムであり、Encoder, Decoderの両方に使うことができる。
 
@@ -231,8 +229,13 @@ Self Attentionでは入力ベクトルをInputとMemoryにすることで、自�
 
 論文によれば Self Attention の次に Source Target Attention を繋げるらしい。
 
+答え
+- PyTorch [scripts_pytorch/seq2seq_attention_selfAttention_pytorch.py](scripts_pytorch/seq2seq_attention_selfAttention_pytorch.py)
 
-### Multi head Attention
+## Transformer (Step3. Multi head Attention)
+
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 Multi head AttentionではAttentionにおいて、チャネルを分割することで精度向上を図るアルゴリズムである。
 
@@ -245,7 +248,13 @@ Multi head AttentionではAttentionにおいて、チャネルを分割するこ
 
 ここでの実装では、チャネル分割を行ってから特徴のshapeを [1, C / N]から [N, C]に変更することでMulti headを実現した。
 
-### Feed Forward Network
+答え
+- PyTorch [scripts_pytorch/seq2seq_attention_multiHeadAttention_pytorch.py](scripts_pytorch/seq2seq_attention_multiHeadAttention_pytorch.py)
+
+## Transformer (Step4. Feed Forward Network)
+
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 EncoderにもDecoderにもFeed Forward Networkが使われている。
 Feed Forward NetworkはAttentionの直後に毎回使われ。
@@ -257,7 +266,14 @@ Feed Forward NetworkはAttentionの直後に毎回使われ。
 
 <img src="assets/feed_forward_network2.png" width=250>
 
-### Positional Encoding
+答え
+- PyTorch [scripts_pytorch/seq2seq_attention_FFN_pytorch.py](scripts_pytorch/seq2seq_attention_FFN_pytorch.py)
+
+
+## Transformer (Step5. Positional Encoding)
+
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 Sequenceデータに時間的な位置の情報を加えるために、Positional Encodingというものが使われる。
 これは次式で計算される。
@@ -268,7 +284,14 @@ posが時間的な位置、iが次元での位置、d_modelが特徴量の全次
 
 AttentionでSinusoid(Sin)関数をを使っているのは、学習時にSequenceの長さをモデルに学習させることが可能であるためだという。
 
-### Parameter setting
+答え
+- PyTorch [scripts_pytorch/seq2seq_attention_positionalEncoding_pytorch.py](scripts_pytorch/seq2seq_attention_positionalEncoding_pytorch.py)
+
+
+## Transformer (Final. Parameter setting)
+
+元論文
+- Attention if All You Need https://arxiv.org/abs/1706.03762 (2017)
 
 Attentionのパラメータを論文の通りに実装してみる。
 Table.3に様々なタイプのパラメータが載っているが、ここではbaseモデルの通りに実装してみる。
@@ -281,12 +304,9 @@ Table.3に様々なタイプのパラメータが載っているが、ここで�
 - AttentionのValueの次元数は d_v = 64
 - DropoutのDrop確率は P_drop = 0.1
 
-答え
-- PyTorch [scripts_pytorch/Transformer_pytorch.py](scripts_pytorch/Transformer_pytorch.py)
-
 ## Transformer (Hard Attention)
 
-[Ref]
+元論文 >>
 - Memory Network https://arxiv.org/abs/1410.3916 (2014)
 - Recurrent Models of Visual Attention https://arxiv.org/abs/1406.6247 (2014)
 
@@ -299,11 +319,12 @@ Table.3に様々なタイプのパラメータが載っているが、ここで�
 <img src='assets/hard_attention.png' width=300>
 
 答え
-- PyTorch [scripts_pytorch/Transformer_HardAttention_pytorch.py](scripts_pytorch/Transformer_HardAttention_pytorch.py)
+- PyTorch [scripts_pytorch/seq2seq_attention_hardAttention_pytorch.py](scripts_pytorch/seq2seq_attention_hardAttention_pytorch.py)
 
 ## HRED
 
-[Ref] A Hierarchical Recurrent Encoder-Decoder For Generative Context-Aware Query Suggestion https://arxiv.org/abs/1507.02221 (2015)
+元論文 >>
+- A Hierarchical Recurrent Encoder-Decoder For Generative Context-Aware Query Suggestion https://arxiv.org/abs/1507.02221 (2015)
 
 HREDは Hierarchical Recurrent Encoder Decoderの略。
 
@@ -362,7 +383,7 @@ B: でちっちぇのしかないんだよ。ほらよいなんだよな
 
 ## VHRED
 
-[Ref] https://arxiv.org/abs/1605.06069
+元論文 >> https://arxiv.org/abs/1605.06069
 
 VHRED = Variational Hierarchical Recurrent Encoder Decoder で、HREDにVariationalを導入したもの。
 
