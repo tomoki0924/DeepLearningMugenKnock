@@ -237,7 +237,9 @@ $ pip install -r requirements.txt
 | [UpSampling. Transposed convolution](Scripts_Segmentation#upsampling%E6%89%8B%E6%B3%952-transposed-convolution) |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/transposeconv_pytorch.py) [&check; tf.slim](Scripts_Segmentation/scripts_tf_slim/transposeconv_tensorflow_slim.py)  [&check; keras](Scripts_Segmentation/scripts_keras/transposeconv_keras.py) [&check; chainer](Scripts_Segmentation/scripts_chainer/transposeconv_chainer.py) |
 | [Feature Map Concat](Scripts_Segmentation#%E7%89%B9%E5%BE%B4%E3%83%9E%E3%83%83%E3%83%97%E3%81%AEconcat) |  [&check; pytorch](Scripts_Segmentation/scripts/concat_pytorch.py)  [&check; tf.slim](Scripts_Segmentation/scripts_tf_slim/concat_tensorflow_slim.py) [&check; keras](Scripts_Segmentation/scripts_keras/concat_keras.py) [&check; chainer](Scripts_Segmentation/scripts_chainer/concat_chainer.py) |
 | [UNet](Scripts_Segmentation#unet) |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/unet_pytorch.py) [&check; tf.slim](Scripts_Segmentation/scripts_tf_slim/unet_tensorflow_slim.py) [&check; keras](Scripts_Segmentation/scripts_keras/unet_keras.py) [&check; chainer](Scripts_Segmentation/scripts_chainer/unet_chainer.py) | 2015 |
-| [UNet-like](Scripts_Segmentation#unet%E9%A2%A8%E3%83%A2%E3%83%87%E3%83%AB)|  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/unetlike_pytorch.py) | | [&check; tf.slim](Scripts_Segmentation/scripts_tf_slim/unetlike_tensorflow_slim.py)  [&check; keras](Scripts_Segmentation/scripts_keras/unetlike_keras.py) | [&check;](Scripts_Segmentation/scripts/unetlike_chainer.py) | 2015 |
+| [UNet-like](Scripts_Segmentation#unet%E9%A2%A8%E3%83%A2%E3%83%87%E3%83%AB) Binarization |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/UNetLike_Binary_pytorch.py)| 2015 |
+| [UNet-like](Scripts_Segmentation#unet%E9%A2%A8%E3%83%A2%E3%83%87%E3%83%AB) |  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/UNetLike_pytorch.py) [&check; tf.slim](Scripts_Segmentation/scripts_tf_slim/unetlike_tensorflow_slim.py)  [&check; keras](Scripts_Segmentation/scripts_keras/unetlike_keras.py) [&check; chainer](Scripts_Segmentation/scripts/unetlike_chainer.py) | 2015 |
+| [SegNet](Scripts_Segmentation#segnet) Binalization|  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/SegNet_Binarization_pytorch.py) | 2015 |
 | [SegNet](Scripts_Segmentation#segnet)|  [&check; pytorch](Scripts_Segmentation/scripts_pytorch/SegNet_pytorch.py) | 2015 |
 
 
@@ -298,5 +300,3 @@ $ pip install -r requirements.txt
 &copy; Curry yoshi All Rights Reserved.
 
 This is under MIT License.
-
-LICENSE
