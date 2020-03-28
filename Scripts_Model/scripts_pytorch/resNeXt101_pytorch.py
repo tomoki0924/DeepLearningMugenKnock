@@ -124,7 +124,7 @@ class ResNeXt101(torch.nn.Module):
 
 # get train data
 def data_load(path, hf=False, vf=False, rot=False):
-    if rot == 0:
+    if (rot == 0) and (rot != False):
         raise Exception('invalid rot >> ', rot, 'should be [1, 359] or False')
 
     paths = []

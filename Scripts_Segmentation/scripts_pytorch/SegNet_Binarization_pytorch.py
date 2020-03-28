@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 # class config
 class_label = {'akahara' : [0, 0, 128], 'madara' : [0, 128, 0]}
-class_N = len(class_label) + 1 # class + background
+class_N = len(class_label)
 
 # config
 img_height, img_width = 64, 64 #572, 572
@@ -22,7 +22,7 @@ GPU = True
 device = torch.device("cuda" if GPU and torch.cuda.is_available() else "cpu")
 
 # other
-model_path = 'SegNet.pt'
+model_path = 'UNet.pt'
 
 # random seed
 torch.manual_seed(0)
@@ -83,7 +83,7 @@ class SegNet(torch.nn.Module):
         self.dec2 = VGG_block(128, 64, 2)
         self.dec1 = VGG_block(64, 64, 2)
 
-        self.out = torch.nn.Conv2d(64, class_N, kernel_size=1, padding=0, stride=1)
+        self.out = torch.nn.Conv2d(64, 1, kernel_size=1, padding=0, stride=1)
         
         
     def forward(self, x):
@@ -129,7 +129,7 @@ class SegNet(torch.nn.Module):
 
         # output
         x = self.out(x)
-        x = F.softmax(x, dim=1)
+        x = torch.sigmoid(x)
         
         return x
 
@@ -231,7 +231,7 @@ def get_image(infos, gt=False):
 
             for i, (_, vs) in enumerate(class_label.items()):
                 ind = (_x[..., 0] == vs[0]) * (_x[..., 1] == vs[1]) * (_x[..., 2] == vs[2])
-                x[ind] = i + 1
+                x[ind] = 1
         else:
             # normalization [0, 255] -> [-1, 1]
             x = x / 127.5 - 1
@@ -257,8 +257,8 @@ def train():
     model.train()
 
     opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
-
-    paths, paths_gt = data_load('drive/My Drive/Colab Notebooks/' + '/Dataset/train/images/', hf=True, vf=True, rot=5)
+    
+    paths, paths_gt = data_load('../Dataset/train/images/', hf=True, vf=True, rot=False)
 
     # training
     mb = 16
@@ -268,7 +268,7 @@ def train():
     np.random.seed(0)
     np.random.shuffle(train_ind)
 
-    loss_fn = torch.nn.NLLLoss()
+    loss_fn = torch.nn.BCELoss()
     
     for i in range(1000):
         if mbi + mb > train_N:
@@ -282,25 +282,19 @@ def train():
 
         # data load
         x = torch.tensor(get_image(paths[mb_ind]), dtype=torch.float).to(device)
-        t = torch.tensor(get_image(paths_gt[mb_ind], gt=True), dtype=torch.long).to(device)
+        t = torch.tensor(np.expand_dims(get_image(paths_gt[mb_ind], gt=True), axis=1), dtype=torch.float).to(device)
 
         opt.zero_grad()
         y = model(x)
-
-        # reshape gt
-        y = y.permute(0,2,3,1).contiguous()
-        y = y.view(-1, class_N)
-        t = t.view(-1)
         
-        loss = loss_fn(torch.log(y), t)
+        loss = loss_fn(y, t)
         loss.backward()
         opt.step()
     
-        pred = y.argmax(dim=1, keepdim=True)
-        acc = pred.eq(t.view_as(pred)).sum().item() / mb / out_height / out_width
+        MAE = np.abs((y - t).detach().cpu().numpy()).mean()
         
         if (i + 1) % 50 == 0:
-            print('Iter : {} , Loss : {} , Accuracy : {}'.format(i + 1, loss.item(), acc))
+            print('Iter : {} , Loss : {} , MAE : {}'.format(i + 1, loss.item(), MAE))
 
     torch.save(model.state_dict(), model_path)
 
@@ -310,7 +304,7 @@ def test():
     model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
 
-    paths, path_gt = data_load('drive/My Drive/Colab Notebooks/' + '/Dataset/test/images/')
+    paths, path_gt = data_load('../Dataset/test/images/')
 
     with torch.no_grad():
         for i in range(len(paths)):
@@ -322,20 +316,15 @@ def test():
             pred = model(x)
 
             #pred = pred.permute(0,2,3,1).reshape(-1, class_num+1)
-            pred = pred.detach().cpu().numpy()[0]
-            pred = pred.argmax(axis=0)
+            pred = pred.detach().cpu().numpy()[0, 0]
 
-            # prediction -> RGB
-            out = np.zeros((out_height, out_width, 3), dtype=np.uint8)
-            for i, (_, vs) in enumerate(class_label.items()):
-                out[pred == (i + 1)] = vs
 
             print(">> {}".format(path[0]['path']))
 
             plt.subplot(1, 2, 1)
             plt.imshow((x.detach().cpu().numpy()[0].transpose(1,2,0) * 127.5 + 127.5).astype(np.uint8))
             plt.subplot(1, 2, 2)
-            plt.imshow(out[..., ::-1])
+            plt.imshow(pred, cmap='gray')
             plt.show()
     
 
